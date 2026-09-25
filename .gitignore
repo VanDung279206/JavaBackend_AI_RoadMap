@@ -8,3 +8,15 @@
 *.log
 .DS_Store
 data/private/
+
+# dựng local
+**/target/
+**/build/
+**/__pycache__/
+**/.env
+**/data/
+*.class
+
+.mvn/wrapper/maven-wrapper.jar
+.mvn/wrapper/*.part
+checks/runs/
