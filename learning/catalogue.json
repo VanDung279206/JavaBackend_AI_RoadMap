@@ -21,7 +21,7 @@
       "tags": [
         "validation"
       ],
-      "reading": "phases/01-java/EXERCISES.md"
+      "reading": "phases/01_Java/EXERCISES.md"
     },
     "P1.2": {
       "title": "Danh mục tài liệu",
@@ -29,14 +29,14 @@
         "duplicates",
         "state"
       ],
-      "reading": "phases/01-java/EXERCISES.md"
+      "reading": "phases/01_Java/EXERCISES.md"
     },
     "P1.3": {
       "title": "Đếm từ theo hợp đồng rõ ràng",
       "tags": [
         "duplicates"
       ],
-      "reading": "phases/01-java/EXERCISES.md"
+      "reading": "phases/01_Java/EXERCISES.md"
     },
     "P1.4": {
       "title": "Tìm và sắp xếp",
@@ -44,7 +44,7 @@
         "ordering",
         "validation"
       ],
-      "reading": "phases/01-java/EXERCISES.md"
+      "reading": "phases/01_Java/EXERCISES.md"
     },
     "P2.1": {
       "title": "Hợp đồng API",
@@ -52,14 +52,14 @@
         "validation",
         "owner"
       ],
-      "reading": "phases/02-http-sql/EXERCISES.md"
+      "reading": "phases/02_Http-Sql/EXERCISES.md"
     },
     "P2.2": {
       "title": "Schema và đếm tài liệu",
       "tags": [
         "duplicates"
       ],
-      "reading": "phases/02-http-sql/EXERCISES.md"
+      "reading": "phases/02_Http-Sql/EXERCISES.md"
     },
     "P2.3": {
       "title": "Phân trang và index",
@@ -67,28 +67,28 @@
         "off-by-one",
         "ordering"
       ],
-      "reading": "phases/02-http-sql/EXERCISES.md"
+      "reading": "phases/02_Http-Sql/EXERCISES.md"
     },
     "P2.4": {
       "title": "Transaction",
       "tags": [
         "transaction"
       ],
-      "reading": "phases/02-http-sql/EXERCISES.md"
+      "reading": "phases/02_Http-Sql/EXERCISES.md"
     },
     "P3.1": {
       "title": "DTO và validation",
       "tags": [
         "validation"
       ],
-      "reading": "phases/03-spring/EXERCISES.md"
+      "reading": "phases/03_Spring/EXERCISES.md"
     },
     "P3.2": {
       "title": "Repository có phạm vi người dùng",
       "tags": [
         "owner"
       ],
-      "reading": "phases/03-spring/EXERCISES.md"
+      "reading": "phases/03_Spring/EXERCISES.md"
     },
     "P3.3": {
       "title": "Phân trang và lỗi rõ ràng",
@@ -96,21 +96,21 @@
         "off-by-one",
         "overflow"
       ],
-      "reading": "phases/03-spring/EXERCISES.md"
+      "reading": "phases/03_Spring/EXERCISES.md"
     },
     "P3.4": {
       "title": "Giao dịch nghiệp vụ",
       "tags": [
         "transaction"
       ],
-      "reading": "phases/03-spring/EXERCISES.md"
+      "reading": "phases/03_Spring/EXERCISES.md"
     },
     "P4.1": {
       "title": "Hai người dùng",
       "tags": [
         "owner"
       ],
-      "reading": "phases/04-quality/EXERCISES.md"
+      "reading": "phases/04_Quality/EXERCISES.md"
     },
     "P4.2": {
       "title": "Kiểm thử bắt được lỗi",
@@ -118,21 +118,21 @@
         "owner",
         "validation"
       ],
-      "reading": "phases/04-quality/EXERCISES.md"
+      "reading": "phases/04_Quality/EXERCISES.md"
     },
     "P4.3": {
       "title": "Đóng gói và cấu hình",
       "tags": [
         "state"
       ],
-      "reading": "phases/04-quality/EXERCISES.md"
+      "reading": "phases/04_Quality/EXERCISES.md"
     },
     "P4.4": {
       "title": "Quy trình CI có tiêu chí",
       "tags": [
         "state"
       ],
-      "reading": "phases/04-quality/EXERCISES.md"
+      "reading": "phases/04_Quality/EXERCISES.md"
     },
     "P5.1": {
       "title": "Tách chỉ dẫn và dữ liệu",
@@ -140,14 +140,14 @@
         "source",
         "validation"
       ],
-      "reading": "phases/05-ai/EXERCISES.md"
+      "reading": "phases/05_AI/EXERCISES.md"
     },
     "P5.2": {
       "title": "Ngân sách context",
       "tags": [
         "overflow"
       ],
-      "reading": "phases/05-ai/EXERCISES.md"
+      "reading": "phases/05_AI/EXERCISES.md"
     },
     "P5.3": {
       "title": "Kiểm tra đầu ra có cấu trúc",
@@ -155,7 +155,7 @@
         "validation",
         "source"
       ],
-      "reading": "phases/05-ai/EXERCISES.md"
+      "reading": "phases/05_AI/EXERCISES.md"
     },
     "P5.4": {
       "title": "Lỗi tạm thời và retry hữu hạn",
@@ -163,7 +163,7 @@
         "retry",
         "timeout"
       ],
-      "reading": "phases/05-ai/EXERCISES.md"
+      "reading": "phases/05_AI/EXERCISES.md"
     },
     "P6.1": {
       "title": "Chia đoạn có phần chồng lặp",
@@ -171,7 +171,7 @@
         "off-by-one",
         "invariant"
       ],
-      "reading": "phases/06-rag/EXERCISES.md"
+      "reading": "phases/06_RAG/EXERCISES.md"
     },
     "P6.2": {
       "title": "Lọc quyền trước khi lấy top-k",
@@ -179,14 +179,14 @@
         "owner",
         "ordering"
       ],
-      "reading": "phases/06-rag/EXERCISES.md"
+      "reading": "phases/06_RAG/EXERCISES.md"
     },
     "P6.3": {
       "title": "Kiểm tra nguồn và thiếu dữ liệu",
       "tags": [
         "source"
       ],
-      "reading": "phases/06-rag/EXERCISES.md"
+      "reading": "phases/06_RAG/EXERCISES.md"
     },
     "P6.4": {
       "title": "Đo retrieval",
@@ -194,7 +194,7 @@
         "duplicates",
         "off-by-one"
       ],
-      "reading": "phases/06-rag/EXERCISES.md"
+      "reading": "phases/06_RAG/EXERCISES.md"
     },
     "D01": {
       "title": "Đếm tần suất",
@@ -462,28 +462,28 @@
       "tags": [
         "state"
       ],
-      "reading": "phases/00-setup/README.md"
+      "reading": "phases/00_setup/README.md"
     },
     "P0.2": {
       "title": "Chạy chương trình",
       "tags": [
         "state"
       ],
-      "reading": "phases/00-setup/README.md"
+      "reading": "phases/00_setup/README.md"
     },
     "P0.3": {
       "title": "Debug",
       "tags": [
         "state"
       ],
-      "reading": "phases/00-setup/README.md"
+      "reading": "phases/00_setup/README.md"
     },
     "P0.4": {
       "title": "Commit",
       "tags": [
         "state"
       ],
-      "reading": "phases/00-setup/README.md"
+      "reading": "phases/00_setup/README.md"
     },
     "C01": {
       "title": "Hai bản chỉnh sửa",
