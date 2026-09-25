@@ -1,0 +1,31 @@
+services:
+  db:
+    image: pgvector/pgvector:pg17
+    environment:
+      POSTGRES_DB: knowledge
+      POSTGRES_USER: knowledge
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env}
+    ports: ["127.0.0.1:5432:5432"]
+    volumes: ["knowledge-data:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U knowledge -d knowledge"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+  app:
+    profiles: ["app"]
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: postgres
+      SERVER_ADDRESS: 0.0.0.0
+      DB_URL: jdbc:postgresql://db:5432/knowledge
+      DB_USER: knowledge
+      DB_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD}
+      APP_AN_PASSWORD: ${APP_AN_PASSWORD:?Set APP_AN_PASSWORD}
+      APP_BINH_PASSWORD: ${APP_BINH_PASSWORD:?Set APP_BINH_PASSWORD}
+    ports: ["127.0.0.1:8080:8080"]
+volumes:
+  knowledge-data:
