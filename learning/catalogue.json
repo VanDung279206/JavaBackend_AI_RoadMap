@@ -1,0 +1,574 @@
+{
+  "tags": {
+    "validation": "Thiếu kiểm tra đầu vào hoặc đầu ra",
+    "overflow": "Tràn số trước hoặc trong phép tính",
+    "off-by-one": "Sai biên chỉ số, khoảng đóng/mở",
+    "duplicates": "Xử lý sai giá trị hoặc request trùng",
+    "owner": "Thiếu phạm vi người dùng",
+    "ordering": "Thứ tự hoặc điều kiện hòa không ổn định",
+    "transaction": "Giao dịch không nguyên tử hoặc rollback sai",
+    "stale-write": "Ghi đè dữ liệu từ phiên bản cũ",
+    "timeout": "Chờ vô hạn hoặc không hủy công việc",
+    "retry": "Retry sai loại lỗi hoặc vượt số lần",
+    "invariant": "Không giữ điều kiện đúng trong vòng lặp",
+    "source": "Nguồn không hợp lệ hoặc không đủ chứng cứ",
+    "state": "Cập nhật trạng thái sai hoặc làm mất trạng thái",
+    "complexity": "Thuật toán vượt giới hạn hoặc giải thích sai độ phức tạp"
+  },
+  "exercises": {
+    "P1.1": {
+      "title": "Chuẩn hóa tiêu đề",
+      "tags": [
+        "validation"
+      ],
+      "reading": "phases/01_Java/EXERCISES.md"
+    },
+    "P1.2": {
+      "title": "Danh mục tài liệu",
+      "tags": [
+        "duplicates",
+        "state"
+      ],
+      "reading": "phases/01_Java/EXERCISES.md"
+    },
+    "P1.3": {
+      "title": "Đếm từ theo hợp đồng rõ ràng",
+      "tags": [
+        "duplicates"
+      ],
+      "reading": "phases/01_Java/EXERCISES.md"
+    },
+    "P1.4": {
+      "title": "Tìm và sắp xếp",
+      "tags": [
+        "ordering",
+        "validation"
+      ],
+      "reading": "phases/01_Java/EXERCISES.md"
+    },
+    "P2.1": {
+      "title": "Hợp đồng API",
+      "tags": [
+        "validation",
+        "owner"
+      ],
+      "reading": "phases/02_Http-Sql/EXERCISES.md"
+    },
+    "P2.2": {
+      "title": "Schema và đếm tài liệu",
+      "tags": [
+        "duplicates"
+      ],
+      "reading": "phases/02_Http-Sql/EXERCISES.md"
+    },
+    "P2.3": {
+      "title": "Phân trang và index",
+      "tags": [
+        "off-by-one",
+        "ordering"
+      ],
+      "reading": "phases/02_Http-Sql/EXERCISES.md"
+    },
+    "P2.4": {
+      "title": "Transaction",
+      "tags": [
+        "transaction"
+      ],
+      "reading": "phases/02_Http-Sql/EXERCISES.md"
+    },
+    "P3.1": {
+      "title": "DTO và validation",
+      "tags": [
+        "validation"
+      ],
+      "reading": "phases/03_Spring/EXERCISES.md"
+    },
+    "P3.2": {
+      "title": "Repository có phạm vi người dùng",
+      "tags": [
+        "owner"
+      ],
+      "reading": "phases/03_Spring/EXERCISES.md"
+    },
+    "P3.3": {
+      "title": "Phân trang và lỗi rõ ràng",
+      "tags": [
+        "off-by-one",
+        "overflow"
+      ],
+      "reading": "phases/03_Spring/EXERCISES.md"
+    },
+    "P3.4": {
+      "title": "Giao dịch nghiệp vụ",
+      "tags": [
+        "transaction"
+      ],
+      "reading": "phases/03_Spring/EXERCISES.md"
+    },
+    "P4.1": {
+      "title": "Hai người dùng",
+      "tags": [
+        "owner"
+      ],
+      "reading": "phases/04_Quality/EXERCISES.md"
+    },
+    "P4.2": {
+      "title": "Kiểm thử bắt được lỗi",
+      "tags": [
+        "owner",
+        "validation"
+      ],
+      "reading": "phases/04_Quality/EXERCISES.md"
+    },
+    "P4.3": {
+      "title": "Đóng gói và cấu hình",
+      "tags": [
+        "state"
+      ],
+      "reading": "phases/04_Quality/EXERCISES.md"
+    },
+    "P4.4": {
+      "title": "Quy trình CI có tiêu chí",
+      "tags": [
+        "state"
+      ],
+      "reading": "phases/04_Quality/EXERCISES.md"
+    },
+    "P5.1": {
+      "title": "Tách chỉ dẫn và dữ liệu",
+      "tags": [
+        "source",
+        "validation"
+      ],
+      "reading": "phases/05_AI/EXERCISES.md"
+    },
+    "P5.2": {
+      "title": "Ngân sách context",
+      "tags": [
+        "overflow"
+      ],
+      "reading": "phases/05_AI/EXERCISES.md"
+    },
+    "P5.3": {
+      "title": "Kiểm tra đầu ra có cấu trúc",
+      "tags": [
+        "validation",
+        "source"
+      ],
+      "reading": "phases/05_AI/EXERCISES.md"
+    },
+    "P5.4": {
+      "title": "Lỗi tạm thời và retry hữu hạn",
+      "tags": [
+        "retry",
+        "timeout"
+      ],
+      "reading": "phases/05_AI/EXERCISES.md"
+    },
+    "P6.1": {
+      "title": "Chia đoạn có phần chồng lặp",
+      "tags": [
+        "off-by-one",
+        "invariant"
+      ],
+      "reading": "phases/06_RAG/EXERCISES.md"
+    },
+    "P6.2": {
+      "title": "Lọc quyền trước khi lấy top-k",
+      "tags": [
+        "owner",
+        "ordering"
+      ],
+      "reading": "phases/06_RAG/EXERCISES.md"
+    },
+    "P6.3": {
+      "title": "Kiểm tra nguồn và thiếu dữ liệu",
+      "tags": [
+        "source"
+      ],
+      "reading": "phases/06_RAG/EXERCISES.md"
+    },
+    "P6.4": {
+      "title": "Đo retrieval",
+      "tags": [
+        "duplicates",
+        "off-by-one"
+      ],
+      "reading": "phases/06_RAG/EXERCISES.md"
+    },
+    "D01": {
+      "title": "Đếm tần suất",
+      "tags": [
+        "duplicates"
+      ],
+      "reading": "dsa/EXERCISES.md"
+    },
+    "D02": {
+      "title": "Hai vị trí có tổng cho trước",
+      "tags": [
+        "duplicates",
+        "overflow"
+      ],
+      "reading": "dsa/EXERCISES.md"
+    },
+    "D03": {
+      "title": "Palindrome",
+      "tags": [
+        "off-by-one"
+      ],
+      "reading": "dsa/EXERCISES.md"
+    },
+    "D04": {
+      "title": "Đoạn không lặp",
+      "tags": [
+        "invariant",
+        "duplicates"
+      ],
+      "reading": "dsa/EXERCISES.md"
+    },
+    "D05": {
+      "title": "Tổng đoạn",
+      "tags": [
+        "off-by-one",
+        "overflow"
+      ],
+      "reading": "dsa/EXERCISES.md"
+    },
+    "D06": {
+      "title": "Ngoặc hợp lệ",
+      "tags": [
+        "invariant"
+      ],
+      "reading": "dsa/EXERCISES.md"
+    },
+    "D07": {
+      "title": "Vị trí đầu tiên đạt ngưỡng",
+      "tags": [
+        "off-by-one",
+        "invariant"
+      ],
+      "reading": "dsa/EXERCISES.md"
+    },
+    "D08": {
+      "title": "Gộp khoảng",
+      "tags": [
+        "ordering"
+      ],
+      "reading": "dsa/EXERCISES.md"
+    },
+    "D09": {
+      "title": "k giá trị lớn",
+      "tags": [
+        "ordering",
+        "complexity"
+      ],
+      "reading": "dsa/EXERCISES.md"
+    },
+    "D10": {
+      "title": "Khoảng cách trong đồ thị",
+      "tags": [
+        "invariant",
+        "state"
+      ],
+      "reading": "dsa/EXERCISES.md"
+    },
+    "D11": {
+      "title": "Số xu ít nhất",
+      "tags": [
+        "invariant",
+        "complexity"
+      ],
+      "reading": "dsa/EXERCISES.md"
+    },
+    "D12": {
+      "title": "Bộ nhớ LRU",
+      "tags": [
+        "state"
+      ],
+      "reading": "dsa/EXERCISES.md"
+    },
+    "D13": {
+      "title": "Đảo liên kết",
+      "tags": [
+        "state"
+      ],
+      "reading": "dsa/VARIANTS.md"
+    },
+    "D14": {
+      "title": "Độ sâu cây",
+      "tags": [
+        "state"
+      ],
+      "reading": "dsa/VARIANTS.md"
+    },
+    "D15": {
+      "title": "Chu trình có hướng",
+      "tags": [
+        "invariant",
+        "state"
+      ],
+      "reading": "dsa/VARIANTS.md"
+    },
+    "V01": {
+      "title": "Phần tử duy nhất đầu tiên",
+      "tags": [
+        "duplicates",
+        "ordering"
+      ],
+      "reading": "dsa/VARIANTS.md"
+    },
+    "V02": {
+      "title": "Đếm cặp vị trí",
+      "tags": [
+        "duplicates",
+        "overflow"
+      ],
+      "reading": "dsa/VARIANTS.md"
+    },
+    "V03": {
+      "title": "Palindrome đã chuẩn hóa",
+      "tags": [
+        "validation"
+      ],
+      "reading": "dsa/VARIANTS.md"
+    },
+    "V04": {
+      "title": "Đoạn tối đa k loại",
+      "tags": [
+        "invariant",
+        "duplicates"
+      ],
+      "reading": "dsa/VARIANTS.md"
+    },
+    "V05": {
+      "title": "Đếm đoạn có tổng",
+      "tags": [
+        "overflow",
+        "duplicates"
+      ],
+      "reading": "dsa/VARIANTS.md"
+    },
+    "V06": {
+      "title": "Bổ sung ngoặc",
+      "tags": [
+        "invariant"
+      ],
+      "reading": "dsa/VARIANTS.md"
+    },
+    "V07": {
+      "title": "Vị trí vượt ngưỡng",
+      "tags": [
+        "off-by-one",
+        "invariant"
+      ],
+      "reading": "dsa/VARIANTS.md"
+    },
+    "V08": {
+      "title": "Số phòng họp",
+      "tags": [
+        "off-by-one",
+        "ordering"
+      ],
+      "reading": "dsa/VARIANTS.md"
+    },
+    "V09": {
+      "title": "k phần tử thường gặp",
+      "tags": [
+        "ordering"
+      ],
+      "reading": "dsa/VARIANTS.md"
+    },
+    "V10": {
+      "title": "Truy vết đường ngắn nhất",
+      "tags": [
+        "state"
+      ],
+      "reading": "dsa/VARIANTS.md"
+    },
+    "V11": {
+      "title": "Số tổ hợp xu",
+      "tags": [
+        "duplicates",
+        "overflow"
+      ],
+      "reading": "dsa/VARIANTS.md"
+    },
+    "V12": {
+      "title": "Số lần cache miss",
+      "tags": [
+        "state"
+      ],
+      "reading": "dsa/VARIANTS.md"
+    },
+    "B01": {
+      "title": "Ghi đè ID",
+      "tags": [
+        "duplicates"
+      ],
+      "reading": "debug/README.md"
+    },
+    "B02": {
+      "title": "Tràn phân trang",
+      "tags": [
+        "overflow"
+      ],
+      "reading": "debug/README.md"
+    },
+    "B03": {
+      "title": "Lọc chủ sở hữu",
+      "tags": [
+        "owner"
+      ],
+      "reading": "debug/README.md"
+    },
+    "B04": {
+      "title": "Retry HTTP 400",
+      "tags": [
+        "retry"
+      ],
+      "reading": "debug/README.md"
+    },
+    "B05": {
+      "title": "Cửa sổ đi lùi",
+      "tags": [
+        "invariant"
+      ],
+      "reading": "debug/README.md"
+    },
+    "B06": {
+      "title": "Lọc quyền sau top-k",
+      "tags": [
+        "owner"
+      ],
+      "reading": "debug/README.md"
+    },
+    "B07": {
+      "title": "Tràn token budget",
+      "tags": [
+        "overflow"
+      ],
+      "reading": "debug/README.md"
+    },
+    "B08": {
+      "title": "Retry vô hạn",
+      "tags": [
+        "retry",
+        "timeout"
+      ],
+      "reading": "debug/README.md"
+    },
+    "P0.1": {
+      "title": "Công cụ",
+      "tags": [
+        "state"
+      ],
+      "reading": "phases/00_setup/README.md"
+    },
+    "P0.2": {
+      "title": "Chạy chương trình",
+      "tags": [
+        "state"
+      ],
+      "reading": "phases/00_setup/README.md"
+    },
+    "P0.3": {
+      "title": "Debug",
+      "tags": [
+        "state"
+      ],
+      "reading": "phases/00_setup/README.md"
+    },
+    "P0.4": {
+      "title": "Commit",
+      "tags": [
+        "state"
+      ],
+      "reading": "phases/00_setup/README.md"
+    },
+    "C01": {
+      "title": "Hai bản chỉnh sửa",
+      "tags": [
+        "stale-write",
+        "transaction"
+      ],
+      "reading": "concurrency/README.md"
+    },
+    "C02": {
+      "title": "Yêu cầu lặp",
+      "tags": [
+        "duplicates",
+        "state",
+        "owner"
+      ],
+      "reading": "concurrency/README.md"
+    },
+    "C03": {
+      "title": "Giới hạn thời gian",
+      "tags": [
+        "timeout",
+        "retry"
+      ],
+      "reading": "concurrency/README.md"
+    },
+    "M01": {
+      "title": "Đợt hoạt động",
+      "tags": [
+        "duplicates",
+        "invariant"
+      ],
+      "reading": "mixed/EXERCISES.md"
+    },
+    "M02": {
+      "title": "Cân đối dòng tiền",
+      "tags": [
+        "overflow",
+        "duplicates"
+      ],
+      "reading": "mixed/EXERCISES.md"
+    },
+    "M03": {
+      "title": "Quầy phục vụ",
+      "tags": [
+        "off-by-one",
+        "ordering"
+      ],
+      "reading": "mixed/EXERCISES.md"
+    },
+    "M04": {
+      "title": "Vị trí tiếp nhận",
+      "tags": [
+        "off-by-one"
+      ],
+      "reading": "mixed/EXERCISES.md"
+    },
+    "M05": {
+      "title": "Tuyến vận chuyển",
+      "tags": [
+        "state"
+      ],
+      "reading": "mixed/EXERCISES.md"
+    },
+    "M06": {
+      "title": "Ngân sách gói",
+      "tags": [
+        "complexity"
+      ],
+      "reading": "mixed/EXERCISES.md"
+    },
+    "M07": {
+      "title": "Mã truy cập",
+      "tags": [
+        "state"
+      ],
+      "reading": "mixed/EXERCISES.md"
+    },
+    "M08": {
+      "title": "Báo cáo ưu tiên",
+      "tags": [
+        "ordering",
+        "duplicates"
+      ],
+      "reading": "mixed/EXERCISES.md"
+    }
+  }
+}

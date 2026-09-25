@@ -1,0 +1,257 @@
+{
+  "P1.1": [
+    "Khoảng trắng ở hai đầu và ở giữa cần được xử lý ở bước nào?",
+    "Input \"  Java\\t Core  \" phải thành \"Java Core\"; input chỉ có khoảng trắng phải lỗi.",
+    "Nếu null: lỗi; strip; thay nhóm whitespace theo hợp đồng bằng một space; nếu rỗng: lỗi; trả kết quả."
+  ],
+  "P1.2": [
+    "Thêm ID đã tồn tại có được làm mất bản ghi cũ không?",
+    "Thêm (1,A), thêm (1,B) → lỗi; tìm 1 vẫn là A.",
+    "Dùng thao tác chỉ chèn nếu chưa có; nếu đã có thì báo lỗi; trả snapshot khi liệt kê."
+  ],
+  "P1.3": [
+    "Bạn đang đếm từ theo dấu cách hay đang tự bỏ dấu câu ngoài hợp đồng?",
+    "\"Java java! JAVA\" → java:2, java!:1. Chuỗi trắng → map rỗng.",
+    "Nếu trắng trả rỗng; lowercase với Locale.ROOT; split whitespace; tăng bộ đếm mỗi token."
+  ],
+  "P1.4": [
+    "Khi nhiều tài liệu khớp, kết quả cần sắp theo khóa nào?",
+    "IDs 9,2 cùng có \"Java\" → trả 2,9; keyword trắng bị từ chối.",
+    "Chuẩn hóa keyword; lọc title không phân biệt hoa thường; sort ID tăng; không sửa list đầu vào."
+  ],
+  "P2.1": [
+    "Client có được tự chọn ownerId trong body không?",
+    "POST thiếu title →400; chưa xác thực →401; tài liệu khác owner →404 theo hợp đồng repo.",
+    "Lập từng dòng method/path/body/status; owner lấy từ principal; phân biệt validation, not-found và lỗi server."
+  ],
+  "P2.2": [
+    "JOIN nào giữ được người chưa có tài liệu?",
+    "Fixture ban đầu có số lượng 2,1,0; COUNT(*) trên LEFT JOIN có thể đếm hàng đệm null.",
+    "LEFT JOIN users với documents; GROUP BY user; COUNT(document.id); ORDER BY user.id."
+  ],
+  "P2.3": [
+    "Cursor phải chứa những khóa nào để không lặp khi created_at bằng nhau?",
+    "Thứ tự created_at giảm rồi id giảm; sau cursor 102 ở fixture phải tới 101.",
+    "Lọc created_at < cursorTime HOẶC bằng thời gian và id < cursorId; sort cùng thứ tự; limit."
+  ],
+  "P2.4": [
+    "Khi bước audit lỗi, bản ghi tài liệu đã được commit chưa?",
+    "Insert103 rồi rollback → vẫn 2,1,0; insert104 rồi commit →3,1,0.",
+    "BEGIN; thao tác document và audit trên cùng transaction; lỗi thì ROLLBACK; đủ các bước mới COMMIT."
+  ],
+  "P3.1": [
+    "Validation có được thực hiện trước khi dữ liệu đi vào repository không?",
+    "Title trắng →400; content null →400; input hợp lệ →201 và Location.",
+    "DTO nêu constraints; controller @Valid; service giữ quy tắc nghiệp vụ; repository lưu; trả response DTO."
+  ],
+  "P3.2": [
+    "Truy vấn theo ID đơn lẻ có chứng minh được quyền của principal không?",
+    "An tạo document; Bình biết ID nhưng GET/PUT/summary/index đều404.",
+    "Truy vấn bằng ID VÀ owner từ principal; nếu không có kết quả thì ném Missing."
+  ],
+  "P3.3": [
+    "page*size có tràn trước khi chuyển sang long không?",
+    "page=Integer.MAX_VALUE, size=100 phải được xử lý như offset rất lớn, không âm.",
+    "Kiểm tra page/size; nhân sau khi ép một toán hạng sang long; áp dụng thứ tự ổn định; offset vượt dữ liệu trả rỗng."
+  ],
+  "P3.4": [
+    "Annotation giao dịch nằm ở phương thức được gọi qua Spring proxy hay self-invocation?",
+    "Cho audit.write ném lỗi sau save; số document trước/sau phải bằng nhau.",
+    "Đặt biên @Transactional ở public service; save và audit cùng giao dịch; ném lỗi ra ngoài để rollback."
+  ],
+  "P4.1": [
+    "Xác thực được tài khoản đã đủ quyền truy cập mọi ID chưa?",
+    "An và Bình đăng nhập hợp lệ nhưng chỉ thấy tài liệu của chính mình.",
+    "Security xác thực; service lấy owner từ principal; mọi đường đọc/ghi đều lọc owner."
+  ],
+  "P4.2": [
+    "Test có đỏ nếu cố ý xóa điều kiện owner không?",
+    "Test chỉ kiểm tra An thấy tài liệu của An vẫn xanh khi lỗi phân quyền tồn tại.",
+    "Tạo bằng An; request bằng Bình; assert404; thử bỏ filter trong bản học; xác nhận test đỏ; khôi phục."
+  ],
+  "P4.3": [
+    "Thông tin nào phải cấu hình lúc chạy, dữ liệu nào phải nằm ngoài container app?",
+    "Restart app không được làm mất dữ liệu PostgreSQL; image không chứa .env.",
+    "Build jar ở stage build; copy sang JRE; user không root; env lúc chạy; volume DB; health check."
+  ],
+  "P4.4": [
+    "Workflow có thể báo xanh khi test hoặc bước trước thất bại không?",
+    "Một assertion sai có chủ ý ở branch học phải khiến job đỏ, không bị || true che lỗi.",
+    "Checkout; setup JDK/Python; chạy checks; Maven verify integration; package; không bỏ qua exit code."
+  ],
+  "P5.1": [
+    "Chỉ dẫn tin cậy và văn bản người dùng có đang chung một vai trò không?",
+    "Tài liệu chứa \"Ignore rules\" vẫn chỉ là dữ liệu cần tóm tắt.",
+    "System giữ quy tắc; user chứa tài liệu; kiểm tra output; không coi tách role là bảo đảm chống mọi prompt injection."
+  ],
+  "P5.2": [
+    "Có thể so sánh ngân sách mà không cộng hai số long lớn không?",
+    "input=Long.MAX_VALUE, output=1, limit=Long.MAX_VALUE →false.",
+    "Từ chối số âm; kiểm tra input<=limit; kiểm tra output<=limit-input."
+  ],
+  "P5.3": [
+    "Output đúng JSON có bảo đảm đúng số bullet và đúng nội dung không?",
+    "Title hợp lệ nhưng bullets=[] → lỗi; 1–3 bullet không rỗng mới qua cấu trúc.",
+    "Kiểm tra null/title/bullets; giới hạn1..3; từng bullet không trắng; trả bản copy; kiểm tra sự thật riêng."
+  ],
+  "P5.4": [
+    "Lỗi nào đáng thử lại và biến nào chặn số lần thử?",
+    "503 rồi success →2 attempt;400 →1;503 hai lần →dừng.",
+    "Vòng attempt1..2; chỉ bắt lỗi429/503 để thử lại; lỗi khác hoặc lần2 thì ném ra."
+  ],
+  "P6.1": [
+    "Bước nhảy bằng size hay size-overlap?",
+    "a b c d e, size3 overlap1 →[a b c],[c d e], không thêm [e].",
+    "Kiểm tra0<=overlap<size; step=size-overlap; cắt min(start+size,n); nếu end==n thì dừng."
+  ],
+  "P6.2": [
+    "Lọc owner diễn ra trước hay sau việc giữ k kết quả?",
+    "Chunk của người khác có score cao nhất; k=1 vẫn phải chọn chunk hợp lệ của người hiện tại.",
+    "Lọc owner; kiểm tra vector; tính score; sort score giảm, ID tăng; limit k."
+  ],
+  "P6.3": [
+    "Citation có nằm trong chính tập nguồn đã đưa cho model không?",
+    "Model viện dẫn c99 trong khi chỉ nhận c1,c2 → từ chối, không tự tạo nguồn.",
+    "Tập allowed từ hits; citation không rỗng; mọi ID thuộc allowed; nếu không đủ nguồn trả trạng thái thiếu dữ liệu."
+  ],
+  "P6.4": [
+    "Precision@k và recall@k dùng mẫu số khác nhau như thế nào?",
+    "k=3, gold={a,b}, retrieved=[a,x] → precision1/3, recall1/2.",
+    "Từ chối k<=0/gold rỗng/ID lặp; đếm matches trong k phần tử; chia lần lượt k và số gold."
+  ],
+  "D01": [
+    "Mỗi giá trị cần lưu thông tin gì?",
+    "[2,2,3] →{2:2,3:1}.",
+    "Map value→count; duyệt mỗi số và tăng1."
+  ],
+  "D02": [
+    "Có thể tìm phần bù trước khi ghi số hiện tại không?",
+    "[3,3],target6 → vị trí0,1; không dùng một vị trí hai lần.",
+    "Map giá trị→vị trí đã gặp; tìm target-x bằng long; nếu có trả cặp; sau đó mới ghi x."
+  ],
+  "D03": [
+    "Hai ký tự đối xứng có chỉ số nào?",
+    "\"abba\":0↔3,1↔2; chuỗi rỗng cũng đúng.",
+    "left=0,right=n-1; so sánh rồi tiến hai đầu tới khi left>=right."
+  ],
+  "D04": [
+    "Điểm bắt đầu cửa sổ có được đi lùi không?",
+    "\"abba\": gặp a cuối không được đưa left từ2 về1.",
+    "Lưu vị trí cuối; left=max(left,last[c]+1); cập nhật best và last."
+  ],
+  "D05": [
+    "Prefix tại i biểu diễn trước hay sau phần tử i?",
+    "[2,-1,4],prefix=[0,2,1,5]; đoạn[1,2]=5-2=3.",
+    "prefix[0]=0; prefix[i+1]=prefix[i]+a[i]; query=prefix[r+1]-prefix[l]."
+  ],
+  "D06": [
+    "Dấu đóng phải ghép với dấu mở nào gần nhất?",
+    "\"([)]\" sai dù tổng số dấu mở và đóng bằng nhau.",
+    "Gặp dấu mở thì push dấu đóng mong đợi; gặp dấu đóng so với top; cuối stack phải rỗng."
+  ],
+  "D07": [
+    "Khoảng tìm kiếm đang đóng hay nửa mở?",
+    "[1,3,3,7],target3 →1;target9→4.",
+    "[l,r) ban đầu[0,n); a[mid]<target thì l=mid+1; ngược lại r=mid; trả l."
+  ],
+  "D08": [
+    "Sau khi sắp theo start, chỉ cần so với khoảng nào?",
+    "[1,3],[3,5] là khoảng đóng nên gộp thành[1,5].",
+    "Copy rồi sort start; nếu start>last.end thêm mới; ngược lại tăng last.end tới max."
+  ],
+  "D09": [
+    "Trong k ứng viên, phần tử nào cần loại khi có số mới?",
+    "[4,1,9,9],k2 →[9,9]; phải giữ trùng.",
+    "Heap min; thêm từng số; nếu size>k loại min; sort kết quả giảm."
+  ],
+  "D10": [
+    "Cần duyệt theo số cạnh đã đi hay đi sâu một nhánh?",
+    "0→1→3 và0→3; khoảng cách0→3 là1.",
+    "Queue từ start; đánh dấu khi đưa vào queue; dist[next]=dist[u]+1; không tới goal trả-1."
+  ],
+  "D11": [
+    "Lời giải của tổng s có dùng được lời giải tổng nhỏ hơn không?",
+    "Coins[1,3,4],amount6 cần2 xu3; chọn xu lớn trước cho3 xu.",
+    "dp[0]=0; với mỗi s thử từng coin<=s; lấy min(dp[s-coin]+1); sentinel nghĩa là không tạo được."
+  ],
+  "D12": [
+    "Lần get có thay đổi thứ tự gần đây không?",
+    "cap2;put1,put2,get1,put3 →loại2.",
+    "Map theo access order; get/put làm mới recency; vượt capacity loại eldest."
+  ],
+  "D13": [
+    "Khi đổi head.next, còn giữ được đoạn chưa xử lý không?",
+    "1→2→3: lưu2 trước khi đổi1.next thành null.",
+    "prev=null; mỗi bước lưu next, đảo liên kết, tiến prev/head; trả prev."
+  ],
+  "D14": [
+    "Stack cần lưu chỉ node hay cả độ sâu?",
+    "Cây rỗng0; gốc đơn1; nhánh ba node3.",
+    "Push(root,1); pop cập nhật max; push con với depth+1; xử lý null trước."
+  ],
+  "D15": [
+    "Cạnh tới node đang thăm khác cạnh tới node đã xong thế nào?",
+    "0→1,0→2,1→2 không chu trình; thêm2→0 thì có.",
+    "Duyệt mọi thành phần; màu0chưa/1đang/2xong; cạnh tới1 là chu trình; dùng stack frame với chỉ số cạnh tiếp theo."
+  ],
+  "V01": [
+    "Thứ tự của map có phải thứ tự trong input không?",
+    "[4,2,4,3] →2.",
+    "Đếm toàn bộ; duyệt input lần nữa; trả phần tử đầu có count1."
+  ],
+  "V02": [
+    "Các số trùng tạo bao nhiêu cặp chỉ số?",
+    "[2,2,2],target4 →3 cặp.",
+    "Trước mỗi x cộng count[target-x] vào long result; rồi tăng count[x]."
+  ],
+  "V03": [
+    "Bài này giữ lại loại ký tự nào?",
+    "\"A, a!\" sau chuẩn hóa là\"aa\".",
+    "Lowercase; chỉ giữ ASCII a-z0-9; kiểm tra hai đầu."
+  ],
+  "V04": [
+    "Khi vượt k loại, có cần co cửa sổ nhiều lần không?",
+    "\"eceba\",k2 →\"ece\" dài3; k0→0.",
+    "Map count trong window; mở right; while số loại>k giảm bên left, xóa count0; cập nhật best."
+  ],
+  "V05": [
+    "Có số âm thì tổng cửa sổ có đơn điệu không?",
+    "[1,-1,1],target1 →3 đoạn.",
+    "Prefix với count ban đầu{0:1}; cộng số prefix cũ bằng current-target; tăng current."
+  ],
+  "V06": [
+    "Dấu đóng không có dấu mở trước đó cần bổ sung gì?",
+    "\"))(\" cần3 dấu.",
+    "Gặp( tăng opens; gặp) dùng opens nếu có, nếu không tăng missing; trả opens+missing."
+  ],
+  "V07": [
+    "So với lower bound, dấu so sánh nào đổi?",
+    "[1,3,3,7],target3 →3.",
+    "[l,r); nếu a[mid]<=target thì l=mid+1; ngược lại r=mid."
+  ],
+  "V08": [
+    "Cuộc họp kết thúc đúng lúc cuộc mới bắt đầu có dùng lại phòng được không?",
+    "[1,3),[3,4) cần1 phòng.",
+    "Sort start; loại mọi end<=start khỏi heap; thêm end; ghi max size."
+  ],
+  "V09": [
+    "Khi tần suất bằng nhau, giá trị nhỏ hay lớn được giữ?",
+    "[2,2,1,1,3],k1 →[1].",
+    "Đếm; heap phần tử tệ nhất ở đầu: ít lần hơn, rồi giá trị lớn hơn; giữ k; xuất thứ tự tốt nhất."
+  ],
+  "V10": [
+    "Bạn lưu gì để dựng lại tuyến sau khi biết đã tới đích?",
+    "0→2→3: parent[3]=2,parent[2]=0.",
+    "BFS đánh dấu khi enqueue; lưu parent; từ goal đi ngược về start rồi đảo; không tới trả rỗng."
+  ],
+  "V11": [
+    "Đổi thứ tự vòng lặp có đếm cả hoán vị không?",
+    "Coins[1,2],amount3 có2 tổ hợp:1+1+1,1+2.",
+    "dp[0]=1; coins ở vòng ngoài; sum tăng từ coin; addExact dp[sum-coin]."
+  ],
+  "V12": [
+    "Cache miss và cache hit tác động recency thế nào?",
+    "[1,2,1,3,2],cap2 →4 miss.",
+    "Access-order map; thiếu thì tăng miss và load; hit cũng làm mới; vượt cap loại eldest."
+  ]
+}

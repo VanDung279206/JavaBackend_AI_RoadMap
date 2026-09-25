@@ -1,0 +1,28 @@
+name: Verify reference implementations
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+jobs:
+  references:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Offline references and tooling
+        run: python3 scripts/verify.py --suite offline
+      - name: Spring, PostgreSQL, SQL and Docker HTTP
+        run: python3 scripts/verify.py --suite integration
+      - name: Keep verification reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reference-verification
+          path: checks/runs/

@@ -1,0 +1,50 @@
+[
+  {
+    "id": "E01",
+    "exit_code": 1,
+    "diagnostic_verified": true,
+    "output": "Exception in thread \"main\" java.lang.NullPointerException: Cannot invoke \"String.length()\" because \"<local3>\" is null\n\tat ErrorExamples.main(ErrorExamples.java:6)\n"
+  },
+  {
+    "id": "E02",
+    "exit_code": 1,
+    "diagnostic_verified": true,
+    "output": "Exception in thread \"main\" java.lang.ArrayIndexOutOfBoundsException: Index 3 out of bounds for length 3\n\tat ErrorExamples.main(ErrorExamples.java:7)\n"
+  },
+  {
+    "id": "E03",
+    "exit_code": 1,
+    "diagnostic_verified": true,
+    "output": "Exception in thread \"main\" java.lang.NumberFormatException: For input string: \"12x\"\n\tat java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:67)\n\tat java.base/java.lang.Integer.parseInt(Integer.java:668)\n\tat java.base/java.lang.Integer.parseInt(Integer.java:786)\n\tat ErrorExamples.main(ErrorExamples.java:8)\n"
+  },
+  {
+    "id": "E04",
+    "exit_code": 1,
+    "diagnostic_verified": true,
+    "output": "Exception in thread \"main\" java.lang.IllegalArgumentException: duplicate id\n\tat JavaCoreLab$Catalog.add(JavaCoreLab.java:28)\n\tat ErrorExamples.main(ErrorExamples.java:9)\n"
+  },
+  {
+    "id": "E05",
+    "exit_code": 1,
+    "diagnostic_verified": true,
+    "output": "Exception in thread \"main\" java.lang.UnsupportedOperationException: TODO P1.1\n\tat ErrorExamples.main(ErrorExamples.java:10)\n"
+  },
+  {
+    "id": "E06",
+    "exit_code": 1,
+    "diagnostic_verified": true,
+    "output": "Exception in thread \"main\" java.lang.AssertionError: expected=3 actual=2\n\tat ErrorExamples.main(ErrorExamples.java:11)\n"
+  },
+  {
+    "id": "E07",
+    "exit_code": 1,
+    "diagnostic_verified": true,
+    "output": "Exception in thread \"main\" java.util.concurrent.TimeoutException\n\tat java.base/java.util.concurrent.FutureTask.get(FutureTask.java:204)\n\tat ErrorExamples.main(ErrorExamples.java:12)\n"
+  },
+  {
+    "id": "E08",
+    "exit_code": 1,
+    "diagnostic_verified": true,
+    "output": "<temporary-directory>/MissingSymbol.java:2: error: cannot find symbol\n    public static void main(String[] args) { System.out.println(missingValue); }\n                                                                ^\n  symbol:   variable missingValue\n  location: class MissingSymbol\n1 error\n"
+  }
+]
