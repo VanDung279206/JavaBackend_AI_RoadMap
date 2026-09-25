@@ -1,0 +1,3 @@
+public final class MissingSymbol {
+    public static void main(String[] args) { System.out.println(missingValue); }
+}
