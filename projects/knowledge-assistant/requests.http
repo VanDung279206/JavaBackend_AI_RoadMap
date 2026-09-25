@@ -1,0 +1,66 @@
+# For the demo profile only; select individual requests in your HTTP client.
+@base = http://localhost:8080
+@documentId = 1
+# Copy version from the latest GET/POST response before PUT.
+@expectedVersion = 0
+
+### Public health, 200
+GET {{base}}/health
+
+### Missing credentials, 401
+GET {{base}}/documents
+
+### Create as An, 201; copy returned id into documentId above
+POST {{base}}/documents
+Authorization: Basic an an-demo-only
+Content-Type: application/json
+
+{"title":"Java Notes","content":"Java uses classes. PostgreSQL stores documents."}
+
+### List own documents, 200
+GET {{base}}/documents?page=0&size=2
+Authorization: Basic an an-demo-only
+
+### Another user, 404
+GET {{base}}/documents/{{documentId}}
+Authorization: Basic binh binh-demo-only
+
+### Invalid title, 400
+POST {{base}}/documents
+Authorization: Basic an an-demo-only
+Content-Type: application/json
+
+{"title":" ","content":"x"}
+
+### Update, 200 (invalidates any stored vector chunks)
+PUT {{base}}/documents/{{documentId}}
+Authorization: Basic an an-demo-only
+Content-Type: application/json
+
+{"title":"Java Notes","content":"Java uses classes. PostgreSQL stores documents.", "expectedVersion": {{expectedVersion}}}
+
+### Summary, demo returns extract only
+POST {{base}}/documents/{{documentId}}/summary
+Authorization: Basic an an-demo-only
+
+### Index (required before questions with real-ai)
+POST {{base}}/documents/{{documentId}}/index
+Authorization: Basic an an-demo-only
+
+### Question, 200 + ANSWERED + own source
+POST {{base}}/questions
+Authorization: Basic an an-demo-only
+Content-Type: application/json
+
+{"question":"Java","k":2}
+
+### No matching demo terms, 200 + INSUFFICIENT_CONTEXT
+POST {{base}}/questions
+Authorization: Basic an an-demo-only
+Content-Type: application/json
+
+{"question":"volcano","k":2}
+
+### Delete, 204; run last
+DELETE {{base}}/documents/{{documentId}}
+Authorization: Basic an an-demo-only
