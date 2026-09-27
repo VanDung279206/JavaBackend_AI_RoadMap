@@ -1,0 +1,1 @@
+export default function Hero(){return <section className="max-w-6xl mx-auto py-32"><h1 className="text-6xl font-bold">Java Backend AI Roadmap</h1><p>Developer learning platform.</p></section>}
