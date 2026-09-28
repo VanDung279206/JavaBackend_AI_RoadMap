@@ -1,26 +1,71 @@
-const items=[
- {name:"Java Core", progress:80, detail:"JVM • OOP • Collections"},
- {name:"Database", progress:60, detail:"SQL • PostgreSQL • JDBC"},
- {name:"Backend", progress:40, detail:"Servlet • Spring Boot"},
- {name:"AI Engineering", progress:20, detail:"LLM • RAG • Agents"}
+"use client";
+
+const items = [
+  { name: "Java Core", progress: 0, detail: "JVM · OOP · Collections · Stream API", color: "#f59e0b", icon: "☕" },
+  { name: "Database & SQL", progress: 0, detail: "SQL · PostgreSQL · JDBC · JPA", color: "#3b82f6", icon: "🗄️" },
+  { name: "Spring Boot", progress: 0, detail: "REST API · Security · Testing · Docker", color: "#22c55e", icon: "🍃" },
+  { name: "AI Engineering", progress: 0, detail: "LLM · Spring AI · RAG · pgvector", color: "#ec4899", icon: "🤖" },
 ];
 
-export default function LearningDashboard(){
- return (
- <section className="max-w-6xl mx-auto px-6 py-20">
-  <h2 className="text-3xl font-bold">Learning Dashboard</h2>
-  <div className="grid md:grid-cols-2 gap-6 mt-8">
-  {items.map(i=>(
-   <div key={i.name} className="border rounded-2xl p-6 hover:shadow-xl transition">
-    <h3 className="text-xl font-semibold">{i.name}</h3>
-    <p className="text-muted-foreground mt-2">{i.detail}</p>
-    <div className="mt-5 h-2 bg-gray-200 rounded">
-      <div className="h-2 bg-black rounded" style={{width:i.progress+"%"}}/>
-    </div>
-    <p className="mt-2 text-sm">{i.progress}% completed</p>
-   </div>
-  ))}
-  </div>
- </section>
- )
+export default function LearningDashboard() {
+  return (
+    <section style={{ maxWidth: 1200, margin: "0 auto", padding: "0 1.5rem 5rem" }}>
+      <div style={{ textAlign: "center", marginBottom: "2.5rem" }}>
+        <h2 style={{ fontSize: "2rem", fontWeight: 800, marginBottom: "0.5rem" }}>
+          📊 Learning Dashboard
+        </h2>
+        <p style={{ color: "var(--muted-foreground)" }}>
+          Theo dõi tiến độ học theo từng lĩnh vực — cập nhật khi bạn hoàn thành bài tập.
+        </p>
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: "1.25rem" }}>
+        {items.map((item) => (
+          <div
+            key={item.name}
+            style={{
+              background: "var(--card)",
+              border: "1px solid var(--border)",
+              borderRadius: 16,
+              padding: "1.5rem",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: "0.75rem" }}>
+              <span style={{ fontSize: "1.5rem" }}>{item.icon}</span>
+              <div>
+                <div style={{ fontWeight: 700, fontSize: "0.95rem" }}>{item.name}</div>
+                <div style={{ fontSize: "0.75rem", color: "var(--muted-foreground)", marginTop: 2 }}>
+                  {item.detail}
+                </div>
+              </div>
+            </div>
+
+            {/* Progress bar */}
+            <div
+              style={{
+                background: "var(--muted)",
+                borderRadius: 999,
+                height: 6,
+                marginBottom: "0.5rem",
+                overflow: "hidden",
+              }}
+            >
+              <div
+                style={{
+                  height: "100%",
+                  width: `${item.progress}%`,
+                  background: item.color,
+                  borderRadius: 999,
+                  transition: "width 0.6s ease",
+                }}
+              />
+            </div>
+            <div style={{ fontSize: "0.75rem", color: "var(--muted-foreground)", textAlign: "right" }}>
+              {item.progress}% hoàn thành
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
 }
