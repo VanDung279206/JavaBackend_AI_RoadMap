@@ -42,11 +42,13 @@ export function usePhaseProgress(phase: string): ProgressState {
 
   // Keep the save-status timer owned by this hook and clean it up on unmount.
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const scheduleReset = useCallback((delay: number) => {
+  const saveOperationId = useRef(0);
+  const exerciseOperationIds = useRef<Record<string, number>>({});
+  const scheduleReset = useCallback((delay: number, operationId: number) => {
     if (timerRef.current) clearTimeout(timerRef.current);
     timerRef.current = setTimeout(() => {
       timerRef.current = null;
-      setSaveStatus("idle");
+      if (saveOperationId.current === operationId) setSaveStatus("idle");
     }, delay);
   }, []);
 
@@ -70,6 +72,12 @@ export function usePhaseProgress(phase: string): ProgressState {
       if (event === "SIGNED_OUT" || event === "SIGNED_IN" || identityChanged) {
         // Invalidate a pending fetch synchronously, before React runs effects.
         activeRequestId.current += 1;
+        saveOperationId.current += 1;
+        exerciseOperationIds.current = {};
+        if (timerRef.current) {
+          clearTimeout(timerRef.current);
+          timerRef.current = null;
+        }
         setChecked({});
         setSaveStatus("idle");
         setLoading(true);
@@ -88,6 +96,8 @@ export function usePhaseProgress(phase: string): ProgressState {
     return () => {
       mounted = false;
       listener.subscription.unsubscribe();
+      saveOperationId.current += 1;
+      exerciseOperationIds.current = {};
       if (timerRef.current) {
         clearTimeout(timerRef.current);
         timerRef.current = null;
@@ -140,8 +150,14 @@ export function usePhaseProgress(phase: string): ProgressState {
 
   const toggle = useCallback(
     async (exerciseId: string) => {
-      const prev = checked;
+      const wasChecked = checked[exerciseId] ?? false;
       const next = { ...checked, [exerciseId]: !checked[exerciseId] };
+      const operationId = ++saveOperationId.current;
+      exerciseOperationIds.current[exerciseId] = operationId;
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+        timerRef.current = null;
+      }
       setChecked(next);
 
       if (user) {
@@ -156,20 +172,25 @@ export function usePhaseProgress(phase: string): ProgressState {
           },
           { onConflict: "user_id,phase,exercise_id" }
         );
-        if (userIdRef.current !== user.id) return;
+        const sameUser = userIdRef.current === user.id;
+        const latestForExercise =
+          exerciseOperationIds.current[exerciseId] === operationId;
+        if (error && sameUser && latestForExercise) {
+          setChecked((current) => ({ ...current, [exerciseId]: wasChecked }));
+        }
+        if (operationId !== saveOperationId.current || !sameUser) return;
 
         if (error) {
-          setChecked(prev);
           setSaveStatus("error");
-          scheduleReset(3000);
+          scheduleReset(3000, operationId);
         } else {
           setSaveStatus("saved");
-          scheduleReset(1500);
+          scheduleReset(1500, operationId);
         }
       } else {
         localStorage.setItem(`progress_${phase}`, JSON.stringify(next));
         setSaveStatus("saved");
-        scheduleReset(1000);
+        scheduleReset(1000, operationId);
       }
     },
     [checked, user, phase, scheduleReset]
