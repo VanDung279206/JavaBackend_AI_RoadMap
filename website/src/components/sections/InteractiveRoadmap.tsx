@@ -76,7 +76,7 @@ export default function InteractiveRoadmap() {
           return p.slug ? (
             <Link
               key={p.num}
-              href={`/JavaBackend_AI_RoadMap/docs/${p.slug}`}
+              href={`/docs/${p.slug}`}
               style={{ textDecoration: "none", color: "inherit" }}
             >
               {inner}

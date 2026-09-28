@@ -9,7 +9,7 @@ const projects = [
     icon: "📁",
     color: "#f59e0b",
     phase: "Phase 1",
-    href: "/JavaBackend_AI_RoadMap/docs/01_Java",
+    href: "/docs/01_Java",
   },
   {
     title: "Knowledge Assistant",
@@ -18,7 +18,7 @@ const projects = [
     icon: "🤖",
     color: "#ec4899",
     phase: "Phase 3–6",
-    href: "/JavaBackend_AI_RoadMap/roadmap",
+    href: "/roadmap",
   },
 ];
 

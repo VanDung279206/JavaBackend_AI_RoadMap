@@ -1,68 +1,20 @@
 "use client";
-import { useState, useEffect, useCallback } from "react";
-import { supabase } from "@/lib/supabase";
-import type { User } from "@supabase/supabase-js";
+import { usePhaseProgress } from "@/lib/useProgress";
 
-type Exercise = { id: string; label: string };
-type Props = { phase: string; exercises: Exercise[] };
+type Props = { phase: string; exercises: { id: string; label: string }[] };
+
+const saveLabel: Record<string, { text: string; color: string }> = {
+  saving: { text: "⏳ Đang lưu...", color: "#f59e0b" },
+  saved:  { text: "✅ Đã lưu",     color: "#22c55e" },
+  error:  { text: "❌ Lưu thất bại — kiểm tra kết nối", color: "#ef4444" },
+};
 
 export default function ProgressTracker({ phase, exercises }: Props) {
-  const [user, setUser] = useState<User | null>(null);
-  const [checked, setChecked] = useState<Record<string, boolean>>({});
-  const [loading, setLoading] = useState(true);
-
-  // Lấy user hiện tại
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      setUser(data.session?.user ?? null);
-    });
-    const { data: listener } = supabase.auth.onAuthStateChange((_e, session) => {
-      setUser(session?.user ?? null);
-    });
-    return () => listener.subscription.unsubscribe();
-  }, []);
-
-  // Load tiến độ: Supabase nếu đã login, localStorage nếu chưa
-  useEffect(() => {
-    const load = async () => {
-      setLoading(true);
-      if (user) {
-        const { data } = await supabase
-          .from("progress")
-          .select("exercise_id, done")
-          .eq("user_id", user.id)
-          .eq("phase", phase);
-        const map: Record<string, boolean> = {};
-        (data ?? []).forEach((r) => { map[r.exercise_id] = r.done; });
-        setChecked(map);
-      } else {
-        const saved = localStorage.getItem(`progress_${phase}`);
-        setChecked(saved ? JSON.parse(saved) : {});
-      }
-      setLoading(false);
-    };
-    load();
-  }, [user, phase]);
-
-  const toggle = useCallback(async (id: string) => {
-    const next = { ...checked, [id]: !checked[id] };
-    setChecked(next); // optimistic update
-
-    if (user) {
-      await supabase.from("progress").upsert({
-        user_id: user.id,
-        phase,
-        exercise_id: id,
-        done: next[id],
-        updated_at: new Date().toISOString(),
-      }, { onConflict: "user_id,phase,exercise_id" });
-    } else {
-      localStorage.setItem(`progress_${phase}`, JSON.stringify(next));
-    }
-  }, [checked, user, phase]);
+  const { checked, loading, saveStatus, toggle } = usePhaseProgress(phase);
 
   const done = exercises.filter((e) => checked[e.id]).length;
   const pct = exercises.length > 0 ? Math.round((done / exercises.length) * 100) : 0;
+  const statusInfo = saveLabel[saveStatus];
 
   return (
     <div
@@ -74,12 +26,13 @@ export default function ProgressTracker({ phase, exercises }: Props) {
         marginBottom: "2rem",
       }}
     >
+      {/* Header */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.75rem" }}>
         <h3 style={{ fontWeight: 700, fontSize: "1rem" }}>✅ Tiến độ của tôi</h3>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          {!user && (
-            <span style={{ fontSize: "0.75rem", color: "var(--muted-foreground)" }}>
-              💡 Đăng nhập để lưu cloud
+          {statusInfo && (
+            <span style={{ fontSize: "0.8rem", color: statusInfo.color, fontWeight: 600 }}>
+              {statusInfo.text}
             </span>
           )}
           <span style={{ fontSize: "0.85rem", color: "var(--muted-foreground)" }}>
@@ -87,6 +40,23 @@ export default function ProgressTracker({ phase, exercises }: Props) {
           </span>
         </div>
       </div>
+
+      {/* Save error banner */}
+      {saveStatus === "error" && (
+        <div
+          style={{
+            padding: "0.6rem 1rem",
+            borderRadius: 8,
+            background: "#ef444422",
+            border: "1px solid #ef444444",
+            color: "#ef4444",
+            fontSize: "0.8rem",
+            marginBottom: "1rem",
+          }}
+        >
+          Không thể lưu tiến độ lên server. Tiến độ trên máy này vẫn được giữ — thử lại sau khi kết nối ổn định.
+        </div>
+      )}
 
       {/* Progress bar */}
       <div style={{ background: "var(--muted)", borderRadius: 999, height: 8, marginBottom: "1.25rem", overflow: "hidden" }}>
@@ -110,7 +80,7 @@ export default function ProgressTracker({ phase, exercises }: Props) {
               display: "flex",
               alignItems: "center",
               gap: 10,
-              cursor: loading ? "default" : "pointer",
+              cursor: loading || saveStatus === "saving" ? "default" : "pointer",
               fontSize: "0.9rem",
               color: checked[ex.id] ? "var(--muted-foreground)" : "var(--foreground)",
               textDecoration: checked[ex.id] ? "line-through" : "none",
@@ -120,8 +90,8 @@ export default function ProgressTracker({ phase, exercises }: Props) {
             <input
               type="checkbox"
               checked={!!checked[ex.id]}
-              onChange={() => !loading && toggle(ex.id)}
-              disabled={loading}
+              onChange={() => !loading && saveStatus !== "saving" && toggle(ex.id)}
+              disabled={loading || saveStatus === "saving"}
               style={{ width: 16, height: 16, accentColor: "var(--accent)", cursor: "pointer" }}
             />
             {ex.label}

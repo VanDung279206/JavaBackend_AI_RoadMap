@@ -4,10 +4,10 @@ import AuthButton from "@/components/AuthButton";
 import SearchCommand from "@/components/command/SearchCommand";
 
 const links = [
-  { href: "/JavaBackend_AI_RoadMap/", label: "Trang chủ" },
-  { href: "/JavaBackend_AI_RoadMap/roadmap", label: "Roadmap" },
-  { href: "/JavaBackend_AI_RoadMap/docs", label: "Bài tập" },
-  { href: "/JavaBackend_AI_RoadMap/leaderboard", label: "🏆 Xếp hạng" },
+  { href: "/", label: "Trang chủ" },
+  { href: "/roadmap", label: "Roadmap" },
+  { href: "/docs", label: "Bài tập" },
+  { href: "/leaderboard", label: "🏆 Xếp hạng" },
 ];
 
 export default function Navbar() {
@@ -36,36 +36,26 @@ export default function Navbar() {
             gap: "1rem",
           }}
         >
-          {/* Logo */}
           <Link
-            href="/JavaBackend_AI_RoadMap/"
+            href="/"
             style={{
-              fontWeight: 700,
-              fontSize: "1.1rem",
-              color: "var(--foreground)",
-              textDecoration: "none",
-              display: "flex",
-              alignItems: "center",
-              gap: 8,
-              flexShrink: 0,
+              fontWeight: 700, fontSize: "1.1rem", color: "var(--foreground)",
+              textDecoration: "none", display: "flex", alignItems: "center",
+              gap: 8, flexShrink: 0,
             }}
           >
             <span style={{ color: "var(--accent)" }}>☕</span>
             <span>Java + AI</span>
           </Link>
 
-          {/* Links */}
           <div style={{ display: "flex", gap: "1.25rem", alignItems: "center", flex: 1 }}>
             {links.map((l) => (
               <Link
                 key={l.href}
                 href={l.href}
                 style={{
-                  color: "var(--muted-foreground)",
-                  textDecoration: "none",
-                  fontSize: "0.875rem",
-                  fontWeight: 500,
-                  whiteSpace: "nowrap",
+                  color: "var(--muted-foreground)", textDecoration: "none",
+                  fontSize: "0.875rem", fontWeight: 500, whiteSpace: "nowrap",
                 }}
                 onMouseEnter={(e) => (e.currentTarget.style.color = "var(--foreground)")}
                 onMouseLeave={(e) => (e.currentTarget.style.color = "var(--muted-foreground)")}
@@ -75,21 +65,14 @@ export default function Navbar() {
             ))}
           </div>
 
-          {/* Ctrl+K hint + Auth */}
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <button
               onClick={() => window.dispatchEvent(new KeyboardEvent("keydown", { key: "k", ctrlKey: true }))}
               style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 6,
-                padding: "0.3rem 0.75rem",
-                borderRadius: 8,
-                border: "1px solid var(--border)",
-                background: "var(--muted)",
-                color: "var(--muted-foreground)",
-                fontSize: "0.75rem",
-                cursor: "pointer",
+                display: "flex", alignItems: "center", gap: 6,
+                padding: "0.3rem 0.75rem", borderRadius: 8,
+                border: "1px solid var(--border)", background: "var(--muted)",
+                color: "var(--muted-foreground)", fontSize: "0.75rem", cursor: "pointer",
               }}
             >
               🔍 <kbd style={{ fontFamily: "inherit" }}>Ctrl K</kbd>
