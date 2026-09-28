@@ -29,7 +29,7 @@ class Runner:
   rows=doctor.inspect(profile);(self.directory/('doctor-'+profile+'.json')).write_text(json.dumps(rows,indent=2,ensure_ascii=False)+'\n',encoding='utf-8')
   missing=[x['name'] for x in rows if x['status']=='BLOCKED']
   self.add('environment-'+profile,'BLOCKED' if missing else 'PASS',', '.join(missing) if missing else 'Required probes passed')
-  return not missing
+  return rows
  def save(self):
   status='FAIL' if any(r['status']=='FAIL' for r in self.rows) else 'BLOCKED' if any(r['status']=='BLOCKED' for r in self.rows) else 'PASS'
   report={'created_at':datetime.now(timezone.utc).isoformat(),'scope':'reference verification; not learner completion','status':status,'checks':self.rows}
@@ -37,7 +37,7 @@ class Runner:
   return {'PASS':0,'FAIL':1,'BLOCKED':2}[status]
 
 def offline(r):
- if not r.doctor('offline'):
+ if any(row['status']=='BLOCKED' for row in r.doctor('offline')):
   r.add('offline-programs','BLOCKED','JDK/Python prerequisites missing');return
  commands=[('legacy-labs',[sys.executable,'labs/run_checks.py']),('practice-reference',[sys.executable,'scripts/check.py','--mode','solution']),('debug-reference',[sys.executable,'scripts/check.py','--track','debug','--mode','solution']),('mixed-reference',[sys.executable,'scripts/check.py','--track','mixed','--mode','solution']),('concurrency-reference',[sys.executable,'scripts/check.py','--track','concurrency','--mode','solution']),('app-core',[sys.executable,'scripts/check_app_core.py']),('learning-tools',[sys.executable,'-m','unittest','discover','-s','scripts/tests','-v']),('english-diagnostics',[sys.executable,'scripts/error_examples.py','--verify'])]
  for name,args in commands:r.command(name,args)
@@ -101,17 +101,24 @@ def containers(r):
   if cleanup_errors:r.add('container-cleanup','FAIL','Remove only these resources from this run: '+', '.join(cleanup_errors))
 
 def integration(r):
- env_ok=r.doctor('integration')
+ checks=r.doctor('integration')
+ docker_missing=[x['name'] for x in checks if x['status']=='BLOCKED' and x['name'] in ['Docker CLI','Docker daemon']]
+ runtime_missing=[x['name'] for x in checks if x['status']=='BLOCKED' and x['name'] not in ['Docker CLI','Docker daemon']]
  bootstrap,_=r.command('maven-wrapper-bootstrap',[sys.executable,'scripts/maven.py','-version'],timeout=120)
- if not env_ok or not bootstrap:
-  for name in ['maven-junit','spring-postgres-tests','real-ai-adapter-build','sql-postgres-fixture','docker-http-postgres']:r.add(name,'BLOCKED','Prerequisite check failed; this gate was not run')
+ if runtime_missing or not bootstrap:
+  for name in ['maven-junit','spring-postgres-tests','real-ai-adapter-build','sql-postgres-fixture','docker-build','docker-http-postgres']:r.add(name,'BLOCKED','Prerequisite check failed; this gate was not run')
   return
- commands=[('maven-junit',['-f','practice/pom.xml','clean','test','-Dcode.mode=solution']),('spring-postgres-tests',['-f','projects/knowledge-assistant/pom.xml','-Pintegration','clean','verify']),('real-ai-adapter-build',['-f','projects/knowledge-assistant/pom.xml','-Preal-ai','clean','verify'])]
+ commands=[('maven-junit',['-f','practice/pom.xml','clean','test','-Dcode.mode=solution']),('real-ai-adapter-build',['-f','projects/knowledge-assistant/pom.xml','-Preal-ai','clean','verify'])]
  for name,args in commands:r.command(name,[sys.executable,'scripts/maven.py','-B',*args],timeout=1200)
+ if docker_missing:
+  detail='Docker prerequisites unavailable: '+', '.join(docker_missing)+'; this gate was not run'
+  for name in ['spring-postgres-tests','sql-postgres-fixture','docker-build','docker-http-postgres']:r.add(name,'BLOCKED',detail)
+  return
+ r.command('spring-postgres-tests',[sys.executable,'scripts/maven.py','-B','-f','projects/knowledge-assistant/pom.xml','-Pintegration','clean','verify'],timeout=1200)
  containers(r)
 
 def live(r,base):
- if not r.doctor('live'):r.add('live-http-ai','BLOCKED','Live provider configuration incomplete; no model evaluation was run');return
+ if any(row['status']=='BLOCKED' for row in r.doctor('live')):r.add('live-http-ai','BLOCKED','Live provider configuration incomplete; no model evaluation was run');return
  client=Client(base,{'an':os.environ['APP_AN_PASSWORD'],'binh':os.environ['APP_BINH_PASSWORD']});evidence={}
  try:
   exercise(client,live=True,evidence=evidence)

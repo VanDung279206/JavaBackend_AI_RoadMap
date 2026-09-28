@@ -1,0 +1,49 @@
+name: Website CI — Lint & Build check
+
+on:
+  pull_request:
+    paths:
+      - "website/**"
+      - ".github/workflows/website-ci.yml"
+
+jobs:
+  lint-and-build:
+    name: Lint + TypeScript + Build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: website
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: website/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Copy markdown content
+        working-directory: ${{ github.workspace }}
+        run: |
+          for phase in phases/01_Java phases/02_Http-Sql phases/03_Spring phases/04_Quality phases/05_AI phases/06_RAG; do
+            slug=$(basename $phase)
+            mkdir -p website/public/content/$slug
+            [ -f "$phase/EXERCISES.md" ] && cp "$phase/EXERCISES.md" "website/public/content/$slug/EXERCISES.md"
+            [ -f "$phase/SOLUTIONS.md" ] && cp "$phase/SOLUTIONS.md" "website/public/content/$slug/SOLUTIONS.md"
+          done
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build (TypeScript check + static export)
+        run: npm run build
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          NEXT_PUBLIC_ADMIN_GITHUB: VanDung279206
