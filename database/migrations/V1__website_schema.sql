@@ -44,7 +44,9 @@ $$;
 DO $$
 DECLARE
   user_id_type text;
-  primary_key_name text;
+  archived_constraint record;
+  archived_index record;
+  archived_name text;
 BEGIN
   IF to_regclass('public.progress') IS NULL THEN RETURN; END IF;
   SELECT data_type INTO user_id_type
@@ -55,15 +57,40 @@ BEGIN
       RAISE EXCEPTION 'public.progress has a non-UUID user_id and progress_legacy_unmapped already exists; resolve the archived data before retrying';
     END IF;
     ALTER TABLE public.progress RENAME TO progress_legacy_unmapped;
-    SELECT conname INTO primary_key_name
-    FROM pg_constraint
-    WHERE conrelid = 'public.progress_legacy_unmapped'::regclass AND contype = 'p';
-    IF primary_key_name IS NOT NULL THEN
+    -- Index names are schema-wide. Rename archived constraints and standalone
+    -- indexes so they cannot shadow indexes created for the new progress table.
+    FOR archived_constraint IN
+      SELECT conname
+      FROM pg_constraint
+      WHERE conrelid = 'public.progress_legacy_unmapped'::regclass
+    LOOP
+      archived_name := 'progress_legacy_' || substr(md5(archived_constraint.conname), 1, 32);
       EXECUTE format(
-        'ALTER TABLE public.progress_legacy_unmapped RENAME CONSTRAINT %I TO progress_legacy_unmapped_pkey',
-        primary_key_name
+        'ALTER TABLE public.progress_legacy_unmapped RENAME CONSTRAINT %I TO %I',
+        archived_constraint.conname,
+        archived_name
       );
-    END IF;
+    END LOOP;
+
+    FOR archived_index IN
+      SELECT ns.nspname AS schema_name, idx.relname AS index_name
+      FROM pg_index AS pi
+      JOIN pg_class AS idx ON idx.oid = pi.indexrelid
+      JOIN pg_namespace AS ns ON ns.oid = idx.relnamespace
+      WHERE pi.indrelid = 'public.progress_legacy_unmapped'::regclass
+        AND NOT EXISTS (
+          SELECT 1 FROM pg_constraint AS con WHERE con.conindid = pi.indexrelid
+        )
+    LOOP
+      archived_name := 'progress_legacy_idx_' || substr(md5(archived_index.index_name), 1, 32);
+      EXECUTE format(
+        'ALTER INDEX %I.%I RENAME TO %I',
+        archived_index.schema_name,
+        archived_index.index_name,
+        archived_name
+      );
+    END LOOP;
+
     ALTER TABLE public.progress_legacy_unmapped ENABLE ROW LEVEL SECURITY;
     REVOKE ALL ON public.progress_legacy_unmapped FROM PUBLIC, anon, authenticated;
   END IF;
@@ -343,27 +370,35 @@ ON CONFLICT (id) DO UPDATE SET
   avatar_url = COALESCE(public.profiles.avatar_url, EXCLUDED.avatar_url),
   display_name = COALESCE(public.profiles.display_name, EXCLUDED.display_name);
 
--- Recompute exact totals when this schema is applied to a populated database.
-INSERT INTO public.leaderboard AS lb
-  (user_id, username, avatar_url, display_name, completed_count, last_active, updated_at)
-SELECT
-  p.id,
-  p.username,
-  p.avatar_url,
-  p.display_name,
-  (COUNT(pr.id) FILTER (WHERE pr.done))::integer,
-  MAX(pr.updated_at),
-  COALESCE(MAX(pr.updated_at), p.created_at)
-FROM public.profiles AS p
-LEFT JOIN public.progress AS pr ON pr.user_id = p.id
-GROUP BY p.id, p.username, p.avatar_url, p.display_name, p.created_at
-ON CONFLICT (user_id) DO UPDATE SET
-  username = EXCLUDED.username,
-  avatar_url = EXCLUDED.avatar_url,
-  display_name = EXCLUDED.display_name,
-  completed_count = EXCLUDED.completed_count,
-  last_active = EXCLUDED.last_active,
-  updated_at = EXCLUDED.updated_at;
+-- Recompute exact totals while writes that feed the aggregate are paused. Keeping
+-- the lock and rebuild in one statement also works in SQL editors that autocommit
+-- each statement in the migration file.
+DO $$
+BEGIN
+  LOCK TABLE public.profiles, public.progress IN SHARE ROW EXCLUSIVE MODE;
+
+  INSERT INTO public.leaderboard AS lb
+    (user_id, username, avatar_url, display_name, completed_count, last_active, updated_at)
+  SELECT
+    p.id,
+    p.username,
+    p.avatar_url,
+    p.display_name,
+    (COUNT(pr.id) FILTER (WHERE pr.done))::integer,
+    MAX(pr.updated_at),
+    COALESCE(MAX(pr.updated_at), p.created_at)
+  FROM public.profiles AS p
+  LEFT JOIN public.progress AS pr ON pr.user_id = p.id
+  GROUP BY p.id, p.username, p.avatar_url, p.display_name, p.created_at
+  ON CONFLICT (user_id) DO UPDATE SET
+    username = EXCLUDED.username,
+    avatar_url = EXCLUDED.avatar_url,
+    display_name = EXCLUDED.display_name,
+    completed_count = EXCLUDED.completed_count,
+    last_active = EXCLUDED.last_active,
+    updated_at = EXCLUDED.updated_at;
+END;
+$$;
 
 REVOKE ALL ON public.profiles FROM anon, authenticated;
 GRANT SELECT, UPDATE ON public.profiles TO authenticated;
