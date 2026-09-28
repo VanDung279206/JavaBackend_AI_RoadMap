@@ -26,11 +26,10 @@ export type Progress = {
 export type LeaderboardEntry = {
   id: string;
   user_id: string;
-  github_username: string | null;
+  username: string | null;
   avatar_url: string | null;
   display_name: string | null;
   completed_count: number;
-  completed: number;
-  updated_at: string;
   last_active: string | null;
+  updated_at: string;
 };
