@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import { supabase } from "@/lib/supabase";
 import type { User } from "@supabase/supabase-js";
 import Link from "next/link";
@@ -179,7 +180,13 @@ export default function AdminPage() {
                 <td style={{ padding: "0.75rem 1rem" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                     {l.avatar_url && (
-                      <img src={l.avatar_url} alt="" style={{ width: 32, height: 32, borderRadius: "50%" }} />
+                      <Image
+                        src={l.avatar_url}
+                        alt=""
+                        width={32}
+                        height={32}
+                        style={{ width: 32, height: 32, borderRadius: "50%" }}
+                      />
                     )}
                     <div>
                       <div style={{ fontWeight: 600, fontSize: "0.875rem" }}>
