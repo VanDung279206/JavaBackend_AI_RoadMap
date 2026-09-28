@@ -10,6 +10,8 @@ export default function LeaderboardPage() {
     supabase
       .from("leaderboard")
       .select("*")
+      .order("completed_count", { ascending: false })
+      .order("updated_at", { ascending: false })
       .limit(50)
       .then(({ data: rows }) => {
         setData((rows as LeaderboardEntry[]) ?? []);
@@ -53,7 +55,7 @@ export default function LeaderboardPage() {
         <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
           {data.map((entry, idx) => (
             <div
-              key={entry.github_username ?? idx}
+              key={entry.user_id}
               style={{
                 display: "flex",
                 alignItems: "center",
@@ -82,8 +84,10 @@ export default function LeaderboardPage() {
               {entry.avatar_url ? (
                 <img
                   src={entry.avatar_url}
-                  alt={entry.github_username ?? ""}
-                  style={{ width: 40, height: 40, borderRadius: "50%", flexShrink: 0 }}
+                  alt={entry.username ?? ""}
+                  width={40}
+                  height={40}
+                  style={{ borderRadius: "50%", flexShrink: 0 }}
                 />
               ) : (
                 <div
@@ -100,23 +104,23 @@ export default function LeaderboardPage() {
                     flexShrink: 0,
                   }}
                 >
-                  {(entry.github_username ?? "?")[0].toUpperCase()}
+                  {(entry.username ?? "?")[0].toUpperCase()}
                 </div>
               )}
 
               {/* Name */}
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ fontWeight: 600, fontSize: "0.95rem" }}>
-                  {entry.display_name || entry.github_username || "Ẩn danh"}
+                  {entry.display_name || entry.username || "Ẩn danh"}
                 </div>
-                {entry.github_username && (
+                {entry.username && (
                   <a
-                    href={`https://github.com/${entry.github_username}`}
+                    href={`https://github.com/${entry.username}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     style={{ fontSize: "0.8rem", color: "var(--muted-foreground)", textDecoration: "none" }}
                   >
-                    @{entry.github_username}
+                    @{entry.username}
                   </a>
                 )}
               </div>
@@ -124,7 +128,7 @@ export default function LeaderboardPage() {
               {/* Score */}
               <div style={{ textAlign: "right", flexShrink: 0 }}>
                 <div style={{ fontSize: "1.25rem", fontWeight: 800, color: "var(--accent)" }}>
-                  {entry.completed}
+                  {entry.completed_count}
                 </div>
                 <div style={{ fontSize: "0.75rem", color: "var(--muted-foreground)" }}>bài xong</div>
               </div>
