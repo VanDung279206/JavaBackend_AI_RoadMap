@@ -51,10 +51,13 @@ export default function AuthButton() {
     return (
       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
         {avatar && (
+          // eslint-disable-next-line @next/next/no-img-element
           <img
             src={avatar}
             alt={username}
-            style={{ width: 32, height: 32, borderRadius: "50%", border: "2px solid var(--accent)" }}
+            width={32}
+            height={32}
+            style={{ borderRadius: "50%", border: "2px solid var(--accent)" }}
           />
         )}
         <span style={{ fontSize: "0.85rem", color: "var(--muted-foreground)" }}>

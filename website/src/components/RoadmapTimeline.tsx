@@ -120,7 +120,7 @@ export default function RoadmapTimeline() {
         />
 
         <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
-          {phases.map((phase, idx) => (
+          {phases.map((phase) => (
             <div
               key={phase.id}
               style={{

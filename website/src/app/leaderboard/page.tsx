@@ -83,7 +83,9 @@ export default function LeaderboardPage() {
                 <img
                   src={entry.avatar_url}
                   alt={entry.github_username ?? ""}
-                  style={{ width: 40, height: 40, borderRadius: "50%", flexShrink: 0 }}
+                  width={40}
+                  height={40}
+                  style={{ borderRadius: "50%", flexShrink: 0 }}
                 />
               ) : (
                 <div
