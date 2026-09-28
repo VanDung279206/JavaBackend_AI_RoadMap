@@ -7,7 +7,7 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 export type Profile = {
   id: string;
-  github_username: string | null;
+  username: string | null;
   avatar_url: string | null;
   display_name: string | null;
   is_admin: boolean;
@@ -15,7 +15,7 @@ export type Profile = {
 };
 
 export type Progress = {
-  id: number;
+  id: string;
   user_id: string;
   phase: string;
   exercise_id: string;
@@ -24,9 +24,13 @@ export type Progress = {
 };
 
 export type LeaderboardEntry = {
+  id: string;
+  user_id: string;
   github_username: string | null;
   avatar_url: string | null;
   display_name: string | null;
+  completed_count: number;
   completed: number;
+  updated_at: string;
   last_active: string | null;
 };

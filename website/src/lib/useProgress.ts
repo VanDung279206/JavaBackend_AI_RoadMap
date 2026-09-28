@@ -21,7 +21,6 @@ function readLocalProgress(phase: string): Record<string, boolean> {
     const parsed: unknown = JSON.parse(raw);
     if (typeof parsed !== "object" || parsed === null || Array.isArray(parsed))
       return {};
-    // Chỉ giữ giá trị boolean
     return Object.fromEntries(
       Object.entries(parsed as Record<string, unknown>).filter(
         ([, v]) => typeof v === "boolean"
@@ -34,83 +33,111 @@ function readLocalProgress(phase: string): Record<string, boolean> {
 
 // ─── usePhaseProgress ─────────────────────────────────────────────────────────
 
-/**
- * Vấn đề 1 — trạng thái tải vô hạn khi chưa đăng nhập:
- *   Dùng `sessionReady` để phân biệt "đang kiểm tra phiên" với "đã xác nhận chưa đăng nhập".
- *   Effect tải tiến độ chỉ chạy sau khi `sessionReady = true`.
- *
- * Vấn đề 5 — phản hồi cũ ghi đè trạng thái mới (stale closure):
- *   Mỗi lần effect chạy tạo một `requestId` riêng. Sau khi await, kiểm tra
- *   xem requestId còn khớp với ref hiện tại không; nếu không thì bỏ qua.
- */
 export function usePhaseProgress(phase: string): ProgressState {
-  const [user, setUser] = useState<User | null | undefined>(undefined); // undefined = chưa kiểm tra
+  // undefined = session check chưa hoàn tất; null = đã xác nhận chưa đăng nhập
+  const [user, setUser] = useState<User | null | undefined>(undefined);
   const [checked, setChecked] = useState<Record<string, boolean>>({});
   const [loading, setLoading] = useState(true);
   const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle");
 
-  // Ref theo dõi request hiện tại để hủy stale response
-  const activeRequestId = useRef(0);
+  // Keep the save-status timer owned by this hook and clean it up on unmount.
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const scheduleReset = useCallback((delay: number) => {
+    if (timerRef.current) clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => {
+      timerRef.current = null;
+      setSaveStatus("idle");
+    }, delay);
+  }, []);
 
-  // Theo dõi phiên đăng nhập
+  // Ignore responses from an earlier auth session or progress request.
+  const activeRequestId = useRef(0);
+  const userIdRef = useRef<string | null | undefined>(undefined);
+  const authEventVersion = useRef(0);
+
+  // Track auth changes before applying the initial session lookup result.
   useEffect(() => {
     let mounted = true;
 
-    supabase.auth.getSession().then(({ data }) => {
-      if (mounted) setUser(data.session?.user ?? null);
+    const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
+      if (!mounted) return;
+      authEventVersion.current += 1;
+      const nextUser = session?.user ?? null;
+      const nextUserId = nextUser?.id ?? null;
+      const identityChanged = userIdRef.current !== nextUserId;
+      userIdRef.current = nextUserId;
+
+      if (event === "SIGNED_OUT" || event === "SIGNED_IN" || identityChanged) {
+        // Invalidate a pending fetch synchronously, before React runs effects.
+        activeRequestId.current += 1;
+        setChecked({});
+        setSaveStatus("idle");
+        setLoading(true);
+      }
+
+      setUser(nextUser);
     });
 
-    const { data: listener } = supabase.auth.onAuthStateChange((_e, session) => {
-      if (mounted) setUser(session?.user ?? null);
+    supabase.auth.getSession().then(({ data }) => {
+      if (!mounted || authEventVersion.current !== 0) return;
+      const initialUser = data.session?.user ?? null;
+      userIdRef.current = initialUser?.id ?? null;
+      setUser(initialUser);
     });
 
     return () => {
       mounted = false;
       listener.subscription.unsubscribe();
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+        timerRef.current = null;
+      }
     };
   }, []);
 
-  // Tải tiến độ — chỉ chạy sau khi đã xác định phiên (user !== undefined)
+  // Load this phase only after the auth session is known.
   useEffect(() => {
-    if (user === undefined) return; // Đang kiểm tra phiên, chờ thêm
+    if (user === undefined) return;
 
     const requestId = ++activeRequestId.current;
+    let cancelled = false;
 
     const load = async () => {
       setLoading(true);
 
       if (user) {
-        // Đã đăng nhập → đọc từ Supabase
         const { data, error } = await supabase
           .from("progress")
           .select("exercise_id, done")
           .eq("user_id", user.id)
           .eq("phase", phase);
 
-        // Kiểm tra stale: nếu requestId đã đổi thì bỏ qua
-        if (activeRequestId.current !== requestId) return;
+        if (cancelled || activeRequestId.current !== requestId) return;
 
         if (!error) {
           const map: Record<string, boolean> = {};
-          (data ?? []).forEach((r) => { map[r.exercise_id] = r.done; });
+          (data ?? []).forEach((row) => {
+            map[row.exercise_id] = row.done;
+          });
           setChecked(map);
         }
-        // Nếu lỗi network: giữ nguyên checked hiện tại, không crash
       } else {
-        // Khách → đọc từ localStorage (có xử lý JSON không hợp lệ)
-        if (activeRequestId.current !== requestId) return;
+        if (cancelled || activeRequestId.current !== requestId) return;
         setChecked(readLocalProgress(phase));
       }
 
-      if (activeRequestId.current === requestId) {
+      if (!cancelled && activeRequestId.current === requestId) {
         setLoading(false);
       }
     };
 
     load();
+
+    return () => {
+      cancelled = true;
+    };
   }, [user, phase]);
 
-  // Toggle bài tập với optimistic update và rollback khi lỗi
   const toggle = useCallback(
     async (exerciseId: string) => {
       const prev = checked;
@@ -129,21 +156,23 @@ export function usePhaseProgress(phase: string): ProgressState {
           },
           { onConflict: "user_id,phase,exercise_id" }
         );
+        if (userIdRef.current !== user.id) return;
+
         if (error) {
-          setChecked(prev); // Rollback
+          setChecked(prev);
           setSaveStatus("error");
-          setTimeout(() => setSaveStatus("idle"), 3000);
+          scheduleReset(3000);
         } else {
           setSaveStatus("saved");
-          setTimeout(() => setSaveStatus("idle"), 1500);
+          scheduleReset(1500);
         }
       } else {
         localStorage.setItem(`progress_${phase}`, JSON.stringify(next));
         setSaveStatus("saved");
-        setTimeout(() => setSaveStatus("idle"), 1000);
+        scheduleReset(1000);
       }
     },
-    [checked, user, phase]
+    [checked, user, phase, scheduleReset]
   );
 
   return { checked, loading, saveStatus, toggle };
@@ -153,14 +182,6 @@ export function usePhaseProgress(phase: string): ProgressState {
 
 const PHASE_SLUGS = ["01_Java", "02_Http-Sql", "03_Spring", "04_Quality", "05_AI", "06_RAG"];
 
-/**
- * Vấn đề 4 — dashboard không cập nhật khi phiên thay đổi:
- *   Theo dõi onAuthStateChange; khi đăng xuất xóa số liệu và chuyển sang
- *   localStorage; khi đăng nhập tải dữ liệu của tài khoản mới.
- *
- * Vấn đề 5 — stale response:
- *   Cùng cơ chế requestId, huỷ kết quả của request cũ khi user thay đổi.
- */
 export function useAllProgress(): {
   byPhase: Record<string, number>;
   totalDone: number;
@@ -173,10 +194,12 @@ export function useAllProgress(): {
 
   useEffect(() => {
     let mounted = true;
+    let authEventVersion = 0;
 
     const loadForUser = async (user: User | null) => {
       const requestId = ++activeRequestId.current;
-      if (mounted) setLoading(true);
+
+      setLoading(true);
 
       if (user) {
         const { data } = await supabase
@@ -196,7 +219,6 @@ export function useAllProgress(): {
         setByPhase(map);
         setTotalDone(total);
       } else {
-        // Khách — đọc localStorage
         if (!mounted || activeRequestId.current !== requestId) return;
 
         const map: Record<string, number> = {};
@@ -215,18 +237,28 @@ export function useAllProgress(): {
       }
     };
 
-    // Tải lần đầu
-    supabase.auth.getSession().then(({ data }) => {
-      if (mounted) loadForUser(data.session?.user ?? null);
+    const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
+      if (!mounted) return;
+      authEventVersion += 1;
+
+      if (event === "SIGNED_OUT" || event === "SIGNED_IN") {
+        // Do not leave the previous account's totals visible during the reload.
+        setByPhase({});
+        setTotalDone(0);
+      }
+
+      void loadForUser(session?.user ?? null);
     });
 
-    // Cập nhật khi phiên thay đổi (đăng nhập/xuất/chuyển tài khoản)
-    const { data: listener } = supabase.auth.onAuthStateChange((_e, session) => {
-      if (mounted) loadForUser(session?.user ?? null);
+    supabase.auth.getSession().then(({ data }) => {
+      if (mounted && authEventVersion === 0) {
+        void loadForUser(data.session?.user ?? null);
+      }
     });
 
     return () => {
       mounted = false;
+      activeRequestId.current += 1;
       listener.subscription.unsubscribe();
     };
   }, []);

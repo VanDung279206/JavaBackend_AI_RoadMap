@@ -28,11 +28,11 @@ export default function GiscusComments({ phase }: { phase: string }) {
     !CATEGORY_ID.includes("xxx");
 
   return (
-    <div style={{ marginTop: "3rem" }}>
-      <h2 style={{ fontWeight: 700, fontSize: "1.5rem", marginBottom: "1.5rem" }}>
+    <div className="mt-12">
+      <h2 className="mb-6 text-2xl font-bold">
         💬 Hỏi đáp &amp; Thảo luận
       </h2>
-      <p style={{ color: "var(--muted-foreground)", fontSize: "0.9rem", marginBottom: "1.5rem" }}>
+      <p className="mb-6 text-sm text-[var(--muted-foreground)]">
         Đặt câu hỏi, chia sẻ cách giải, giúp đỡ người khác. Đăng nhập bằng GitHub để bình luận.
       </p>
 
@@ -48,36 +48,29 @@ export default function GiscusComments({ phase }: { phase: string }) {
           reactionsEnabled="1"
           emitMetadata="0"
           inputPosition="top"
-          theme="dark"
+          theme="preferred_color_scheme"
           lang="vi"
           loading="lazy"
         />
       ) : (
         <div
-          style={{
-            padding: "2rem",
-            borderRadius: 12,
-            border: "1px dashed var(--border)",
-            textAlign: "center",
-            color: "var(--muted-foreground)",
-            fontSize: "0.9rem",
-          }}
+          className="rounded-xl border border-dashed border-[var(--border)] p-8 text-center text-sm text-[var(--muted-foreground)]"
         >
-          <div style={{ fontSize: "1.5rem", marginBottom: "0.75rem" }}>⚙️</div>
-          <p style={{ fontWeight: 600, marginBottom: "0.5rem", color: "var(--foreground)" }}>
+          <div className="mb-3 text-2xl">⚙️</div>
+          <p className="mb-2 font-semibold text-[var(--foreground)]">
             Thảo luận chưa được cấu hình
           </p>
           <p>
             Để bật forum, thêm{" "}
-            <code style={{ background: "var(--muted)", padding: "0.1rem 0.4rem", borderRadius: 4 }}>
+            <code className="rounded bg-[var(--muted)] px-1 py-0.5">
               NEXT_PUBLIC_GISCUS_REPO_ID
             </code>{" "}
             và{" "}
-            <code style={{ background: "var(--muted)", padding: "0.1rem 0.4rem", borderRadius: 4 }}>
+            <code className="rounded bg-[var(--muted)] px-1 py-0.5">
               NEXT_PUBLIC_GISCUS_CATEGORY_ID
             </code>{" "}
             vào{" "}
-            <code style={{ background: "var(--muted)", padding: "0.1rem 0.4rem", borderRadius: 4 }}>
+            <code className="rounded bg-[var(--muted)] px-1 py-0.5">
               .env.local
             </code>
             .
@@ -86,7 +79,7 @@ export default function GiscusComments({ phase }: { phase: string }) {
             href="https://giscus.app"
             target="_blank"
             rel="noopener noreferrer"
-            style={{ color: "var(--accent)", marginTop: "0.75rem", display: "inline-block" }}
+            className="mt-3 inline-block text-[var(--accent)]"
           >
             Lấy ID tại giscus.app →
           </a>
