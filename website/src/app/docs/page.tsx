@@ -32,7 +32,7 @@ export default function DocsPage() {
         {phases.map((phase) => (
           <Link
             key={phase.slug}
-            href={`/JavaBackend_AI_RoadMap/docs/${phase.slug}`}
+            href={`/docs/${phase.slug}`}
             style={{
               display: "block",
               background: "var(--card)",

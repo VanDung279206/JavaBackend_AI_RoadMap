@@ -9,7 +9,7 @@ export default function AuthCallbackPage() {
   useEffect(() => {
     // Supabase tự xử lý token từ URL hash
     supabase.auth.getSession().then(() => {
-      router.replace("/JavaBackend_AI_RoadMap/");
+      router.replace("/");
     });
   }, [router]);
 

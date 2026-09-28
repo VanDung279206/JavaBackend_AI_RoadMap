@@ -4,8 +4,6 @@ import { supabase } from "@/lib/supabase";
 import type { User } from "@supabase/supabase-js";
 import Link from "next/link";
 
-const ADMIN_GITHUB = process.env.NEXT_PUBLIC_ADMIN_GITHUB ?? "VanDung279206";
-
 type LearnerRow = {
   github_username: string | null;
   avatar_url: string | null;
@@ -21,20 +19,34 @@ export default function AdminPage() {
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      const u = data.session?.user ?? null;
+    const init = async () => {
+      const { data: session } = await supabase.auth.getSession();
+      const u = session?.session?.user ?? null;
       setUser(u);
-      const username = u?.user_metadata?.user_name;
-      if (username === ADMIN_GITHUB) {
-        setIsAdmin(true);
-        supabase.from("leaderboard").select("*").then(({ data: rows }) => {
-          setLearners((rows as LearnerRow[]) ?? []);
-          setLoading(false);
-        });
-      } else {
+
+      if (!u) { setLoading(false); return; }
+
+      // Kiểm tra quyền admin từ database — KHÔNG dùng user_metadata (user có thể tự sửa)
+      const { data: profile, error } = await supabase
+        .from("profiles")
+        .select("is_admin")
+        .eq("id", u.id)
+        .single();
+
+      if (error || !profile?.is_admin) {
         setLoading(false);
+        return;
       }
-    });
+
+      setIsAdmin(true);
+
+      // Fetch leaderboard data (RLS cho phép admin đọc tất cả)
+      const { data: rows } = await supabase.from("leaderboard").select("*");
+      setLearners((rows as LearnerRow[]) ?? []);
+      setLoading(false);
+    };
+
+    init();
   }, []);
 
   if (loading) {
@@ -60,8 +72,11 @@ export default function AdminPage() {
       <div style={{ maxWidth: 500, margin: "4rem auto", textAlign: "center", padding: "0 1.5rem" }}>
         <div style={{ fontSize: "3rem", marginBottom: "1rem" }}>⛔</div>
         <h1 style={{ fontSize: "1.5rem", fontWeight: 800, marginBottom: "0.75rem" }}>Không có quyền</h1>
-        <p style={{ color: "var(--muted-foreground)" }}>Trang này chỉ dành cho quản trị viên.</p>
-        <Link href="/JavaBackend_AI_RoadMap/" style={{ color: "var(--accent)", marginTop: "1rem", display: "inline-block" }}>
+        <p style={{ color: "var(--muted-foreground)" }}>
+          Trang này chỉ dành cho quản trị viên.<br />
+          Quyền được kiểm soát qua database, không phải tên người dùng.
+        </p>
+        <Link href="/" style={{ color: "var(--accent)", marginTop: "1rem", display: "inline-block" }}>
           ← Về trang chủ
         </Link>
       </div>
@@ -77,10 +92,8 @@ export default function AdminPage() {
 
       <div
         style={{
-          background: "var(--card)",
-          border: "1px solid var(--border)",
-          borderRadius: 16,
-          overflow: "hidden",
+          background: "var(--card)", border: "1px solid var(--border)",
+          borderRadius: 16, overflow: "hidden",
         }}
       >
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
@@ -90,13 +103,9 @@ export default function AdminPage() {
                 <th
                   key={h}
                   style={{
-                    padding: "0.75rem 1rem",
-                    textAlign: "left",
-                    fontSize: "0.8rem",
-                    fontWeight: 600,
-                    color: "var(--muted-foreground)",
-                    textTransform: "uppercase",
-                    letterSpacing: "0.05em",
+                    padding: "0.75rem 1rem", textAlign: "left",
+                    fontSize: "0.8rem", fontWeight: 600,
+                    color: "var(--muted-foreground)", textTransform: "uppercase", letterSpacing: "0.05em",
                   }}
                 >
                   {h}
@@ -106,17 +115,14 @@ export default function AdminPage() {
           </thead>
           <tbody>
             {learners.map((l, idx) => (
-              <tr
-                key={l.github_username ?? idx}
-                style={{ borderBottom: "1px solid var(--border)" }}
-              >
+              <tr key={l.github_username ?? idx} style={{ borderBottom: "1px solid var(--border)" }}>
                 <td style={{ padding: "0.75rem 1rem", color: "var(--muted-foreground)", fontSize: "0.875rem" }}>
                   {idx + 1}
                 </td>
                 <td style={{ padding: "0.75rem 1rem" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                     {l.avatar_url && (
-                      <img src={l.avatar_url} style={{ width: 32, height: 32, borderRadius: "50%" }} />
+                      <img src={l.avatar_url} alt="" style={{ width: 32, height: 32, borderRadius: "50%" }} />
                     )}
                     <div>
                       <div style={{ fontWeight: 600, fontSize: "0.875rem" }}>
@@ -131,20 +137,12 @@ export default function AdminPage() {
                   </div>
                 </td>
                 <td style={{ padding: "0.75rem 1rem" }}>
-                  <span
-                    style={{
-                      fontWeight: 700,
-                      color: "var(--accent)",
-                      fontSize: "1rem",
-                    }}
-                  >
+                  <span style={{ fontWeight: 700, color: "var(--accent)", fontSize: "1rem" }}>
                     {l.completed}
                   </span>
                 </td>
                 <td style={{ padding: "0.75rem 1rem", fontSize: "0.8rem", color: "var(--muted-foreground)" }}>
-                  {l.last_active
-                    ? new Date(l.last_active).toLocaleDateString("vi-VN")
-                    : "Chưa có"}
+                  {l.last_active ? new Date(l.last_active).toLocaleDateString("vi-VN") : "Chưa có"}
                 </td>
               </tr>
             ))}
