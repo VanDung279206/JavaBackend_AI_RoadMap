@@ -80,7 +80,7 @@ export default function Hero() {
       {/* CTA Buttons */}
       <div style={{ display: "flex", gap: "1rem", justifyContent: "center", flexWrap: "wrap" }}>
         <Link
-          href="/JavaBackend_AI_RoadMap/roadmap"
+          href="/roadmap"
           style={{
             display: "inline-flex",
             alignItems: "center",
@@ -100,7 +100,7 @@ export default function Hero() {
           🗺️ Xem Roadmap
         </Link>
         <Link
-          href="/JavaBackend_AI_RoadMap/docs"
+          href="/docs"
           style={{
             display: "inline-flex",
             alignItems: "center",

@@ -226,7 +226,7 @@ export default function RoadmapTimeline() {
                 {phase.number !== "0" && (
                   <div style={{ marginTop: "1rem" }}>
                     <Link
-                      href={`/JavaBackend_AI_RoadMap/docs/${phase.slug}`}
+                      href={`/docs/${phase.slug}`}
                       style={{
                         fontSize: "0.85rem",
                         color: phase.color,
