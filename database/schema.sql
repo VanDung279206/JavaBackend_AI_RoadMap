@@ -244,27 +244,35 @@ ON CONFLICT (id) DO UPDATE SET
   avatar_url = COALESCE(public.profiles.avatar_url, EXCLUDED.avatar_url),
   display_name = COALESCE(public.profiles.display_name, EXCLUDED.display_name);
 
--- Recompute exact totals when this schema is applied to a populated database.
-INSERT INTO public.leaderboard AS lb
-  (user_id, username, avatar_url, display_name, completed_count, last_active, updated_at)
-SELECT
-  p.id,
-  p.username,
-  p.avatar_url,
-  p.display_name,
-  (COUNT(pr.id) FILTER (WHERE pr.done))::integer,
-  MAX(pr.updated_at),
-  COALESCE(MAX(pr.updated_at), p.created_at)
-FROM public.profiles AS p
-LEFT JOIN public.progress AS pr ON pr.user_id = p.id
-GROUP BY p.id, p.username, p.avatar_url, p.display_name, p.created_at
-ON CONFLICT (user_id) DO UPDATE SET
-  username = EXCLUDED.username,
-  avatar_url = EXCLUDED.avatar_url,
-  display_name = EXCLUDED.display_name,
-  completed_count = EXCLUDED.completed_count,
-  last_active = EXCLUDED.last_active,
-  updated_at = EXCLUDED.updated_at;
+-- Recompute exact totals while writes that feed the aggregate are paused. Keeping
+-- the lock and rebuild in one statement also works in SQL editors that autocommit
+-- each statement in this file.
+DO $$
+BEGIN
+  LOCK TABLE public.profiles, public.progress IN SHARE ROW EXCLUSIVE MODE;
+
+  INSERT INTO public.leaderboard AS lb
+    (user_id, username, avatar_url, display_name, completed_count, last_active, updated_at)
+  SELECT
+    p.id,
+    p.username,
+    p.avatar_url,
+    p.display_name,
+    (COUNT(pr.id) FILTER (WHERE pr.done))::integer,
+    MAX(pr.updated_at),
+    COALESCE(MAX(pr.updated_at), p.created_at)
+  FROM public.profiles AS p
+  LEFT JOIN public.progress AS pr ON pr.user_id = p.id
+  GROUP BY p.id, p.username, p.avatar_url, p.display_name, p.created_at
+  ON CONFLICT (user_id) DO UPDATE SET
+    username = EXCLUDED.username,
+    avatar_url = EXCLUDED.avatar_url,
+    display_name = EXCLUDED.display_name,
+    completed_count = EXCLUDED.completed_count,
+    last_active = EXCLUDED.last_active,
+    updated_at = EXCLUDED.updated_at;
+END;
+$$;
 
 REVOKE ALL ON public.profiles FROM anon, authenticated;
 GRANT SELECT, UPDATE ON public.profiles TO authenticated;
