@@ -1,15 +1,17 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import type { User } from "@supabase/supabase-js";
 import Link from "next/link";
 
 type LearnerRow = {
-  github_username: string | null;
+  user_id: string;
+  username: string | null;
   avatar_url: string | null;
   display_name: string | null;
-  completed: number;
+  completed_count: number;
   last_active: string | null;
+  updated_at: string;
 };
 
 export default function AdminPage() {
@@ -17,37 +19,92 @@ export default function AdminPage() {
   const [learners, setLearners] = useState<LearnerRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
+  const requestId = useRef(0);
+  const authEventVersion = useRef(0);
+  const authUserId = useRef<string | null | undefined>(undefined);
 
   useEffect(() => {
-    const init = async () => {
-      const { data: session } = await supabase.auth.getSession();
-      const u = session?.session?.user ?? null;
-      setUser(u);
+    let mounted = true;
+    const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
+      if (!mounted) return;
+      authEventVersion.current += 1;
+      const nextUser = session?.user ?? null;
+      const nextUserId = nextUser?.id ?? null;
+      const identityChanged = authUserId.current !== nextUserId;
+      authUserId.current = nextUserId;
 
-      if (!u) { setLoading(false); return; }
+      if (event === "SIGNED_OUT" || event === "SIGNED_IN" || identityChanged) {
+        // Hide the previous account's dashboard before starting another request.
+        requestId.current += 1;
+        setIsAdmin(false);
+        setLearners([]);
+        setLoading(Boolean(nextUser));
+      }
 
-      // Kiểm tra quyền admin từ database — KHÔNG dùng user_metadata (user có thể tự sửa)
+      setUser((current) =>
+        event === "SIGNED_IN" || current?.id !== nextUser?.id ? nextUser : current
+      );
+    });
+
+    supabase.auth.getSession().then(({ data }) => {
+      if (!mounted || authEventVersion.current !== 0) return;
+      const initialUser = data.session?.user ?? null;
+      authUserId.current = initialUser?.id ?? null;
+      setIsAdmin(false);
+      setLearners([]);
+      setLoading(Boolean(initialUser));
+      setUser(initialUser);
+    });
+
+    return () => {
+      mounted = false;
+      requestId.current += 1;
+      listener.subscription.unsubscribe();
+    };
+  }, []);
+
+  useEffect(() => {
+    const currentRequestId = ++requestId.current;
+    let cancelled = false;
+    const isCurrentRequest = () =>
+      !cancelled && requestId.current === currentRequestId;
+
+    if (!user) return () => { cancelled = true; };
+
+    const loadDashboard = async () => {
+      // Verify authorization from the database, never from editable user metadata.
       const { data: profile, error } = await supabase
         .from("profiles")
         .select("is_admin")
-        .eq("id", u.id)
+        .eq("id", user.id)
         .single();
 
+      if (!isCurrentRequest()) return;
       if (error || !profile?.is_admin) {
         setLoading(false);
         return;
       }
 
-      setIsAdmin(true);
+      const { data: rows, error: leaderboardError } = await supabase
+        .from("leaderboard")
+        .select("*")
+        .order("completed_count", { ascending: false })
+        .order("updated_at", { ascending: false });
 
-      // Fetch leaderboard data (RLS cho phép admin đọc tất cả)
-      const { data: rows } = await supabase.from("leaderboard").select("*");
-      setLearners((rows as LearnerRow[]) ?? []);
+      if (!isCurrentRequest()) return;
+      setIsAdmin(true);
+      setLearners(
+        leaderboardError ? [] : (rows as LearnerRow[] | null) ?? []
+      );
       setLoading(false);
     };
 
-    init();
-  }, []);
+    void loadDashboard();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [user]);
 
   if (loading) {
     return (
@@ -115,7 +172,7 @@ export default function AdminPage() {
           </thead>
           <tbody>
             {learners.map((l, idx) => (
-              <tr key={l.github_username ?? idx} style={{ borderBottom: "1px solid var(--border)" }}>
+              <tr key={l.user_id} style={{ borderBottom: "1px solid var(--border)" }}>
                 <td style={{ padding: "0.75rem 1rem", color: "var(--muted-foreground)", fontSize: "0.875rem" }}>
                   {idx + 1}
                 </td>
@@ -126,11 +183,11 @@ export default function AdminPage() {
                     )}
                     <div>
                       <div style={{ fontWeight: 600, fontSize: "0.875rem" }}>
-                        {l.display_name || l.github_username}
+                        {l.display_name || l.username}
                       </div>
-                      {l.github_username && (
+                      {l.username && (
                         <div style={{ fontSize: "0.75rem", color: "var(--muted-foreground)" }}>
-                          @{l.github_username}
+                          @{l.username}
                         </div>
                       )}
                     </div>
@@ -138,11 +195,13 @@ export default function AdminPage() {
                 </td>
                 <td style={{ padding: "0.75rem 1rem" }}>
                   <span style={{ fontWeight: 700, color: "var(--accent)", fontSize: "1rem" }}>
-                    {l.completed}
+                    {l.completed_count}
                   </span>
                 </td>
                 <td style={{ padding: "0.75rem 1rem", fontSize: "0.8rem", color: "var(--muted-foreground)" }}>
-                  {l.last_active ? new Date(l.last_active).toLocaleDateString("vi-VN") : "Chưa có"}
+                  {l.last_active
+                    ? new Date(l.last_active).toLocaleDateString("vi-VN")
+                    : "Chưa có"}
                 </td>
               </tr>
             ))}
