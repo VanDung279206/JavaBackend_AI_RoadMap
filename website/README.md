@@ -1,36 +1,82 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Java Backend + AI Roadmap — Website
 
-## Getting Started
+Website học tập tại **[VanDung279206.github.io/JavaBackend_AI_RoadMap](https://VanDung279206.github.io/JavaBackend_AI_RoadMap)**
 
-First, run the development server:
+## Tính năng
+
+- 🗺️ Roadmap 7 phase từ Java cơ bản đến RAG
+- 📚 Bài tập & lời giải ẩn/hiện theo từng phase
+- ✅ Theo dõi tiến độ lưu cloud (đăng nhập GitHub)
+- 🏆 Bảng xếp hạng người học
+- 🔍 Command Palette `Ctrl+K`
+- ⚙️ Admin dashboard quản lý người học
+
+## Tech Stack
+
+| Thành phần | Công nghệ |
+|---|---|
+| Framework | Next.js 16 (Static Export) |
+| Styling | Tailwind CSS 4 |
+| Auth + DB | Supabase (GitHub OAuth + PostgreSQL) |
+| Deploy | GitHub Pages + GitHub Actions |
+| Forum | Giscus (GitHub Discussions) |
+
+## Cài đặt
+
+```bash
+cd website
+npm install
+```
+
+## Cấu hình môi trường
+
+```bash
+cp .env.example .env.local
+# Điền NEXT_PUBLIC_SUPABASE_URL và NEXT_PUBLIC_SUPABASE_ANON_KEY
+```
+
+## Chạy local
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# Mở http://localhost:3000/JavaBackend_AI_RoadMap
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Build
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm run build
+# Output tĩnh trong website/out/
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Cấu trúc thư mục
 
-## Learn More
+```
+website/
+├── src/
+│   ├── app/                  # Next.js App Router pages
+│   │   ├── page.tsx          # Trang chủ
+│   │   ├── roadmap/          # Trang roadmap
+│   │   ├── docs/[phase]/     # Bài tập theo phase
+│   │   ├── leaderboard/      # Bảng xếp hạng
+│   │   ├── admin/            # Dashboard quản trị
+│   │   └── auth/callback/    # OAuth callback
+│   ├── components/
+│   │   ├── sections/         # LearningDashboard, InteractiveRoadmap, ProjectShowcase
+│   │   ├── command/          # SearchCommand (Ctrl+K)
+│   │   └── ui/               # shadcn components
+│   └── lib/
+│       ├── supabase.ts       # Supabase client + types
+│       └── markdown.ts       # Đọc file markdown
+├── public/
+│   └── content/              # Markdown bài tập (copy từ phases/ khi build)
+└── .env.example
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Deploy
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Push lên nhánh `main` → GitHub Actions tự động build và deploy.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Cần thêm 2 GitHub Secrets:
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
