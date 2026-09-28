@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { supabase, type LeaderboardEntry } from "@/lib/supabase";
 
 export default function LeaderboardPage() {
@@ -82,7 +83,7 @@ export default function LeaderboardPage() {
 
               {/* Avatar */}
               {entry.avatar_url ? (
-                <img
+                <Image
                   src={entry.avatar_url}
                   alt={entry.username ?? ""}
                   width={40}
