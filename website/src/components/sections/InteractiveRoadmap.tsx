@@ -17,9 +17,8 @@ export default function InteractiveRoadmap() {
     <section className="roadmap-section layout-container" aria-labelledby="roadmap-preview-title">
       <div className="section-heading">
         <div className="section-heading-copy">
-          <span className="eyebrow">BẢN ĐỒ HỌC TẬP</span>
-          <h2 className="section-title" id="roadmap-preview-title">Bảy chặng, một sản phẩm hoàn chỉnh</h2>
-          <p className="section-description">Học theo thứ tự từ nền tảng Java đến hệ thống RAG có thể triển khai.</p>
+          <span className="eyebrow">THỨ TỰ HỌC</span>
+          <h2 className="section-title" id="roadmap-preview-title">Các chặng</h2>
         </div>
         <Link href="/roadmap" className="text-link">
           Xem chi tiết <ArrowRight size={15} aria-hidden="true" />

@@ -8,7 +8,7 @@ const DOMAIN_CONFIG = {
   java: { label: "Java Core", mark: "JVM", color: "#b66b2e" },
   database: { label: "Database & SQL", mark: "SQL", color: "#3977a0" },
   spring: { label: "Spring Boot", mark: "SPR", color: "#397a5d" },
-  ai: { label: "AI Engineering", mark: "AI", color: "#786190" },
+  ai: { label: "AI & RAG", mark: "RAG", color: "#786190" },
 };
 
 export default function LearningDashboard() {
@@ -27,10 +27,10 @@ export default function LearningDashboard() {
       <div className="layout-container" aria-busy={loading}>
         <div className="section-heading">
           <div className="section-heading-copy">
-            <span className="eyebrow">TIẾN ĐỘ HỌC</span>
-            <h2 className="section-title" id="progress-title">Mỗi bài hoàn thành đều được ghi nhận</h2>
+            <span className="eyebrow">TIẾN ĐỘ</span>
+            <h2 className="section-title" id="progress-title">Bài tập đã làm</h2>
             <p className="section-description">
-              {loading ? "Đang tải tiến độ của bạn…" : "Đánh dấu bài đã làm để theo dõi hành trình qua từng phần."}
+              {loading ? "Đang tải…" : "Tiến độ lưu trên thiết bị này; đăng nhập để đồng bộ."}
             </p>
           </div>
         </div>

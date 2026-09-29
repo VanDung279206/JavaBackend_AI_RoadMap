@@ -1,70 +1,92 @@
-import type { CSSProperties } from "react";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowUpRight, Check, ChevronDown, CircleAlert } from "lucide-react";
+import { PHASE_GUIDES } from "@/lib/phase-guides";
+import CodePlayground from "@/components/CodePlayground";
+import { getPlaygroundSeed } from "@/lib/playground-seeds";
 
-const phases = [
-  {
-    number: "00", slug: "00_setup", title: "Setup & công cụ", color: "#68736c", milestone: "M0",
-    desc: "Cài JDK, Git, Maven và IDE. Chạy, debug chương trình Java đầu tiên rồi lưu tiến trình bằng Git.",
-    topics: ["JDK + IDE", "Git cơ bản", "Debug breakpoint", "Maven build"],
-  },
-  {
-    number: "01", slug: "01_Java", title: "Java nền tảng", color: "#b66b2e", milestone: "M1",
-    desc: "Viết chương trình quản lý tài liệu trên terminal. Nắm OOP, Collections, Generics và xử lý tệp.",
-    topics: ["OOP & Collections", "Generics & Lambda", "Stream API", "File I/O"],
-  },
-  {
-    number: "02", slug: "02_Http-Sql", title: "HTTP & SQL", color: "#3977a0", milestone: "M2",
-    desc: "Thiết kế API contract, viết schema SQL và truy vấn dữ liệu liên bảng bằng JOIN, transaction.",
-    topics: ["HTTP Methods & Status", "REST API design", "PostgreSQL + JOIN", "Transaction & Index"],
-  },
-  {
-    number: "03", slug: "03_Spring", title: "Spring Boot & REST API", color: "#397a5d", milestone: "M3",
-    desc: "Xây API CRUD với Spring Boot, JPA, migration và xử lý lỗi tập trung.",
-    topics: ["Dependency Injection", "Spring Data JPA", "Flyway migration", "Exception Handler"],
-  },
-  {
-    number: "04", slug: "04_Quality", title: "Kiểm thử & triển khai", color: "#786190", milestone: "M4",
-    desc: "Viết unit và integration test, bảo mật với Spring Security, đóng gói Docker và CI/CD.",
-    topics: ["JUnit 5 + Testcontainers", "Spring Security + JWT", "Docker Compose", "GitHub Actions CI"],
-  },
-  {
-    number: "05", slug: "05_AI", title: "Tích hợp AI", color: "#a45f80", milestone: "M5",
-    desc: "Kết nối mô hình ngôn ngữ qua Spring AI và xây API tóm tắt tài liệu có kiểm soát.",
-    topics: ["Spring AI ChatClient", "Prompt Engineering", "Token & Context", "API timeout handling"],
-  },
-  {
-    number: "06", slug: "06_RAG", title: "RAG & đánh giá", color: "#397d7c", milestone: "M6",
-    desc: "Xây hệ thống hỏi đáp dựa trên tài liệu với pgvector, nguồn trích dẫn và đánh giá chất lượng.",
-    topics: ["Embedding + pgvector", "Chunking & Retrieval", "Source attribution", "RAG evaluation"],
-  },
-];
+const phaseLinks: Record<string, { slug: string; title: string }> = {
+  "01": { slug: "01_Java", title: "Bài Java" },
+  "02": { slug: "02_Http-Sql", title: "Bài HTTP & SQL" },
+  "03": { slug: "03_Spring", title: "Bài Spring" },
+  "04": { slug: "04_Quality", title: "Bài kiểm thử" },
+  "05": { slug: "05_AI", title: "Bài tích hợp AI" },
+  "06": { slug: "06_RAG", title: "Bài RAG" },
+};
 
 export default function RoadmapTimeline() {
   return (
-    <section className="roadmap-timeline" aria-label="Bảy chặng của lộ trình">
+    <section className="roadmap-timeline" aria-label="Hướng dẫn từng chặng">
       <div className="timeline-list">
-        {phases.map((phase) => (
-          <article className="timeline-item" key={phase.number} style={{ "--phase-color": phase.color } as CSSProperties}>
-            <div className="timeline-marker" aria-hidden="true">{phase.number}</div>
-            <div className="timeline-card">
-              <div className="timeline-card-header">
-                <span className="timeline-phase-label">CHẶNG {phase.number}</span>
-                <span className="timeline-milestone">MỐC {phase.milestone}</span>
-                <h2>{phase.title}</h2>
-              </div>
-              <p className="timeline-description">{phase.desc}</p>
-              <ul className="timeline-topics">
-                {phase.topics.map((topic) => <li key={topic}>{topic}</li>)}
-              </ul>
-              {phase.number !== "00" && (
-                <Link href={`/docs/${phase.slug}`} className="text-link timeline-link">
-                  Xem bài tập <ArrowRight size={15} aria-hidden="true" />
-                </Link>
-              )}
-            </div>
-          </article>
-        ))}
+        {PHASE_GUIDES.map((phase) => {
+          const link = phaseLinks[phase.number];
+          return (
+            <article className="phase-guide" id={`phase-${phase.number}`} key={phase.number}>
+              <header className="phase-guide-heading">
+                <span className="phase-guide-number">{phase.number}</span>
+                <div className="phase-guide-heading-copy">
+                  <span className="phase-guide-label">CHẶNG {phase.number}</span>
+                  <h2>{phase.number === "00" ? "Cài công cụ và chạy Java đầu tiên" : ["", "Java nền tảng", "HTTP & SQL", "Spring Boot", "Kiểm thử & triển khai", "Tích hợp AI", "RAG & đánh giá"][Number(phase.number)]}</h2>
+                  <p>{phase.objective}</p>
+                </div>
+                <ChevronDown className="phase-guide-chevron" size={20} aria-hidden="true" />
+              </header>
+
+              <div className="phase-guide-start"><strong>Bắt đầu:</strong> {phase.start}</div>
+
+              <details className="phase-guide-details" open={phase.number === "00"}>
+                <summary>
+                  <span>{phase.number === "00" ? "Mở hướng dẫn cài đặt" : "Cách học chặng này"}</span>
+                  <ChevronDown size={16} aria-hidden="true" />
+                </summary>
+
+                <ol className="phase-guide-steps">
+                  {phase.steps.map((step, index) => (
+                    <li className="phase-guide-step" key={step.title}>
+                      <span className="phase-guide-step-number">{String(index + 1).padStart(2, "0")}</span>
+                      <div className="phase-guide-step-copy">
+                        <h3>{step.title}</h3>
+                        <p>{step.detail}</p>
+                        {step.command && (
+                          <pre className="phase-guide-command"><code>{step.command}</code></pre>
+                        )}
+                        {step.check && <p className="phase-guide-check"><Check size={15} aria-hidden="true" />{step.check}</p>}
+                      </div>
+                    </li>
+                  ))}
+                </ol>
+
+                {phase.number === "00" && getPlaygroundSeed("P0.1") && (
+                  <section className="phase-guide-live-runner" aria-label="Chạy thử chương trình Java đầu tiên">
+                    <div className="phase-guide-runner-label">Thử chạy chương trình đầu tiên</div>
+                    <CodePlayground exerciseId="P0.1" seed={getPlaygroundSeed("P0.1")!} />
+                  </section>
+                )}
+
+                <div className="phase-guide-deliverable">
+                  <span>Kết quả cần có</span>
+                  <p>{phase.deliverable}</p>
+                </div>
+
+                <div className="phase-guide-bottom-grid">
+                  <section className="phase-guide-checklist" aria-label="Tiêu chí hoàn thành">
+                    <h3>Chuyển chặng khi</h3>
+                    <ul>{phase.checklist.map((item) => <li key={item}><Check size={14} aria-hidden="true" />{item}</li>)}</ul>
+                  </section>
+                  <section className="phase-guide-pitfalls" aria-label="Lỗi thường gặp">
+                    <h3><CircleAlert size={15} aria-hidden="true" />Lỗi thường gặp</h3>
+                    <ul>{phase.pitfalls.map((item) => <li key={item.problem}><strong>{item.problem}</strong><span>{item.fix}</span></li>)}</ul>
+                  </section>
+                </div>
+
+                {link && (
+                  <Link className="phase-guide-link" href={`/docs/${link.slug}`}>
+                    {link.title} <ArrowUpRight size={15} aria-hidden="true" />
+                  </Link>
+                )}
+              </details>
+            </article>
+          );
+        })}
       </div>
     </section>
   );

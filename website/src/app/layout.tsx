@@ -5,7 +5,7 @@ import Navbar from "@/components/Navbar";
 
 export const metadata: Metadata = {
   title: "Java Backend + AI Roadmap",
-  description: "Lộ trình học Java Backend và AI từ nền tảng đến RAG — bài tập, lời giải và dự án thực tế.",
+  description: "Lộ trình Java Backend gồm bài tập, hướng dẫn từng chặng, trình chạy mã và dự án mẫu.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -16,7 +16,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <main className="site-main">{children}</main>
         <footer className="site-footer">
           <div className="footer-inner layout-container">
-            <span>Java Backend + AI Roadmap · Học bằng cách xây dựng.</span>
+            <span>Java Backend · Lộ trình và bài thực hành.</span>
             <div className="footer-links">
               <Link href="/roadmap">Lộ trình</Link>
               <Link href="/docs">Bài tập</Link>

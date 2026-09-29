@@ -1,6 +1,7 @@
 import type { CSSProperties } from "react";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
+import { PHASE_GUIDES } from "@/lib/phase-guides";
 
 const phases = [
   { slug: "01_Java", number: "01", title: "Java nền tảng", color: "#b66b2e", exercises: 4 },
@@ -14,16 +15,16 @@ const phases = [
 export default function DocsPage() {
   return (
     <section className="page-shell">
-      <header className="page-heading">
-        <span className="eyebrow">BÀI TẬP THỰC HÀNH</span>
-        <h1 className="page-title">Học bằng cách tự giải quyết vấn đề</h1>
-        <p className="page-description">
-          Thử giải trước, đánh dấu tiến độ sau đó mới xem lời giải tham khảo. Tiến độ được lưu trên thiết bị và đồng bộ khi bạn đăng nhập.
-        </p>
+      <header className="page-heading docs-page-heading">
+        <span className="eyebrow">BÀI TẬP</span>
+        <h1 className="page-title">Chọn một chặng</h1>
+        <p className="page-description">Mở đề bài để xem ví dụ, chạy mã và kiểm tra cách làm.</p>
       </header>
 
       <div className="docs-grid">
-        {phases.map((phase) => (
+        {phases.map((phase) => {
+          const guide = PHASE_GUIDES.find((item) => item.number === phase.number);
+          return (
           <Link
             className="docs-card"
             href={`/docs/${phase.slug}`}
@@ -37,12 +38,15 @@ export default function DocsPage() {
                 <h2 className="docs-card-title">{phase.title}</h2>
               </div>
             </div>
+            <p className="docs-card-description">{guide?.objective}</p>
+            <span className="docs-card-output"><strong>Kết quả:</strong> {guide?.deliverable}</span>
             <div className="docs-card-bottom">
               <span>{phase.exercises} bài thực hành</span>
               <strong>Mở bài tập <ArrowUpRight size={13} style={{ verticalAlign: "-2px" }} aria-hidden="true" /></strong>
             </div>
           </Link>
-        ))}
+          );
+        })}
       </div>
     </section>
   );

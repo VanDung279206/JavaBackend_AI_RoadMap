@@ -4,10 +4,10 @@ export default function RoadmapPage() {
   return (
     <>
       <header className="page-shell page-heading">
-        <span className="eyebrow">JAVA → BACKEND → AI</span>
+        <span className="eyebrow">JAVA BACKEND</span>
         <h1 className="page-title">Lộ trình học</h1>
         <p className="page-description">
-          Bảy chặng từ cài đặt môi trường đến hệ thống RAG. Chuyển chặng khi bạn hoàn thành bài tập và hiểu sản phẩm mình vừa xây.
+          Mở từng chặng để xem việc cần làm, lệnh chạy, kết quả cần có và lỗi thường gặp. Nếu mới học, bắt đầu từ Chặng 00.
         </p>
       </header>
       <RoadmapTimeline />

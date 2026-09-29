@@ -26,7 +26,7 @@ export default async function PhasePage({
   const solutionsContent = readMarkdown(`${phase}/SOLUTIONS.md`);
 
   return (
-    <div className="page-shell" style={{ maxWidth: 900 }}>
+    <div className="page-shell phase-workspace-shell">
       <nav className="breadcrumb" aria-label="Breadcrumb">
         <Link href="/docs">
           Bài tập
@@ -38,19 +38,19 @@ export default async function PhasePage({
       <header className="phase-page-heading" style={{ "--phase-color": config.color } as CSSProperties}>
         <span className="phase-page-mark">{config.number.padStart(2, "0")}</span>
         <div>
-          <div className="phase-page-kicker">Chặng {config.number} · Thực hành</div>
+          <div className="phase-page-kicker">Chặng {config.number} · {config.exercises.length} bài</div>
           <h1 className="phase-page-title">{config.title}</h1>
         </div>
       </header>
 
-      {/* Progress Tracker */}
       <ProgressTracker phase={phase} exercises={config.exercises} />
 
-      {/* Exercises & Solutions */}
       {exercisesContent ? (
         <ExerciseViewer
+          phase={phase}
           exercises={exercisesContent}
           solutions={solutionsContent || "_Lời giải đang được cập nhật._"}
+          exerciseLabels={config.exercises}
         />
       ) : (
         <div className="content-panel" style={{ textAlign: "center", color: "var(--muted-foreground)" }}>
@@ -58,7 +58,6 @@ export default async function PhasePage({
         </div>
       )}
 
-      {/* Forum */}
       <GiscusComments phase={phase} />
     </div>
   );
