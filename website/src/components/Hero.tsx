@@ -2,9 +2,9 @@ import Link from "next/link";
 import { ArrowRight, BookOpen, Boxes, Braces, CircleCheck, Database, Sparkles } from "lucide-react";
 
 const milestones = [
-  { title: "Java Core", note: "Viết chương trình có cấu trúc", icon: Braces },
-  { title: "Backend API", note: "Thiết kế dữ liệu và REST API", icon: Database },
-  { title: "Sản phẩm AI", note: "Tích hợp RAG có dẫn nguồn", icon: Sparkles },
+  { title: "Java", note: "Chương trình có kiểm thử", icon: Braces },
+  { title: "Backend", note: "REST API và PostgreSQL", icon: Database },
+  { title: "RAG", note: "Câu trả lời kèm nguồn", icon: Sparkles },
 ];
 
 export default function Hero() {
@@ -12,15 +12,14 @@ export default function Hero() {
     <section className="hero-section">
       <div className="hero-inner layout-container">
         <div className="hero-copy">
-          <span className="eyebrow">LỘ TRÌNH THỰC HÀNH · JAVA → AI</span>
+          <span className="eyebrow">JAVA BACKEND · 7 CHẶNG</span>
           <h1 className="hero-title">
-            Viết backend vững.
+            Từ file Java đầu tiên
             <br />
-            <span>Đưa AI vào sản phẩm.</span>
+            <span>đến API có kiểm thử.</span>
           </h1>
           <p className="hero-description">
-            Đi từ Java nền tảng đến một ứng dụng hỏi đáp tài liệu có nguồn trích dẫn.
-            Mỗi chặng có bài thực hành và sản phẩm để kiểm chứng điều bạn đã học.
+            Bảy chặng, 24 bài tập và hai dự án. Mỗi chặng ghi rõ việc cần làm, file cần sửa và cách kiểm tra kết quả.
           </p>
           <div className="hero-actions">
             <Link href="/docs/01_Java" className="button-primary">
@@ -30,7 +29,7 @@ export default function Hero() {
               <BookOpen size={16} aria-hidden="true" /> Xem toàn bộ lộ trình
             </Link>
           </div>
-          <p className="hero-footnote">Tự học theo nhịp của bạn · Có thể bắt đầu mà không cần đăng nhập</p>
+          <p className="hero-footnote">Không cần tài khoản để bắt đầu.</p>
 
           <div className="hero-stats" aria-label="Quy mô lộ trình">
             <div className="hero-stat"><strong>7</strong><span>chặng học</span></div>
@@ -39,15 +38,15 @@ export default function Hero() {
           </div>
         </div>
 
-        <aside className="hero-artifact" aria-label="Bản xem trước dự án Knowledge Assistant">
+        <aside className="hero-artifact" aria-label="Các sản phẩm qua từng chặng">
           <div className="artifact-topline">
-            <span>PROJECT / 02</span>
-            <span className="artifact-status">Từng bước một</span>
+            <span>ĐẦU RA</span>
+            <span className="artifact-status">Từ bài tập đến dự án</span>
           </div>
           <div className="artifact-project-title">
             <div className="artifact-project-icon"><Boxes size={21} aria-hidden="true" /></div>
             <div>
-              <p>Dự án cuối lộ trình</p>
+              <p>Dự án cuối</p>
               <h2>Knowledge Assistant</h2>
             </div>
           </div>
@@ -70,8 +69,8 @@ export default function Hero() {
             })}
           </div>
           <div className="artifact-footer">
-            <span>Spring Boot · PostgreSQL · Spring AI</span>
-            <span>BUILD →</span>
+            <span>Spring Boot · PostgreSQL · RAG</span>
+            <span>01 → 06</span>
           </div>
         </aside>
       </div>
