@@ -45,7 +45,7 @@ export default function Navbar() {
         <div className="nav-inner">
           <Link href="/" className="brand-link" onClick={() => setMenuOpen(false)}>
             <span className="brand-mark"><Coffee size={17} strokeWidth={2.2} aria-hidden="true" /></span>
-            <span>Java / Backend / AI</span>
+            <span>Java Backend</span>
           </Link>
 
           <div className="nav-links">{navLinks()}</div>
