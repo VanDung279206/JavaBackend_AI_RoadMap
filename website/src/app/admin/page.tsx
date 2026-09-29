@@ -4,6 +4,7 @@ import Image from "next/image";
 import { supabase } from "@/lib/supabase";
 import type { User } from "@supabase/supabase-js";
 import Link from "next/link";
+import AdminResourceQueue from "@/components/admin/AdminResourceQueue";
 
 type LearnerRow = {
   user_id: string;
@@ -211,6 +212,8 @@ export default function AdminPage() {
           </tbody>
         </table>
       </div>
+      <AdminResourceQueue reviewerId={user.id} />
     </div>
   );
 }
+
