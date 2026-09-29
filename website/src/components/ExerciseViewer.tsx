@@ -100,8 +100,11 @@ export default function ExerciseViewer({ phase, exercises, solutions, exerciseLa
   const active = exerciseBlocks.find((item) => item.id === activeId) ?? exerciseBlocks[0];
 
   useEffect(() => {
-    const hashId = decodeURIComponent(window.location.hash.slice(1));
-    if (exerciseBlocks.some((exercise) => exercise.id === hashId)) setActiveId(hashId);
+    const frame = window.requestAnimationFrame(() => {
+      const hashId = decodeURIComponent(window.location.hash.slice(1));
+      if (exerciseBlocks.some((exercise) => exercise.id === hashId)) setActiveId(hashId);
+    });
+    return () => window.cancelAnimationFrame(frame);
   }, [exerciseBlocks]);
 
   const selectExercise = (id: string) => {
@@ -227,3 +230,4 @@ export default function ExerciseViewer({ phase, exercises, solutions, exerciseLa
     </div>
   );
 }
+
