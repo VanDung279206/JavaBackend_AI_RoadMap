@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import { readMarkdown } from "@/lib/markdown";
 import { PHASE_BY_SLUG, PHASES } from "@/lib/phases";
 import ExerciseViewer from "@/components/ExerciseViewer";
@@ -25,36 +26,22 @@ export default async function PhasePage({
   const solutionsContent = readMarkdown(`${phase}/SOLUTIONS.md`);
 
   return (
-    <div style={{ maxWidth: 900, margin: "0 auto", padding: "2rem 1.5rem 4rem" }}>
-      {/* Breadcrumb */}
-      <div style={{ marginBottom: "1.5rem", fontSize: "0.85rem", color: "var(--muted-foreground)" }}>
-        <Link href="/docs" style={{ color: "var(--muted-foreground)", textDecoration: "none" }}>
+    <div className="page-shell" style={{ maxWidth: 900 }}>
+      <nav className="breadcrumb" aria-label="Breadcrumb">
+        <Link href="/docs">
           Bài tập
         </Link>
-        {" / "}
-        <span style={{ color: "var(--foreground)" }}>Phase {config.number}</span>
-      </div>
+        <span aria-hidden="true">/</span>
+        <span aria-current="page">Chặng {config.number}</span>
+      </nav>
 
-      {/* Header */}
-      <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: "2rem" }}>
-        <span
-          style={{
-            width: 64, height: 64, borderRadius: 16,
-            background: config.color + "22",
-            border: `2px solid ${config.color}44`,
-            display: "flex", alignItems: "center", justifyContent: "center",
-            fontSize: "2rem", flexShrink: 0,
-          }}
-        >
-          {config.icon}
-        </span>
+      <header className="phase-page-heading" style={{ "--phase-color": config.color } as CSSProperties}>
+        <span className="phase-page-mark">{config.number.padStart(2, "0")}</span>
         <div>
-          <div style={{ fontSize: "0.8rem", color: config.color, fontWeight: 600, marginBottom: 4 }}>
-            Phase {config.number}
-          </div>
-          <h1 style={{ fontSize: "2rem", fontWeight: 800 }}>{config.title}</h1>
+          <div className="phase-page-kicker">Chặng {config.number} · Thực hành</div>
+          <h1 className="phase-page-title">{config.title}</h1>
         </div>
-      </div>
+      </header>
 
       {/* Progress Tracker */}
       <ProgressTracker phase={phase} exercises={config.exercises} />
@@ -66,14 +53,8 @@ export default async function PhasePage({
           solutions={solutionsContent || "_Lời giải đang được cập nhật._"}
         />
       ) : (
-        <div
-          style={{
-            background: "var(--card)", border: "1px solid var(--border)",
-            borderRadius: 16, padding: "3rem", textAlign: "center",
-            color: "var(--muted-foreground)",
-          }}
-        >
-          📝 Nội dung bài tập đang được cập nhật...
+        <div className="content-panel" style={{ textAlign: "center", color: "var(--muted-foreground)" }}>
+          Nội dung bài tập đang được cập nhật.
         </div>
       )}
 
