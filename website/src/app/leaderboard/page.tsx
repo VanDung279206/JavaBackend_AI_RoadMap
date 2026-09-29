@@ -1,4 +1,5 @@
 "use client";
+
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { supabase, type LeaderboardEntry } from "@/lib/supabase";
@@ -20,123 +21,65 @@ export default function LeaderboardPage() {
       });
   }, []);
 
-  const medals = ["🥇", "🥈", "🥉"];
-
   return (
-    <div style={{ maxWidth: 800, margin: "0 auto", padding: "3rem 1.5rem" }}>
-      <div style={{ textAlign: "center", marginBottom: "3rem" }}>
-        <h1 style={{ fontSize: "2.5rem", fontWeight: 800, marginBottom: "0.75rem" }}>
-          🏆 Bảng Xếp Hạng
-        </h1>
-        <p style={{ color: "var(--muted-foreground)" }}>
-          Những người học chăm chỉ nhất — cập nhật theo thời gian thực.
-        </p>
-      </div>
+    <section className="page-shell leaderboard-shell">
+      <header className="page-heading">
+        <span className="eyebrow">CỘNG ĐỒNG HỌC TẬP</span>
+        <h1 className="page-title">Bảng xếp hạng</h1>
+        <p className="page-description">Ghi nhận những người học đang bền bỉ hoàn thành bài thực hành.</p>
+      </header>
 
-      {loading ? (
-        <div style={{ textAlign: "center", padding: "3rem", color: "var(--muted-foreground)" }}>
-          Đang tải...
+      <div className="leaderboard-panel">
+        <div className="leaderboard-heading">
+          <span>NGƯỜI HỌC</span>
+          <span>BÀI ĐÃ HOÀN THÀNH</span>
         </div>
-      ) : data.length === 0 ? (
-        <div
-          style={{
-            textAlign: "center",
-            padding: "4rem",
-            background: "var(--card)",
-            border: "1px solid var(--border)",
-            borderRadius: 16,
-            color: "var(--muted-foreground)",
-          }}
-        >
-          <div style={{ fontSize: "3rem", marginBottom: "1rem" }}>🌱</div>
-          <p>Chưa có ai đăng nhập và bắt đầu học.</p>
-          <p style={{ marginTop: 8, fontSize: "0.875rem" }}>Hãy là người đầu tiên!</p>
-        </div>
-      ) : (
-        <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-          {data.map((entry, idx) => (
-            <div
-              key={entry.user_id}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 16,
-                padding: "1rem 1.5rem",
-                background: idx < 3 ? "var(--card)" : "var(--muted)",
-                border: `1px solid ${idx === 0 ? "#f59e0b44" : idx === 1 ? "#94a3b844" : idx === 2 ? "#cd7c3044" : "var(--border)"}`,
-                borderRadius: 12,
-              }}
-            >
-              {/* Rank */}
-              <div
-                style={{
-                  width: 40,
-                  textAlign: "center",
-                  fontSize: idx < 3 ? "1.5rem" : "1rem",
-                  fontWeight: 700,
-                  color: "var(--muted-foreground)",
-                  flexShrink: 0,
-                }}
-              >
-                {idx < 3 ? medals[idx] : `#${idx + 1}`}
-              </div>
 
-              {/* Avatar */}
-              {entry.avatar_url ? (
-                <Image
-                  src={entry.avatar_url}
-                  alt={entry.username ?? ""}
-                  width={40}
-                  height={40}
-                  style={{ borderRadius: "50%", flexShrink: 0 }}
-                />
-              ) : (
-                <div
-                  style={{
-                    width: 40,
-                    height: 40,
-                    borderRadius: "50%",
-                    background: "var(--accent)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    color: "#fff",
-                    fontWeight: 700,
-                    flexShrink: 0,
-                  }}
-                >
-                  {(entry.username ?? "?")[0].toUpperCase()}
-                </div>
-              )}
-
-              {/* Name */}
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontWeight: 600, fontSize: "0.95rem" }}>
-                  {entry.display_name || entry.username || "Ẩn danh"}
-                </div>
-                {entry.username && (
-                  <a
-                    href={`https://github.com/${entry.username}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{ fontSize: "0.8rem", color: "var(--muted-foreground)", textDecoration: "none" }}
-                  >
-                    @{entry.username}
-                  </a>
+        {loading ? (
+          <div className="leaderboard-message" role="status">Đang tải bảng xếp hạng…</div>
+        ) : data.length === 0 ? (
+          <div className="leaderboard-empty">
+            <span className="empty-rank-mark">01</span>
+            <h2>Bảng xếp hạng đang chờ bạn</h2>
+            <p>Đăng nhập và đánh dấu bài tập đã hoàn thành để xuất hiện tại đây.</p>
+          </div>
+        ) : (
+          <ol className="leaderboard-list">
+            {data.map((entry, idx) => (
+              <li className={`leaderboard-row${idx < 3 ? " leaderboard-row-top" : ""}`} key={entry.user_id}>
+                <span className="leaderboard-rank">{String(idx + 1).padStart(2, "0")}</span>
+                {entry.avatar_url ? (
+                  <Image
+                    className="leaderboard-avatar"
+                    src={entry.avatar_url}
+                    alt=""
+                    width={38}
+                    height={38}
+                    unoptimized
+                  />
+                ) : (
+                  <span className="leaderboard-avatar leaderboard-avatar-fallback" aria-hidden="true">
+                    {(entry.username ?? "?")[0].toUpperCase()}
+                  </span>
                 )}
-              </div>
-
-              {/* Score */}
-              <div style={{ textAlign: "right", flexShrink: 0 }}>
-                <div style={{ fontSize: "1.25rem", fontWeight: 800, color: "var(--accent)" }}>
-                  {entry.completed_count}
+                <div className="leaderboard-name">
+                  <strong>{entry.display_name || entry.username || "Ẩn danh"}</strong>
+                  {entry.username && (
+                    <a href={`https://github.com/${entry.username}`} target="_blank" rel="noopener noreferrer">
+                      @{entry.username}
+                    </a>
+                  )}
                 </div>
-                <div style={{ fontSize: "0.75rem", color: "var(--muted-foreground)" }}>bài xong</div>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
+                <div className="leaderboard-score">
+                  <strong>{entry.completed_count}</strong>
+                  <span>bài</span>
+                </div>
+              </li>
+            ))}
+          </ol>
+        )}
+      </div>
+      <p className="leaderboard-note">Tiến độ đồng bộ khi bạn đăng nhập bằng GitHub.</p>
+    </section>
   );
 }
