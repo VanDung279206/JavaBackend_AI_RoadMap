@@ -6,7 +6,7 @@ const projects = [
     title: "Catalog CLI",
     desc: "Xây công cụ terminal để quản lý tài liệu. Luyện OOP, Collections, kiểm thử và lưu dữ liệu bằng tệp.",
     tech: ["Java", "Maven", "JUnit"],
-    label: "DỰ ÁN 01 · JAVA CORE",
+    label: "01 · JAVA",
     href: "/docs/01_Java",
     Icon: FolderCode,
   },
@@ -14,7 +14,7 @@ const projects = [
     title: "Knowledge Assistant",
     desc: "Xây API hỏi đáp tài liệu có nguồn trích dẫn với Spring Boot, PostgreSQL và truy xuất vector.",
     tech: ["Spring Boot", "Spring AI", "pgvector"],
-    label: "DỰ ÁN 02 · BACKEND + AI",
+    label: "02 · BACKEND",
     href: "/roadmap",
     Icon: BrainCircuit,
   },
@@ -26,9 +26,8 @@ export default function ProjectShowcase() {
       <div className="layout-container">
         <div className="section-heading">
           <div className="section-heading-copy">
-            <span className="eyebrow">HỌC BẰNG CÁCH XÂY DỰNG</span>
-            <h2 className="section-title" id="projects-title">Kiến thức kết tinh thành sản phẩm</h2>
-            <p className="section-description">Hai dự án theo suốt lộ trình, để mỗi chủ đề mới có chỗ áp dụng ngay.</p>
+          <span className="eyebrow">DỰ ÁN</span>
+          <h2 className="section-title" id="projects-title">Hai dự án thực hành</h2>
           </div>
           <Link href="/projects" className="text-link">
             Khám phá dự án <ArrowRight size={15} aria-hidden="true" />
