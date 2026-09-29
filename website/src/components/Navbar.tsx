@@ -1,84 +1,75 @@
 "use client";
+
+import { useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Coffee, Menu, Search, X } from "lucide-react";
 import AuthButton from "@/components/AuthButton";
 import SearchCommand from "@/components/command/SearchCommand";
 
 const links = [
-  { href: "/", label: "Trang chủ" },
-  { href: "/roadmap", label: "Roadmap" },
+  { href: "/roadmap", label: "Lộ trình" },
   { href: "/docs", label: "Bài tập" },
-  { href: "/leaderboard", label: "🏆 Xếp hạng" },
+  { href: "/projects", label: "Dự án" },
+  { href: "/leaderboard", label: "Xếp hạng" },
 ];
 
 export default function Navbar() {
+  const pathname = usePathname();
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const openSearch = () => {
+    setMenuOpen(false);
+    window.dispatchEvent(new KeyboardEvent("keydown", { key: "k", ctrlKey: true }));
+  };
+
+  const navLinks = (mobile = false) => links.map((link) => {
+    const active = pathname === link.href || (link.href !== "/" && pathname.startsWith(`${link.href}/`));
+    return (
+      <Link
+        key={link.href}
+        href={link.href}
+        className={`nav-link${active ? " nav-link-active" : ""}`}
+        aria-current={active ? "page" : undefined}
+        onClick={() => mobile && setMenuOpen(false)}
+      >
+        {link.label}
+      </Link>
+    );
+  });
+
   return (
     <>
       <SearchCommand />
-      <nav
-        style={{
-          borderBottom: "1px solid var(--border)",
-          background: "rgba(10,10,15,0.85)",
-          backdropFilter: "blur(12px)",
-          position: "sticky",
-          top: 0,
-          zIndex: 50,
-        }}
-      >
-        <div
-          style={{
-            maxWidth: 1200,
-            margin: "0 auto",
-            padding: "0 1.5rem",
-            height: 60,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            gap: "1rem",
-          }}
-        >
-          <Link
-            href="/"
-            style={{
-              fontWeight: 700, fontSize: "1.1rem", color: "var(--foreground)",
-              textDecoration: "none", display: "flex", alignItems: "center",
-              gap: 8, flexShrink: 0,
-            }}
-          >
-            <span style={{ color: "var(--accent)" }}>☕</span>
-            <span>Java + AI</span>
+      <nav className="site-nav" aria-label="Điều hướng chính">
+        <div className="nav-inner">
+          <Link href="/" className="brand-link" onClick={() => setMenuOpen(false)}>
+            <span className="brand-mark"><Coffee size={17} strokeWidth={2.2} aria-hidden="true" /></span>
+            <span>Java / Backend / AI</span>
           </Link>
 
-          <div style={{ display: "flex", gap: "1.25rem", alignItems: "center", flex: 1 }}>
-            {links.map((l) => (
-              <Link
-                key={l.href}
-                href={l.href}
-                style={{
-                  color: "var(--muted-foreground)", textDecoration: "none",
-                  fontSize: "0.875rem", fontWeight: 500, whiteSpace: "nowrap",
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = "var(--foreground)")}
-                onMouseLeave={(e) => (e.currentTarget.style.color = "var(--muted-foreground)")}
-              >
-                {l.label}
-              </Link>
-            ))}
-          </div>
+          <div className="nav-links">{navLinks()}</div>
 
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <button
-              onClick={() => window.dispatchEvent(new KeyboardEvent("keydown", { key: "k", ctrlKey: true }))}
-              style={{
-                display: "flex", alignItems: "center", gap: 6,
-                padding: "0.3rem 0.75rem", borderRadius: 8,
-                border: "1px solid var(--border)", background: "var(--muted)",
-                color: "var(--muted-foreground)", fontSize: "0.75rem", cursor: "pointer",
-              }}
-            >
-              🔍 <kbd style={{ fontFamily: "inherit" }}>Ctrl K</kbd>
+          <div className="nav-actions">
+            <button className="search-trigger" onClick={openSearch} aria-label="Tìm kiếm" title="Tìm kiếm (Ctrl K)">
+              <Search size={15} aria-hidden="true" />
+              <span className="search-trigger-label">Tìm kiếm</span>
+              <kbd>Ctrl K</kbd>
             </button>
             <AuthButton />
+            <button
+              className="mobile-nav-trigger"
+              onClick={() => setMenuOpen((open) => !open)}
+              aria-label={menuOpen ? "Đóng menu" : "Mở menu"}
+              aria-expanded={menuOpen}
+              aria-controls="mobile-navigation"
+            >
+              {menuOpen ? <X size={18} /> : <Menu size={18} />}
+            </button>
           </div>
+        </div>
+        <div className="mobile-nav-panel" id="mobile-navigation" hidden={!menuOpen}>
+          {navLinks(true)}
         </div>
       </nav>
     </>
