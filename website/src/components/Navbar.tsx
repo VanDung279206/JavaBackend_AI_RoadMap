@@ -10,6 +10,7 @@ import SearchCommand from "@/components/command/SearchCommand";
 const links = [
   { href: "/roadmap", label: "Lộ trình" },
   { href: "/docs", label: "Bài tập" },
+  { href: "/materials", label: "Tài liệu" },
   { href: "/projects", label: "Dự án" },
   { href: "/leaderboard", label: "Xếp hạng" },
 ];
@@ -75,3 +76,4 @@ export default function Navbar() {
     </>
   );
 }
+
