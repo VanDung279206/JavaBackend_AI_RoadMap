@@ -142,18 +142,14 @@ export default function AdminPage() {
   }
 
   return (
-    <div style={{ maxWidth: 1000, margin: "0 auto", padding: "3rem 1.5rem" }}>
-      <h1 style={{ fontSize: "2rem", fontWeight: 800, marginBottom: "0.5rem" }}>⚙️ Admin Dashboard</h1>
+    <div className="page-shell admin-shell">
+      <span className="eyebrow">QUẢN TRỊ</span>
+      <h1 className="page-title" style={{ fontSize: "2.3rem", marginTop: "0.6rem" }}>Bảng điều khiển</h1>
       <p style={{ color: "var(--muted-foreground)", marginBottom: "2rem" }}>
         Tổng cộng <strong style={{ color: "var(--foreground)" }}>{learners.length}</strong> người học đã đăng ký.
       </p>
 
-      <div
-        style={{
-          background: "var(--card)", border: "1px solid var(--border)",
-          borderRadius: 16, overflow: "hidden",
-        }}
-      >
+      <div className="admin-table-wrap">
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead>
             <tr style={{ borderBottom: "1px solid var(--border)", background: "var(--muted)" }}>

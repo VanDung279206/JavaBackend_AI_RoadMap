@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 const pages = [
   { label: "Trang chủ", href: "/" },
   { label: "Roadmap", href: "/roadmap" },
+  { label: "Dự án thực tế", href: "/projects" },
+  { label: "Danh sách bài tập", href: "/docs" },
   { label: "Bài tập Phase 1 — Java", href: "/docs/01_Java" },
   { label: "Bài tập Phase 2 — HTTP & SQL", href: "/docs/02_Http-Sql" },
   { label: "Bài tập Phase 3 — Spring Boot", href: "/docs/03_Spring" },

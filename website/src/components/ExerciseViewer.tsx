@@ -1,6 +1,8 @@
 "use client";
+
 import { useState } from "react";
 import ReactMarkdown from "react-markdown";
+import { ChevronDown, Eye, EyeOff } from "lucide-react";
 
 type Props = {
   exercises: string;
@@ -11,91 +13,37 @@ export default function ExerciseViewer({ exercises, solutions }: Props) {
   const [showSolutions, setShowSolutions] = useState(false);
 
   return (
-    <div>
-      {/* Exercises */}
-      <div
-        style={{
-          background: "var(--card)",
-          border: "1px solid var(--border)",
-          borderRadius: 16,
-          padding: "2rem",
-          marginBottom: "1.5rem",
-        }}
-      >
-        <div className="prose" style={{ maxWidth: "none" }}>
-          <ReactMarkdown>{exercises}</ReactMarkdown>
-        </div>
-      </div>
+    <div className="exercise-viewer">
+      <article className="content-panel exercise-content">
+        <ReactMarkdown>{exercises}</ReactMarkdown>
+      </article>
 
-      {/* Solutions toggle */}
-      <div
-        style={{
-          background: "var(--card)",
-          border: "1px solid var(--border)",
-          borderRadius: 16,
-          overflow: "hidden",
-        }}
-      >
+      <section className="solution-panel">
         <button
-          onClick={() => setShowSolutions(!showSolutions)}
-          style={{
-            width: "100%",
-            padding: "1.25rem 2rem",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            background: "none",
-            border: "none",
-            color: "var(--foreground)",
-            cursor: "pointer",
-            fontWeight: 600,
-            fontSize: "1rem",
-          }}
+          className="solution-toggle"
+          onClick={() => setShowSolutions((show) => !show)}
+          aria-expanded={showSolutions}
+          aria-controls="solution-content"
         >
-          <span>
-            {showSolutions ? "🙈" : "👁️"} {showSolutions ? "Ẩn lời giải" : "Xem lời giải"}
+          <span className="solution-toggle-title">
+            {showSolutions ? <EyeOff size={17} aria-hidden="true" /> : <Eye size={17} aria-hidden="true" />}
+            {showSolutions ? "Ẩn lời giải" : "Xem lời giải tham khảo"}
           </span>
-          <span
-            style={{
-              fontSize: "0.75rem",
-              padding: "0.25rem 0.75rem",
-              borderRadius: 6,
-              background: showSolutions ? "#ef444422" : "#f59e0b22",
-              color: showSolutions ? "#ef4444" : "#f59e0b",
-              border: `1px solid ${showSolutions ? "#ef444444" : "#f59e0b44"}`,
-            }}
-          >
-            {showSolutions ? "Đang hiện" : "Hãy tự làm trước!"}
+          <span className="solution-toggle-end">
+            <span className="solution-state">{showSolutions ? "Đang hiện" : "Tự làm trước nhé"}</span>
+            <ChevronDown className={showSolutions ? "solution-chevron is-open" : "solution-chevron"} size={17} aria-hidden="true" />
           </span>
         </button>
 
         {showSolutions && (
-          <div
-            style={{
-              padding: "0 2rem 2rem",
-              borderTop: "1px solid var(--border)",
-              paddingTop: "1.5rem",
-            }}
-          >
-            <div
-              style={{
-                background: "#f59e0b11",
-                border: "1px solid #f59e0b33",
-                borderRadius: 10,
-                padding: "0.75rem 1rem",
-                marginBottom: "1.5rem",
-                fontSize: "0.85rem",
-                color: "#f59e0b",
-              }}
-            >
-              ⚠️ Đây là lời giải tham chiếu. Hãy so sánh với bài của bạn, đừng copy trực tiếp.
-            </div>
-            <div className="prose" style={{ maxWidth: "none" }}>
+          <div className="solution-content" id="solution-content">
+            <p className="solution-notice">Lời giải chỉ mang tính tham khảo. Hãy so sánh cách tiếp cận và tự kiểm tra các trường hợp biên.</p>
+            <div className="prose">
               <ReactMarkdown>{solutions}</ReactMarkdown>
             </div>
           </div>
         )}
-      </div>
+      </section>
     </div>
   );
 }
