@@ -90,3 +90,15 @@ Bản copy chứa TODO; test bắt đầu đỏ. Script từ chối ghi đè th�
 - [ ] Làm lại hoặc giải biến thể ở buổi khác, ghi bằng chứng.
 
 CI hiện kiểm tra **bản tham chiếu**, không tự chứng nhận bạn đã hoàn thành starter. Xem [CHANGELOG.md](CHANGELOG.md) và [VALIDATION.md](VALIDATION.md).
+
+## Website: đăng nhập và kho tài liệu
+
+Website chạy dưới đường dẫn `/JavaBackend_AI_RoadMap`. Trong Supabase Dashboard → Authentication → URL Configuration, đặt:
+
+- **Site URL:** `https://vandung279206.github.io/JavaBackend_AI_RoadMap/`
+- **Redirect URL:** `https://vandung279206.github.io/JavaBackend_AI_RoadMap/auth/callback`
+
+Trong Authentication → Providers → GitHub, bật GitHub provider và đưa Callback URL Supabase hiển thị ở đó vào cấu hình GitHub OAuth App. Nếu callback bị từ chối hoặc GitHub Pages báo 404 sau khi đăng nhập, so lại hai URL phía trên; không dùng URL gốc `https://vandung279206.github.io/` làm Site URL cho website đặt dưới repository.
+
+Để bật kho tài liệu, chạy [`database/migrations/V3__community_resources.sql`](database/migrations/V3__community_resources.sql) một lần trong Supabase SQL Editor sau V2. Tệp tải lên được giữ riêng tư cho tới khi quản trị viên duyệt; kho chỉ nhận PDF, DOCX, TXT và Markdown, tối đa 15 MB.
+

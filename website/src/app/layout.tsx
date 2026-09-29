@@ -20,6 +20,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <div className="footer-links">
               <Link href="/roadmap">Lộ trình</Link>
               <Link href="/docs">Bài tập</Link>
+              <Link href="/materials">Tài liệu</Link>
               <Link href="/projects">Dự án</Link>
             </div>
           </div>
@@ -28,3 +29,4 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     </html>
   );
 }
+
