@@ -1,5 +1,5 @@
 -- Fresh Supabase schema (PostgreSQL 15+).
--- Existing deployments should apply database/migrations/V2__public_leaderboard_and_auth_backfill.sql.
+-- Existing deployments should apply V2, then V3 for the community resource library.
 
 CREATE TABLE IF NOT EXISTS public.profiles (
   id           uuid        PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
@@ -280,3 +280,4 @@ REVOKE ALL ON public.progress FROM anon, authenticated;
 GRANT SELECT, INSERT, UPDATE ON public.progress TO authenticated;
 REVOKE ALL ON public.leaderboard FROM anon, authenticated;
 GRANT SELECT ON public.leaderboard TO anon, authenticated;
+
