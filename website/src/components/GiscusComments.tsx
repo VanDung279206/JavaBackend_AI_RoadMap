@@ -33,7 +33,7 @@ export default function GiscusComments({ phase }: { phase: string }) {
         💬 Hỏi đáp &amp; Thảo luận
       </h2>
       <p className="mb-6 text-sm text-[var(--muted-foreground)]">
-        Đặt câu hỏi, chia sẻ cách giải, giúp đỡ người khác. Đăng nhập bằng GitHub để bình luận.
+        Đặt câu hỏi, chia sẻ cách giải và giúp đỡ người khác. Khung thảo luận Giscus dùng tài khoản GitHub riêng.
       </p>
 
       {isConfigured ? (

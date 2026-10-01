@@ -194,7 +194,7 @@ export default function MaterialsPage() {
     event.preventDefault();
     setNotice("");
     if (!user) {
-      setNotice("Đăng nhập GitHub để gửi tài liệu.");
+      setNotice("Đăng nhập để gửi tài liệu.");
       return;
     }
     if (title.trim().length < 5 || description.trim().length < 20) {
@@ -361,7 +361,7 @@ export default function MaterialsPage() {
             </div>
             {!user ? (
               <div className="resource-login-gate">
-                <p>Đăng nhập bằng GitHub để ghi nhận người gửi và xem trạng thái duyệt.</p>
+                <p>Đăng nhập bằng email để ghi nhận người gửi và xem trạng thái duyệt.</p>
                 <AuthButton />
               </div>
             ) : (
