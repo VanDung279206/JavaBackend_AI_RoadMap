@@ -4,6 +4,7 @@ import Image from "next/image";
 import { supabase } from "@/lib/supabase";
 import type { User } from "@supabase/supabase-js";
 import Link from "next/link";
+import AdminResourceQueue from "@/components/admin/AdminResourceQueue";
 
 type LearnerRow = {
   user_id: string;
@@ -120,7 +121,7 @@ export default function AdminPage() {
       <div style={{ maxWidth: 500, margin: "4rem auto", textAlign: "center", padding: "0 1.5rem" }}>
         <div style={{ fontSize: "3rem", marginBottom: "1rem" }}>🔒</div>
         <h1 style={{ fontSize: "1.5rem", fontWeight: 800, marginBottom: "0.75rem" }}>Cần đăng nhập</h1>
-        <p style={{ color: "var(--muted-foreground)" }}>Đăng nhập bằng GitHub để tiếp tục.</p>
+        <p style={{ color: "var(--muted-foreground)" }}>Đăng nhập bằng email để tiếp tục.</p>
       </div>
     );
   }
@@ -211,6 +212,7 @@ export default function AdminPage() {
           </tbody>
         </table>
       </div>
+      <AdminResourceQueue reviewerId={user.id} />
     </div>
   );
 }
