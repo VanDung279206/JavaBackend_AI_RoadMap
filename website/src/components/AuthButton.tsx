@@ -1,44 +1,112 @@
 "use client";
-import { useEffect, useState } from "react";
+
+import { useEffect, useId, useRef, useState, type FormEvent } from "react";
 import { supabase } from "@/lib/supabase";
 import type { User } from "@supabase/supabase-js";
+
+type AuthMode = "signIn" | "signUp";
+type AuthFeedback = { kind: "error" | "success"; message: string };
 
 function getAuthCallbackUrl() {
   const basePath = (process.env.NEXT_PUBLIC_BASE_PATH ?? "/JavaBackend_AI_RoadMap").replace(/\/$/, "");
   return new URL(`${basePath}/auth/callback`, window.location.origin).toString();
 }
 
+function getAuthErrorMessage(error: unknown) {
+  const message = error instanceof Error ? error.message : "";
+
+  if (/invalid login credentials/i.test(message)) return "Email hoặc mật khẩu chưa đúng.";
+  if (/email not confirmed/i.test(message)) return "Hãy xác nhận email trước khi đăng nhập.";
+  if (/already registered|user already exists/i.test(message)) return "Email này đã có tài khoản. Hãy chuyển sang Đăng nhập.";
+  if (/password.*(6 characters|at least|short)/i.test(message)) return "Mật khẩu cần có ít nhất 6 ký tự.";
+
+  return "Chưa thể đăng nhập. Kiểm tra thông tin rồi thử lại.";
+}
+
 export default function AuthButton() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-  const [signingIn, setSigningIn] = useState(false);
-  const [error, setError] = useState("");
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [mode, setMode] = useState<AuthMode>("signIn");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [feedback, setFeedback] = useState<AuthFeedback | null>(null);
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const fieldId = useId();
+  const emailInputId = `${fieldId}-email`;
+  const passwordInputId = `${fieldId}-password`;
+  const dialogTitleId = `${fieldId}-title`;
 
   useEffect(() => {
+    let active = true;
     supabase.auth.getSession().then(({ data }) => {
+      if (!active) return;
       setUser(data.session?.user ?? null);
       setLoading(false);
     });
+
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
     });
-    return () => listener.subscription.unsubscribe();
+
+    return () => {
+      active = false;
+      listener.subscription.unsubscribe();
+    };
   }, []);
 
-  const login = async () => {
-    setError("");
-    setSigningIn(true);
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+
+    if (dialogOpen && !dialog.open) dialog.showModal();
+    if (!dialogOpen && dialog.open) dialog.close();
+  }, [dialogOpen]);
+
+  const closeDialog = () => {
+    setDialogOpen(false);
+    setFeedback(null);
+    setPassword("");
+  };
+
+  const submitAuth = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setFeedback(null);
+    setSubmitting(true);
+
     try {
-      const { error: authError } = await supabase.auth.signInWithOAuth({
-        provider: "github",
-        options: { redirectTo: getAuthCallbackUrl() },
-      });
-      if (!authError) return;
-      setError("Chưa mở được đăng nhập GitHub. Thử lại sau ít phút.");
-    } catch {
-      setError("Không kết nối được dịch vụ đăng nhập. Kiểm tra mạng rồi thử lại.");
+      if (mode === "signIn") {
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email: email.trim(),
+          password,
+        });
+        if (error) throw error;
+        setUser(data.user);
+        closeDialog();
+      } else {
+        const { data, error } = await supabase.auth.signUp({
+          email: email.trim(),
+          password,
+          options: { emailRedirectTo: getAuthCallbackUrl() },
+        });
+        if (error) throw error;
+
+        if (data.session && data.user) {
+          setUser(data.user);
+          closeDialog();
+        } else {
+          setFeedback({
+            kind: "success",
+            message: "Đã gửi email xác nhận. Mở thư trong hộp thư đến để hoàn tất đăng ký.",
+          });
+        }
+      }
+    } catch (error) {
+      setFeedback({ kind: "error", message: getAuthErrorMessage(error) });
+    } finally {
+      setSubmitting(false);
     }
-    setSigningIn(false);
   };
 
   const logout = async () => {
@@ -53,25 +121,18 @@ export default function AuthButton() {
 
   if (user) {
     const avatar = user.user_metadata?.avatar_url;
-    const username = user.user_metadata?.user_name || user.email;
+    const username = user.user_metadata?.user_name || user.user_metadata?.display_name || user.email || "Tài khoản";
+
     return (
       <div className="auth-user">
         {avatar && (
           // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={avatar}
-            alt={username}
-            width={32}
-            height={32}
-          />
+          <img src={avatar} alt={username} width={32} height={32} />
         )}
         <span className="auth-user-name" title={username}>
           {username}
         </span>
-        <button
-          onClick={logout}
-          className="auth-logout"
-        >
+        <button onClick={logout} className="auth-logout" type="button">
           Đăng xuất
         </button>
       </div>
@@ -79,15 +140,99 @@ export default function AuthButton() {
   }
 
   return (
-    <div className="auth-button-wrap">
-      <button onClick={login} className="auth-button" disabled={signingIn} aria-busy={signingIn}>
-        <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
-      </svg>
-        {signingIn ? "Đang chuyển đến GitHub…" : "Đăng nhập GitHub"}
+    <>
+      <button
+        onClick={() => {
+          setMode("signIn");
+          setFeedback(null);
+          setDialogOpen(true);
+        }}
+        className="auth-button"
+        type="button"
+      >
+        Đăng nhập
       </button>
-      {error && <span className="auth-button-error" role="alert">{error}</span>}
-    </div>
+
+      <dialog
+        ref={dialogRef}
+        className="auth-dialog"
+        aria-labelledby={dialogTitleId}
+        onCancel={closeDialog}
+        onClose={() => setDialogOpen(false)}
+        onClick={(event) => {
+          if (event.target === event.currentTarget) closeDialog();
+        }}
+      >
+        <div className="auth-dialog-content">
+          <div className="auth-dialog-heading">
+            <div>
+              <span className="eyebrow">TÀI KHOẢN</span>
+              <h2 id={dialogTitleId}>{mode === "signIn" ? "Đăng nhập" : "Tạo tài khoản"}</h2>
+            </div>
+            <button className="auth-dialog-close" type="button" onClick={closeDialog} aria-label="Đóng">
+              ×
+            </button>
+          </div>
+
+          <p className="auth-dialog-description">Dùng email để lưu tiến độ học trên các thiết bị.</p>
+
+          <form className="auth-dialog-form" onSubmit={submitAuth}>
+            <label className="auth-dialog-field" htmlFor={emailInputId}>
+              Email
+              <input
+                id={emailInputId}
+                type="email"
+                autoComplete="email"
+                autoFocus
+                required
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+                disabled={submitting}
+              />
+            </label>
+            <label className="auth-dialog-field" htmlFor={passwordInputId}>
+              Mật khẩu
+              <input
+                id={passwordInputId}
+                type="password"
+                autoComplete={mode === "signIn" ? "current-password" : "new-password"}
+                minLength={mode === "signUp" ? 6 : undefined}
+                required
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+                disabled={submitting}
+              />
+            </label>
+
+            {feedback && (
+              <p
+                className={`auth-dialog-feedback auth-dialog-feedback-${feedback.kind}`}
+                role={feedback.kind === "error" ? "alert" : "status"}
+              >
+                {feedback.message}
+              </p>
+            )}
+
+            <button className="button-primary auth-dialog-submit" type="submit" disabled={submitting}>
+              {submitting ? "Đang xử lý…" : mode === "signIn" ? "Đăng nhập" : "Tạo tài khoản"}
+            </button>
+          </form>
+
+          <p className="auth-dialog-switch">
+            {mode === "signIn" ? "Chưa có tài khoản?" : "Đã có tài khoản?"}{" "}
+            <button
+              type="button"
+              onClick={() => {
+                setMode((current) => current === "signIn" ? "signUp" : "signIn");
+                setFeedback(null);
+              }}
+              disabled={submitting}
+            >
+              {mode === "signIn" ? "Đăng ký" : "Đăng nhập"}
+            </button>
+          </p>
+        </div>
+      </dialog>
+    </>
   );
 }
-
