@@ -98,7 +98,7 @@ Website chạy dưới đường dẫn `/JavaBackend_AI_RoadMap`. Trong Supabase
 - **Site URL:** `https://vandung279206.github.io/JavaBackend_AI_RoadMap/`
 - **Redirect URL:** `https://vandung279206.github.io/JavaBackend_AI_RoadMap/auth/callback`
 
-Trong Authentication → Providers → GitHub, bật GitHub provider và đưa Callback URL Supabase hiển thị ở đó vào cấu hình GitHub OAuth App. Nếu callback bị từ chối hoặc GitHub Pages báo 404 sau khi đăng nhập, so lại hai URL phía trên; không dùng URL gốc `https://vandung279206.github.io/` làm Site URL cho website đặt dưới repository.
+Website dùng đăng nhập bằng email và mật khẩu qua Supabase; không cần cấu hình GitHub OAuth. Trong Authentication → Sign In / Providers, bật Email. Nếu yêu cầu xác nhận email, giữ Redirect URL phía trên trong danh sách cho phép. Không dùng URL gốc `https://vandung279206.github.io/` làm Site URL cho website đặt dưới repository.
 
 Để bật kho tài liệu, chạy [`database/migrations/V3__community_resources.sql`](database/migrations/V3__community_resources.sql) một lần trong Supabase SQL Editor sau V2. Tệp tải lên được giữ riêng tư cho tới khi quản trị viên duyệt; kho chỉ nhận PDF, DOCX, TXT và Markdown, tối đa 15 MB.
 
