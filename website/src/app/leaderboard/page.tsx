@@ -79,7 +79,7 @@ export default function LeaderboardPage() {
           </ol>
         )}
       </div>
-      <p className="leaderboard-note">Tiến độ đồng bộ khi bạn đăng nhập bằng GitHub.</p>
+      <p className="leaderboard-note">Đăng nhập bằng email để đồng bộ tiến độ học.</p>
     </section>
   );
 }
