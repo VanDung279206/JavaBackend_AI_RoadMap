@@ -3650,18 +3650,124 @@ a.phase-card:hover .phase-card-content {
   margin-top: 0.65rem;
 }
 
-.auth-button-wrap {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.25rem;
+.auth-dialog {
+  width: min(calc(100% - 2rem), 440px);
+  max-height: min(90vh, 640px);
+  overflow-y: auto;
+  margin: auto;
+  border: 1px solid var(--border);
+  padding: 0;
+  color: var(--foreground);
+  background: var(--card);
+  box-shadow: var(--shadow-soft);
 }
 
-.auth-button-error {
-  max-width: 230px;
-  color: #8b3832;
-  font-size: 0.65rem;
-  line-height: 1.3;
+.auth-dialog::backdrop {
+  background: rgb(14 20 25 / 55%);
+  backdrop-filter: blur(3px);
+}
+
+.auth-dialog-content {
+  display: grid;
+  gap: 1rem;
+  padding: 1.4rem;
+}
+
+.auth-dialog-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.auth-dialog-heading h2 {
+  margin-top: 0.4rem;
+  font-size: 1.45rem;
+}
+
+.auth-dialog-close {
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid var(--border);
+  color: var(--foreground);
+  background: var(--background);
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.auth-dialog-description {
+  color: var(--muted-foreground);
+  font-size: 0.9rem;
+}
+
+.auth-dialog-form {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.auth-dialog-field {
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  font-weight: 650;
+}
+
+.auth-dialog-field input {
+  width: 100%;
+  min-height: 42px;
+  border: 1px solid var(--border);
+  padding: 0.55rem 0.7rem;
+  color: var(--foreground);
+  background: var(--background);
+  font: inherit;
+  font-weight: 400;
+}
+
+.auth-dialog-field input:focus-visible,
+.auth-dialog-close:focus-visible,
+.auth-dialog-switch button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.auth-dialog-submit {
+  width: 100%;
+  min-height: 42px;
+}
+
+.auth-dialog-submit:disabled {
+  cursor: progress;
+  opacity: 0.65;
+}
+
+.auth-dialog-feedback {
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.auth-dialog-feedback-error {
+  color: #a33b35;
+}
+
+.auth-dialog-feedback-success {
+  color: #28734d;
+}
+
+.auth-dialog-switch {
+  color: var(--muted-foreground);
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+.auth-dialog-switch button {
+  border: 0;
+  padding: 0;
+  color: var(--accent);
+  background: transparent;
+  font: inherit;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 .auth-callback-shell {
