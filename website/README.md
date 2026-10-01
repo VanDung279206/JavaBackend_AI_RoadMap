@@ -6,7 +6,7 @@ Website học tập tại **[VanDung279206.github.io/JavaBackend_AI_RoadMap](htt
 
 - 🗺️ Roadmap 7 phase từ Java cơ bản đến RAG
 - 📚 Bài tập & lời giải ẩn/hiện theo từng phase
-- ✅ Theo dõi tiến độ lưu cloud (đăng nhập GitHub)
+- ✅ Theo dõi tiến độ lưu cloud (đăng nhập email)
 - 🏆 Bảng xếp hạng người học
 - 🔍 Command Palette `Ctrl+K`
 - ⚙️ Admin dashboard quản lý người học
@@ -17,7 +17,7 @@ Website học tập tại **[VanDung279206.github.io/JavaBackend_AI_RoadMap](htt
 |---|---|
 | Framework | Next.js 16 (Static Export) |
 | Styling | Tailwind CSS 4 |
-| Auth + DB | Supabase (GitHub OAuth + PostgreSQL) |
+| Auth + DB | Supabase (email/password + PostgreSQL) |
 | Deploy | GitHub Pages + GitHub Actions |
 | Forum | Giscus (GitHub Discussions) |
 
@@ -60,7 +60,7 @@ website/
 │   │   ├── docs/[phase]/     # Bài tập theo phase
 │   │   ├── leaderboard/      # Bảng xếp hạng
 │   │   ├── admin/            # Dashboard quản trị
-│   │   └── auth/callback/    # OAuth callback
+│   │   └── auth/callback/    # Xác nhận email
 │   ├── components/
 │   │   ├── sections/         # LearningDashboard, InteractiveRoadmap, ProjectShowcase
 │   │   ├── command/          # SearchCommand (Ctrl+K)
