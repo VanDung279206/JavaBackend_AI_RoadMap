@@ -2479,11 +2479,31 @@ a.phase-card:hover .phase-card-content {
 }
 
 .code-playground-note {
+  display: grid;
+  gap: 0.35rem;
   border-top: 1px solid #d8d5ca;
   padding: 0.55rem 0.7rem;
   color: var(--muted-foreground);
   font-size: 0.66rem;
   line-height: 1.45;
+}
+
+.code-playground-note p {
+  margin: 0;
+}
+
+.code-playground-hint {
+  color: var(--foreground);
+}
+
+.code-playground-hint kbd {
+  border: 1px solid #c4c0b3;
+  border-radius: 2px;
+  padding: 0.08rem 0.3rem;
+  color: var(--foreground);
+  background: #f9f7f0;
+  font: inherit;
+  font-weight: 750;
 }
 
 .local-check-callout {
