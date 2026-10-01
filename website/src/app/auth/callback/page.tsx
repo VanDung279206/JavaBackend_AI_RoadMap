@@ -10,7 +10,7 @@ function homePath() {
 }
 
 export default function AuthCallbackPage() {
-  const [message, setMessage] = useState("Đang xác nhận tài khoản GitHub…");
+  const [message, setMessage] = useState("Đang xác nhận email…");
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -20,7 +20,7 @@ export default function AuthCallbackPage() {
 
     if (providerError) {
       const frame = window.requestAnimationFrame(() => {
-        if (active) setError("GitHub chưa hoàn tất đăng nhập. Hãy thử lại; nếu lỗi lặp lại, kiểm tra URL chuyển hướng trong Supabase.");
+        if (active) setError("Liên kết xác nhận không hợp lệ hoặc đã hết hạn. Hãy yêu cầu gửi email xác nhận mới.");
       });
       return () => {
         active = false;
@@ -31,7 +31,7 @@ export default function AuthCallbackPage() {
     supabase.auth.getSession().then(({ data, error: sessionError }) => {
       if (!active) return;
       if (sessionError || !data.session) {
-        setError("Không nhận được phiên đăng nhập. Kiểm tra Supabase Auth → URL Configuration: Site URL và Redirect URLs phải có https://vandung279206.github.io/JavaBackend_AI_RoadMap/auth/callback.");
+        setError("Không nhận được phiên đăng nhập. Hãy mở liên kết xác nhận trong email trên trình duyệt này và kiểm tra URL Configuration trong Supabase.");
         return;
       }
       setMessage("Đăng nhập thành công. Đang quay lại trang học…");
