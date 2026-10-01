@@ -13,6 +13,11 @@ type EditorFile = { name: string; content: string };
 type EditorMessage = { language?: string; files?: EditorFile[] };
 
 const EDITOR_ORIGIN = "https://onecompiler.com";
+const JAVA_SNIPPETS: Record<string, string> = {
+  classa: "public class Main {\n    \n}",
+  maina: "public static void main(String args[]) {\n    \n}",
+  sout: "System.out.println();",
+};
 
 function toEditorFiles(files: unknown): EditorFile[] | null {
   if (!Array.isArray(files) || files.length === 0 || files.length > 12) return null;
@@ -25,14 +30,35 @@ function toEditorFiles(files: unknown): EditorFile[] | null {
   return valid.length === files.length ? valid : null;
 }
 
+function expandJavaSnippet(files: EditorFile[]): EditorFile[] | null {
+  const source = files[0];
+  if (!source) return null;
+
+  const lines = source.content.split(/\r?\n/);
+  const lineIndex = lines.findIndex((line) => Object.hasOwn(JAVA_SNIPPETS, line.trim()));
+  if (lineIndex < 0) return null;
+
+  const line = lines[lineIndex];
+  const indentation = line.match(/^[\t ]*/)?.[0] ?? "";
+  const snippet = JAVA_SNIPPETS[line.trim()];
+  const lineEnding = source.content.includes("\r\n") ? "\r\n" : "\n";
+  lines.splice(lineIndex, 1, ...snippet.split("\n").map((part) => `${indentation}${part}`));
+
+  return files.map((file, index) => index === 0
+    ? { ...file, content: lines.join(lineEnding) }
+    : file,
+  );
+}
+
 export default function CodePlayground({ exerciseId, seed }: Props) {
   const frameRef = useRef<HTMLIFrameElement>(null);
   const seedRef = useRef(seed);
   const [ready, setReady] = useState(false);
   const [hasDraft, setHasDraft] = useState(false);
   const [message, setMessage] = useState("Đang mở trình chạy…");
-  const storageKey = `roadmap-code-${exerciseId}`;
-  const [files, setFiles] = useState<EditorFile[]>([{ name: seed.filename, content: seed.code }]);
+  const storageKey = `roadmap-code-v2-${exerciseId}`;
+  const [files, setFiles] = useState<EditorFile[]>([{ name: seed.filename, content: "" }]);
+  const hasCode = files.some((file) => file.content.trim().length > 0);
 
   const src = useMemo(() => {
     const query = new URLSearchParams({
@@ -55,7 +81,7 @@ export default function CodePlayground({ exerciseId, seed }: Props) {
   }, [seed.language]);
 
   const loadEditor = useCallback(() => {
-    let files = [{ name: seedRef.current.filename, content: seedRef.current.code }];
+    let files = [{ name: seedRef.current.filename, content: "" }];
     try {
       const saved = localStorage.getItem(storageKey);
       if (saved) {
@@ -85,25 +111,33 @@ export default function CodePlayground({ exerciseId, seed }: Props) {
       const data = event.data;
       const files = toEditorFiles(data?.files);
       if (!data || data.language !== seed.language || !files) return;
-      setFiles(files);
+      const nextFiles = data.language === "java" ? expandJavaSnippet(files) ?? files : files;
+      if (nextFiles !== files) sendFiles(nextFiles);
+      setFiles(nextFiles);
       try {
-        localStorage.setItem(storageKey, JSON.stringify({ language: data.language, files }));
-        setHasDraft(true);
-        setMessage("Bản nháp đã lưu trên thiết bị này");
+        if (nextFiles.some((file) => file.content.trim().length > 0)) {
+          localStorage.setItem(storageKey, JSON.stringify({ language: data.language, files: nextFiles }));
+          setHasDraft(true);
+          setMessage("Bản nháp đã lưu trên thiết bị này");
+        } else {
+          localStorage.removeItem(storageKey);
+          setHasDraft(false);
+          setMessage("Trình chạy sẵn sàng");
+        }
       } catch {
         setMessage("Không thể lưu bản nháp trên thiết bị này");
       }
     };
     window.addEventListener("message", onMessage);
     return () => window.removeEventListener("message", onMessage);
-  }, [seed.language, storageKey]);
+  }, [seed.language, sendFiles, storageKey]);
 
   const reset = () => {
     try { localStorage.removeItem(storageKey); } catch { /* Storage can be disabled by the browser. */ }
     setHasDraft(false);
-    const initialFiles = [{ name: seed.filename, content: seed.code }];
+    const initialFiles = [{ name: seed.filename, content: "" }];
     setFiles(initialFiles);
-    setMessage("Đã nạp lại mã mẫu");
+    setMessage("Đã xóa mã");
     sendFiles(initialFiles);
   };
 
@@ -125,16 +159,16 @@ export default function CodePlayground({ exerciseId, seed }: Props) {
           <SquareTerminal size={18} aria-hidden="true" />
           <div>
             <h3 id={`runner-${exerciseId}`}>Chạy {seed.filename}</h3>
-            <p>{seed.language === "java" ? "Java · một file" : "PostgreSQL · dữ liệu mẫu"}</p>
+            <p>{seed.language === "java" ? "Java · một file" : "PostgreSQL · một file"}</p>
           </div>
         </div>
         <div className="code-playground-actions">
           <span className="code-playground-status" role="status">{message}</span>
-          <button type="button" className="code-reset-button" onClick={reset} title="Nạp lại mã mẫu" disabled={!ready}>
+          <button type="button" className="code-reset-button" onClick={reset} title="Xóa mã để bắt đầu lại" disabled={!ready || !hasCode}>
             <RotateCcw size={14} aria-hidden="true" />
-            <span>{hasDraft ? "Nạp lại mã mẫu" : "Mã mẫu"}</span>
+            <span>{hasDraft ? "Xóa bản nháp" : "Xóa mã"}</span>
           </button>
-          <button type="button" className="code-reset-button" onClick={download} title="Tải file đang sửa" disabled={!ready}>
+          <button type="button" className="code-reset-button" onClick={download} title="Tải file đang sửa" disabled={!ready || !hasCode}>
             <Download size={14} aria-hidden="true" />
             <span>Tải file</span>
           </button>
@@ -149,9 +183,14 @@ export default function CodePlayground({ exerciseId, seed }: Props) {
         allow="clipboard-read; clipboard-write"
         onLoad={() => { setReady(true); loadEditor(); }}
       />
-      <p className="code-playground-note">
-        Bản nháp được lưu trên trình duyệt này. Khi bấm Run, mã được gửi tới OneCompiler để biên dịch và chạy.
-      </p>
+      <div className="code-playground-note">
+        {seed.language === "java" && (
+          <p className="code-playground-hint">
+            <strong>Gợi ý Java:</strong> gõ <kbd>classa</kbd> để tạo lớp, <kbd>maina</kbd> để tạo hàm main, hoặc <kbd>sout</kbd> để chèn lệnh in.
+          </p>
+        )}
+        <p>Trình soạn thảo bắt đầu trống. Bản nháp lưu trên trình duyệt này; khi bấm Run, mã được gửi tới OneCompiler để chạy.</p>
+      </div>
       {!ready && <span className="sr-only">Đang tải trình chạy</span>}
     </section>
   );
