@@ -19,7 +19,7 @@ python3 scripts/new_spring_lab.py --phase 4 --destination work/spring-p4
 | P1.2 | cùng file, Catalog | `--id P1.2`; giữ nguyên dữ liệu khi trùng ID | cùng file solution |
 | P1.3 | cùng file, wordCounts | `--id P1.3`; cả input trắng | cùng file solution |
 | P1.4 | cùng file, search | `--id P1.4`; thứ tự ID ổn định | cùng file solution |
-| P2.1 | `practice/sql/API_CONTRACT.md` | bảng method/path/status và request/response; tự chấm rubric | `phases/02-http-sql/SOLUTIONS.md` |
+| P2.1 | `practice/sql/API_CONTRACT.md` | bảng method/path/status và request/response; tự chấm rubric | `phases/02_Http-Sql/SOLUTIONS.md` |
 | P2.2 | `practice/sql/starter.sql` counts | lệnh psql trong README sql | `practice/sql/solution.sql` |
 | P2.3 | cùng file, next_page | psql: sau cursor 102 phải nhận 101 | cùng file solution |
 | P2.4 | cùng file, rollback/commit | psql + ghi bằng chứng transaction | cùng file solution |
