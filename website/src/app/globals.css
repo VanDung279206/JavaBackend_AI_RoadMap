@@ -3971,3 +3971,21 @@ a.phase-card:hover .phase-card-content {
   }
 }
 
+/* Learning workspaces share flexible controls on mobile and desktop. */
+.learning-card { padding: 1rem; margin: 1rem 0; border: 1px solid var(--border); border-radius: 12px; min-width: 0; background: var(--card); }
+.learning-card h2, .learning-card h3 { margin: .5rem 0; }
+.learning-card p { margin: .65rem 0; }
+.learning-card label { display: block; margin: .7rem 0; }
+.learning-card textarea { display: block; width: 100%; min-height: 100px; padding: .6rem; }
+.learning-card input:not([type=checkbox]), .learning-card select { max-width: 100%; padding: .4rem; }
+.learning-card textarea, .learning-card input, .learning-card select, .learning-progress-row select { color: var(--foreground); background: var(--background); border: 1px solid var(--border); border-radius: 6px; }
+.learning-card pre { max-width: 100%; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; padding: .75rem; }
+.learning-actions { display:flex; gap:.7rem; flex-wrap:wrap; margin:.8rem 0; }
+.learning-card button,.learning-actions button,.learning-progress-row button { border:1px solid var(--border); border-radius:6px; padding:.5rem .75rem; cursor:pointer; }
+.learning-card button:disabled { opacity:.5; cursor:wait; }
+.learning-progress-row { display:flex; gap:.7rem; align-items:center; flex-wrap:wrap; padding:.7rem 0; }
+.learning-progress-row label { flex:1 1 220px; }
+.learning-progress-row select { max-width:100%; padding:.4rem; }
+.learning-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr)); gap:1rem; }
+.submission-source { font-family:monospace; min-height:180px!important; }
+@media(max-width:700px) { .learning-tools { min-width:0; } .learning-progress-row { align-items:stretch; flex-direction:column; } .learning-progress-row label { flex:0 1 auto; } }
