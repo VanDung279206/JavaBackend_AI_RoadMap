@@ -1,0 +1,248 @@
+{
+  "recorded_at": "2026-10-03T15:14:31.877891+00:00",
+  "branch": "RoadMap_v3",
+  "base": "e50b9fd",
+  "scope": "Reference/fixtures only; never learner completion",
+  "offline": {
+    "created_at": "2026-10-03T14:57:49.430927+00:00",
+    "scope": "reference verification; not learner completion",
+    "status": "PASS",
+    "checks": [
+      {
+        "name": "environment-offline",
+        "status": "PASS",
+        "detail": "Required probes passed"
+      },
+      {
+        "name": "legacy-labs",
+        "status": "PASS",
+        "detail": "exit=0",
+        "log": "legacy-labs.log",
+        "elapsed_seconds": 1.81
+      },
+      {
+        "name": "practice-reference",
+        "status": "PASS",
+        "detail": "exit=0",
+        "log": "practice-reference.log",
+        "elapsed_seconds": 1.83
+      },
+      {
+        "name": "debug-reference",
+        "status": "PASS",
+        "detail": "exit=0",
+        "log": "debug-reference.log",
+        "elapsed_seconds": 1.27
+      },
+      {
+        "name": "mixed-reference",
+        "status": "PASS",
+        "detail": "exit=0",
+        "log": "mixed-reference.log",
+        "elapsed_seconds": 1.23
+      },
+      {
+        "name": "concurrency-reference",
+        "status": "PASS",
+        "detail": "exit=0",
+        "log": "concurrency-reference.log",
+        "elapsed_seconds": 2.36
+      },
+      {
+        "name": "app-core",
+        "status": "PASS",
+        "detail": "exit=0",
+        "log": "app-core.log",
+        "elapsed_seconds": 1.09
+      },
+      {
+        "name": "learning-tools",
+        "status": "PASS",
+        "detail": "exit=0",
+        "log": "learning-tools.log",
+        "elapsed_seconds": 3.64
+      },
+      {
+        "name": "english-diagnostics",
+        "status": "PASS",
+        "detail": "exit=0",
+        "log": "english-diagnostics.log",
+        "elapsed_seconds": 2.66
+      },
+      {
+        "name": "foundations-reference",
+        "status": "PASS",
+        "detail": "exit=0",
+        "log": "foundations-reference.log",
+        "elapsed_seconds": 9.27
+      },
+      {
+        "name": "rag-safety-reference",
+        "status": "PASS",
+        "detail": "exit=0",
+        "log": "rag-safety-reference.log",
+        "elapsed_seconds": 1.16
+      },
+      {
+        "name": "markdown-links",
+        "status": "PASS",
+        "detail": "exit=0",
+        "log": "markdown-links.log",
+        "elapsed_seconds": 0.3
+      },
+      {
+        "name": "practice-rejects-unfinished-starter",
+        "status": "PASS",
+        "detail": "exit=1",
+        "log": "practice-rejects-unfinished-starter.log",
+        "elapsed_seconds": 1.66
+      },
+      {
+        "name": "debug-rejects-unfinished-starter",
+        "status": "PASS",
+        "detail": "exit=1",
+        "log": "debug-rejects-unfinished-starter.log",
+        "elapsed_seconds": 1.14
+      },
+      {
+        "name": "mixed-rejects-unfinished-starter",
+        "status": "PASS",
+        "detail": "exit=1",
+        "log": "mixed-rejects-unfinished-starter.log",
+        "elapsed_seconds": 1.2
+      },
+      {
+        "name": "concurrency-rejects-unfinished-starter",
+        "status": "PASS",
+        "detail": "exit=1",
+        "log": "concurrency-rejects-unfinished-starter.log",
+        "elapsed_seconds": 1.27
+      },
+      {
+        "name": "foundations-rejects-unfinished-starter",
+        "status": "PASS",
+        "detail": "exit=1",
+        "log": "foundations-rejects-unfinished-starter.log",
+        "elapsed_seconds": 1.19
+      },
+      {
+        "name": "advanced-rejects-unfinished-starter",
+        "status": "PASS",
+        "detail": "exit=1",
+        "log": "advanced-rejects-unfinished-starter.log",
+        "elapsed_seconds": 1.2
+      }
+    ]
+  },
+  "integration": {
+    "created_at": "2026-10-03T15:05:09.127395+00:00",
+    "scope": "reference verification; not learner completion",
+    "status": "PASS",
+    "checks": [
+      {
+        "name": "environment-integration",
+        "status": "PASS",
+        "detail": "Required probes passed"
+      },
+      {
+        "name": "maven-wrapper-bootstrap",
+        "status": "PASS",
+        "detail": "exit=0",
+        "log": "maven-wrapper-bootstrap.log",
+        "elapsed_seconds": 0.52
+      },
+      {
+        "name": "maven-junit",
+        "status": "PASS",
+        "detail": "exit=0",
+        "log": "maven-junit.log",
+        "elapsed_seconds": 4.72
+      },
+      {
+        "name": "real-ai-adapter-build",
+        "status": "PASS",
+        "detail": "exit=0",
+        "log": "real-ai-adapter-build.log",
+        "elapsed_seconds": 54.49
+      },
+      {
+        "name": "spring-postgres-tests",
+        "status": "PASS",
+        "detail": "exit=0",
+        "log": "spring-postgres-tests.log",
+        "elapsed_seconds": 53.84
+      },
+      {
+        "name": "sql-postgres-fixture",
+        "status": "PASS",
+        "detail": "exit=0",
+        "log": "sql-postgres-fixture.log",
+        "elapsed_seconds": 0.28
+      },
+      {
+        "name": "docker-build",
+        "status": "PASS",
+        "detail": "exit=0",
+        "log": "docker-build.log",
+        "elapsed_seconds": 172.84
+      },
+      {
+        "name": "docker-http-postgres",
+        "status": "PASS",
+        "detail": "CRUD, owner, stale write, app restart persistence and fixture cleanup"
+      }
+    ]
+  },
+  "live": {
+    "created_at": "2026-10-03T15:05:46.334222+00:00",
+    "scope": "reference verification; not learner completion",
+    "status": "BLOCKED",
+    "checks": [
+      {
+        "name": "environment-live",
+        "status": "BLOCKED",
+        "detail": "Environment DB_PASSWORD, Environment APP_AN_PASSWORD, Environment APP_BINH_PASSWORD, Environment OLLAMA_CHAT_MODEL, Environment OLLAMA_EMBED_MODEL, Environment EMBEDDING_DIMENSIONS, Embedding dimensions, Ollama"
+      },
+      {
+        "name": "live-http-ai",
+        "status": "BLOCKED",
+        "detail": "Live provider configuration incomplete; no model evaluation was run"
+      }
+    ]
+  },
+  "load_probe": {
+    "requests": 40,
+    "failed": 0,
+    "p50_ms": 0.0,
+    "p95_ms": 187.9999999946449,
+    "matching_request_ids": 40
+  },
+  "database": {
+    "status": "PASS",
+    "log": "checks/database-v3-account-guard.log",
+    "scope": "V1-V6, legacy preservation, owner/revision/RLS, fake grade, SQL Q01, seeded backup/restore"
+  },
+  "python_tests": {
+    "status": "PASS",
+    "tests": 21
+  },
+  "website_domain_tests": {
+    "status": "PASS",
+    "tests": 9
+  },
+  "spring_reference": {
+    "status": "PASS",
+    "tests": 16
+  },
+  "learner_negative_tests": {
+    "F01": "Expected assertion: 1 query vs 4",
+    "O01": "Expected two failures: missing propagated/generated request ID"
+  },
+  "blocked": [
+    "Trusted Java/Maven web grading worker implementation/deployment",
+    "Live model retrieval/answer/citation evaluation",
+    "Supabase Auth/email/Storage gateway E2E",
+    "Final desktop/mobile browser inspection blocked by browser policy",
+    "Commit evidence integration and model tutor"
+  ]
+}
