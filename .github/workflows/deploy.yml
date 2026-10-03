@@ -28,15 +28,9 @@ jobs:
           cache: "npm"
           cache-dependency-path: website/package-lock.json
 
-      - name: Copy markdown content
-        run: |
-          mkdir -p website/public/content
-          for phase in phases/01_Java phases/02_Http-Sql phases/03_Spring phases/04_Quality phases/05_AI phases/06_RAG; do
-            slug=$(basename $phase)
-            mkdir -p website/public/content/$slug
-            [ -f "$phase/EXERCISES.md" ] && cp "$phase/EXERCISES.md" "website/public/content/$slug/EXERCISES.md"
-            [ -f "$phase/SOLUTIONS.md" ] && cp "$phase/SOLUTIONS.md" "website/public/content/$slug/SOLUTIONS.md"
-          done
+      - name: Validate generated catalogue
+        working-directory: ${{ github.workspace }}
+        run: node scripts/build_catalogue.mjs --check
 
       - name: Install dependencies
         run: npm ci
