@@ -1,0 +1,8 @@
+[
+ {"id":"J01","question":"int a=2147483647; long b=a+1; kết quả b?","choices":["2147483648","-2147483648","Không biên dịch"],"answer":1,"explanation":"Phép cộng thực hiện bằng int trước khi gán long. Ép kiểu trước phép cộng."},
+ {"id":"J02","question":"Hai key equal có bắt buộc cùng hashCode không?","choices":["Có","Không","Chỉ với HashMap"],"answer":0,"explanation":"Hợp đồng Object yêu cầu equal ⇒ cùng hashCode; chiều ngược lại không đúng."},
+ {"id":"Q01","question":"LEFT JOIN user không có document: COUNT(document.id) bằng bao nhiêu?","choices":["1","NULL","0"],"answer":2,"explanation":"COUNT(column) bỏ null; COUNT(*) đếm cả hàng đệm."},
+ {"id":"F01","question":"Đọc 3 parent rồi 3 collection LAZY chưa được cache thường gây bao nhiêu query?","choices":["1","4","3"],"answer":1,"explanation":"1 query lấy parent và N query lấy collection. Hãy đo query count thay vì suy đoán."},
+ {"id":"A01","question":"Context 100, output reserve 20, prompt 81 token có vừa không?","choices":["Có","Không","Tùy số ký tự"],"answer":1,"explanation":"81+20=101 vượt 100; số token phải tính bằng tokenizer của model."},
+ {"id":"A03","question":"Job v1 hoàn thành sau khi v2 được publish: xử lý thế nào?","choices":["Ghi đè vì kết thúc sau","Nối chunk v1 với v2","Bỏ kết quả v1"],"answer":2,"explanation":"Version hiện hành quyết định dữ liệu hợp lệ; thời điểm job kết thúc không thay thế version."}
+]
