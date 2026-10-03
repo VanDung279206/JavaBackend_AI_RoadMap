@@ -4,12 +4,16 @@ Website học tập tại **[VanDung279206.github.io/JavaBackend_AI_RoadMap](htt
 
 ## Tính năng
 
-- 🗺️ Roadmap 7 phase từ Java cơ bản đến RAG
+- 🗺️ Roadmap chính và các track mở rộng sinh từ `learning/catalogue.json`
 - 📚 Bài tập & lời giải ẩn/hiện theo từng phase
-- ✅ Theo dõi tiến độ lưu cloud (đăng nhập email)
-- 🏆 Bảng xếp hạng người học
+- ✅ Tiến độ khách/tài khoản, dự phòng offline, nhập khách có chủ ý và xử lý xung đột
+- 🏆 Tách xếp hạng tự khai báo và kết quả có bằng chứng từ worker
 - 🔍 Command Palette `Ctrl+K`
 - ⚙️ Admin dashboard quản lý người học
+- Hôm nay học gì, lịch ôn, phòng khám lỗi, gợi ý ba cấp, ghi chú/bookmark và reset password
+- Kiểm tra đầu vào, bản đồ tiên quyết, mô phỏng retrieval và luồng request
+
+Chạy thử/nộp bài được lưu riêng; Java/Maven grading là **BLOCKED** cho đến khi có worker cô lập. Không chạy mã bài nộp trong Next.js. Xem [phạm vi kiểm chứng](../VALIDATION.md) và [nâng cấp database](../docs/UPGRADE_V3.md).
 
 ## Tech Stack
 
@@ -25,7 +29,7 @@ Website học tập tại **[VanDung279206.github.io/JavaBackend_AI_RoadMap](htt
 
 ```bash
 cd website
-npm install
+npm ci
 ```
 
 ## Cấu hình môi trường
@@ -34,6 +38,10 @@ npm install
 cp .env.example .env.local
 # Điền NEXT_PUBLIC_SUPABASE_URL và NEXT_PUBLIC_SUPABASE_ANON_KEY
 ```
+
+Áp dụng V4 → `database/catalogue_seed.sql` → V5 → V6 sau V1–V3. Thêm URL `https://<host>/JavaBackend_AI_RoadMap/auth/reset` vào Supabase Auth Redirect URLs. Frontend chỉ dùng anon key; không đưa service-role key vào web. Database test chạy riêng bằng `python3 scripts/check_database.py` và Docker.
+
+Trước build chạy `npm test` và `npm run lint`. `prebuild` sinh catalogue; CI chạy `node scripts/build_catalogue.mjs --check` từ root để phát hiện nội dung lệch. Chỉnh nguồn Markdown/catalogue, không chỉnh trực tiếp `src/generated/catalogue.json`.
 
 ## Chạy local
 
