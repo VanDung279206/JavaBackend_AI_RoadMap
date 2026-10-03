@@ -40,9 +40,12 @@ def offline(r):
  if any(row['status']=='BLOCKED' for row in r.doctor('offline')):
   r.add('offline-programs','BLOCKED','JDK/Python prerequisites missing');return
  commands=[('legacy-labs',[sys.executable,'labs/run_checks.py']),('practice-reference',[sys.executable,'scripts/check.py','--mode','solution']),('debug-reference',[sys.executable,'scripts/check.py','--track','debug','--mode','solution']),('mixed-reference',[sys.executable,'scripts/check.py','--track','mixed','--mode','solution']),('concurrency-reference',[sys.executable,'scripts/check.py','--track','concurrency','--mode','solution']),('app-core',[sys.executable,'scripts/check_app_core.py']),('learning-tools',[sys.executable,'-m','unittest','discover','-s','scripts/tests','-v']),('english-diagnostics',[sys.executable,'scripts/error_examples.py','--verify'])]
+ commands.extend([('foundations-reference',[sys.executable,'scripts/check.py','--track','foundations','--mode','solution']),('rag-safety-reference',[sys.executable,'scripts/check.py','--track','advanced','--mode','solution']),('markdown-links',[sys.executable,'scripts/check_links.py'])])
  for name,args in commands:r.command(name,args)
  for track,id in [('practice','P1.1'),('debug','B01'),('mixed','M01'),('concurrency','C01')]:
   r.command(track+'-rejects-unfinished-starter',[sys.executable,'scripts/check.py','--track',track,'--id',id],expected=1,marker='FAIL')
+ for track,id in [('foundations','J01'),('advanced','A01')]:
+  r.command(track+'-rejects-unfinished-starter',[sys.executable,'scripts/check.py','--track',track,'--id',id],expected=1,marker='TODO')
 
 def wait_until(action,timeout):
  deadline=time.monotonic()+timeout
