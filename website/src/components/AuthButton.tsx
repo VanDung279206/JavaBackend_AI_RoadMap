@@ -4,7 +4,7 @@ import { useEffect, useId, useRef, useState, type FormEvent } from "react";
 import { supabase } from "@/lib/supabase";
 import type { User } from "@supabase/supabase-js";
 
-type AuthMode = "signIn" | "signUp";
+type AuthMode = "signIn" | "signUp" | "reset";
 type AuthFeedback = { kind: "error" | "success"; message: string };
 
 function getAuthCallbackUrl() {
@@ -76,7 +76,12 @@ export default function AuthButton() {
     setSubmitting(true);
 
     try {
-      if (mode === "signIn") {
+      if (mode === "reset") {
+        const redirectTo=getAuthCallbackUrl().replace(/callback$/, "reset");
+        const {error}=await supabase.auth.resetPasswordForEmail(email.trim(),{redirectTo});
+        if(error)throw error;
+        setFeedback({kind:"success",message:"Nếu email có tài khoản, bạn sẽ nhận liên kết đặt lại mật khẩu."});
+      } else if (mode === "signIn") {
         const { data, error } = await supabase.auth.signInWithPassword({
           email: email.trim(),
           password,
@@ -167,7 +172,7 @@ export default function AuthButton() {
           <div className="auth-dialog-heading">
             <div>
               <span className="eyebrow">TÀI KHOẢN</span>
-              <h2 id={dialogTitleId}>{mode === "signIn" ? "Đăng nhập" : "Tạo tài khoản"}</h2>
+              <h2 id={dialogTitleId}>{mode === "reset" ? "Quên mật khẩu" : mode === "signIn" ? "Đăng nhập" : "Tạo tài khoản"}</h2>
             </div>
             <button className="auth-dialog-close" type="button" onClick={closeDialog} aria-label="Đóng">
               ×
@@ -190,7 +195,7 @@ export default function AuthButton() {
                 disabled={submitting}
               />
             </label>
-            <label className="auth-dialog-field" htmlFor={passwordInputId}>
+            {mode!=="reset" && <label className="auth-dialog-field" htmlFor={passwordInputId}>
               Mật khẩu
               <input
                 id={passwordInputId}
@@ -204,6 +209,7 @@ export default function AuthButton() {
               />
             </label>
 
+            }
             {feedback && (
               <p
                 className={`auth-dialog-feedback auth-dialog-feedback-${feedback.kind}`}
@@ -214,10 +220,11 @@ export default function AuthButton() {
             )}
 
             <button className="button-primary auth-dialog-submit" type="submit" disabled={submitting}>
-              {submitting ? "Đang xử lý…" : mode === "signIn" ? "Đăng nhập" : "Tạo tài khoản"}
+              {submitting ? "Đang xử lý…" : mode === "reset" ? "Gửi liên kết" : mode === "signIn" ? "Đăng nhập" : "Tạo tài khoản"}
             </button>
           </form>
 
+          <button type="button" onClick={()=>{setMode("reset");setFeedback(null);}}>Quên mật khẩu?</button>
           <p className="auth-dialog-switch">
             {mode === "signIn" ? "Chưa có tài khoản?" : "Đã có tài khoản?"}{" "}
             <button

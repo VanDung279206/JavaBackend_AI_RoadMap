@@ -27,6 +27,8 @@ jobs:
           fi
       - name: Spring, PostgreSQL, SQL and Docker HTTP
         run: python3 scripts/verify.py --suite integration
+      - name: Website catalogue, permissions and cross-account regression
+        run: python3 scripts/check_database.py
       - name: Keep verification reports
         if: always()
         uses: actions/upload-artifact@v4

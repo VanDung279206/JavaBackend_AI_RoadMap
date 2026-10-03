@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import { readMarkdown } from "@/lib/markdown";
+import catalogue from "@/generated/catalogue.json";
 import { PHASE_BY_SLUG, PHASES } from "@/lib/phases";
 import ExerciseViewer from "@/components/ExerciseViewer";
 import ProgressTracker from "@/components/ProgressTracker";
@@ -22,8 +22,8 @@ export default async function PhasePage({
 
   if (!config) notFound();
 
-  const exercisesContent = readMarkdown(`${phase}/EXERCISES.md`);
-  const solutionsContent = readMarkdown(`${phase}/SOLUTIONS.md`);
+  const exercisesContent = catalogue.exercises.filter(e => e.phase === phase).map(e => `## ${e.id} — ${e.title}\n${e.markdown}`).join("\n\n");
+  const solutionsContent = catalogue.exercises.filter(e => e.phase === phase).map(e => `## ${e.id} — ${e.title}\n${e.solution}`).join("\n\n");
 
   return (
     <div className="page-shell phase-workspace-shell">
@@ -36,7 +36,7 @@ export default async function PhasePage({
       </nav>
 
       <header className="phase-page-heading" style={{ "--phase-color": config.color } as CSSProperties}>
-        <span className="phase-page-mark">{config.number.padStart(2, "0")}</span>
+        <span className="phase-page-mark">{/^\d+$/.test(config.number) ? config.number.padStart(2,"0") : config.number}</span>
         <div>
           <div className="phase-page-kicker">Chặng {config.number} · {config.exercises.length} bài</div>
           <h1 className="phase-page-title">{config.title}</h1>

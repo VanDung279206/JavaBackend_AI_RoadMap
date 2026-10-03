@@ -6,7 +6,7 @@
 
 Cài **JDK 21 đầy đủ**, một IDE Java, Git và Maven. Python 3 chỉ cần cho các runner tiện dụng. Docker/PostgreSQL có thể để đến phase 2–4. Mã Java thuần của repo dùng cú pháp Java 17 để có thể chạy trên JDK 17 hoặc 21.
 
-Nguồn cài đặt và hướng dẫn: [Java setup](https://dev.java/learn/getting-started/), [Maven installation](https://maven.apache.org/install.html), [Git setup](https://git-scm.com/book/en/v2/Getting-Started-First-Time-Git-Setup). Không dùng số phiên bản của ảnh hướng dẫn cũ làm tiêu chí.
+Nguồn cài đặt và hướng dẫn: [Java setup](https://dev.java/learn/first-steps/first-java-code/getting-started/), [Maven installation](https://maven.apache.org/install.html), [Git setup](https://git-scm.com/book/en/v2/Getting-Started-First-Time-Git-Setup). Không dùng số phiên bản của ảnh hướng dẫn cũ làm tiêu chí.
 
 ```text
 java -version
@@ -22,7 +22,7 @@ Ghi kết quả thực tế vào nhật ký. `mvn -version` phải cho thấy JD
 Mở terminal ở **gốc repo**:
 
 ```bash
-java phases/00-setup/HelloRoadmap.java
+java phases/00_setup/HelloRoadmap.java
 ```
 
 Kết quả: `Hello Java Backend + AI`. Sau đó tự đổi thông điệp, chạy lại và giải thích `class`, `main`, `String[] args`, `println`. Tên public class phải khớp tên file khi dùng cách biên dịch thông thường.
@@ -31,7 +31,7 @@ Bài nhỏ để tự viết: đọc hai số từ `args` và in tổng. Ví d�
 
 ## P0.3 — Debug và đọc lỗi
 
-Chạy `java phases/00-setup/DebugDemo.java`. Mã cố ý sai với `[2,4,6]`.
+Chạy `java phases/00_setup/DebugDemo.java`. Mã cố ý sai với `[2,4,6]`.
 
 1. Trước khi chạy, dự đoán kết quả đúng là 12.
 2. Đặt breakpoint tại dòng `total += values[i]` trong IDE.
@@ -48,7 +48,7 @@ Nếu thư mục này chưa là repo Git:
 ```bash
 git init -b main
 git status
-git add README.md phases/00-setup
+git add README.md phases/00_setup
 git diff --cached
 git commit -m "docs: record phase 0 setup"
 ```

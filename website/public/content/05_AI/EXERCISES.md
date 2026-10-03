@@ -1,6 +1,6 @@
 # Phase 5 — Tích hợp AI
 
-Các con số và kết quả mẫu ở đây là fixture học tập. Bài Java chạy với gateway giả lập; khi tích hợp mô hình thật, thay adapter và kiểm tra lại. Xem [lời giải](SOLUTIONS.md). DSA hỗ trợ: D09, D12.
+Các con số và kết quả mẫu ở đây là fixture học tập. Bài Java chạy với gateway giả lập; khi tích hợp mô hình thật, thay adapter và kiểm tra lại. Xem [lời giải](https://github.com/VanDung279206/JavaBackend_AI_RoadMap/blob/RoadMap_v3/phases/05_AI/SOLUTIONS.md). DSA hỗ trợ: D09, D12.
 
 ## P5.1 — Tách chỉ dẫn và dữ liệu · Cơ bản
 
