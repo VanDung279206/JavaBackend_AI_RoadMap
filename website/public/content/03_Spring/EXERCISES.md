@@ -1,6 +1,6 @@
 # Phase 3 — Spring Boot
 
-Điều kiện: project Spring Boot có web, validation, Spring Data JPA và kết nối PostgreSQL; dữ liệu lấy từ phase 2. Các bài mở rộng dự án Knowledge Assistant. Xem [lời giải](SOLUTIONS.md). DSA đi kèm: D06 và D08.
+Điều kiện: project Spring Boot có web, validation, Spring Data JPA và kết nối PostgreSQL; dữ liệu lấy từ phase 2. Các bài mở rộng dự án Knowledge Assistant. Xem [lời giải](https://github.com/VanDung279206/JavaBackend_AI_RoadMap/blob/RoadMap_v3/phases/03_Spring/SOLUTIONS.md). DSA đi kèm: D06 và D08.
 
 ## P3.1 — DTO và validation · Cơ bản
 
