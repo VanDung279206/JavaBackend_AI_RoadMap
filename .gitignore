@@ -48,3 +48,7 @@ checks/runs/
 # ─── OS ──────────────────────────────────────────────────────────────────────
 .DS_Store
 Thumbs.db
+
+# Local learner copies and compiled tests
+work/
+website/.test-dist/
