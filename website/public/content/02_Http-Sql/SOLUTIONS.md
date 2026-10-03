@@ -14,7 +14,7 @@ Xóa lần thứ hai có thể trả 404 mà thao tác DELETE vẫn có tính id
 
 ## P2.2
 
-Lời giải đầy đủ ở [solution.sql](solution.sql). Dùng `LEFT JOIN` từ người dùng sang tài liệu, rồi `COUNT(d.id)`. Người dùng không có tài liệu tạo dòng ghép với `d.id = NULL`; `COUNT(d.id)` cho 0, còn `COUNT(*)` đếm dòng ghép đó thành 1.
+Lời giải đầy đủ ở [solution.sql](https://github.com/VanDung279206/JavaBackend_AI_RoadMap/blob/RoadMap_v3/phases/02_Http-Sql/solution.sql). Dùng `LEFT JOIN` từ người dùng sang tài liệu, rồi `COUNT(d.id)`. Người dùng không có tài liệu tạo dòng ghép với `d.id = NULL`; `COUNT(d.id)` cho 0, còn `COUNT(*)` đếm dòng ghép đó thành 1.
 
 Kỳ vọng: `(1,An,2), (2,Bình,1), (3,Chi,0)`. Khóa ngoại ngăn tài liệu tham chiếu user không tồn tại. `NOT NULL` và `CHECK` kiểm tra tiêu đề ngay tại database.
 
@@ -42,6 +42,6 @@ PowerShell:
 psql $env:DATABASE_URL -v ON_ERROR_STOP=1 -f solution.sql
 ```
 
-Script sử dụng bảng tạm trong một phiên kết nối. Các kết quả trên là kết quả kỳ vọng của fixture; xem phạm vi đã kiểm tra trong [VALIDATION.md](../../VALIDATION.md).
+Script sử dụng bảng tạm trong một phiên kết nối. Các kết quả trên là kết quả kỳ vọng của fixture; xem phạm vi đã kiểm tra trong [VALIDATION.md](https://github.com/VanDung279206/JavaBackend_AI_RoadMap/blob/RoadMap_v3/VALIDATION.md).
 
-Nguồn: [PostgreSQL Transactions](https://www.postgresql.org/docs/current/tutorial-transactions.html), [HTTP Semantics RFC 9110](https://www.rfc-editor.org/rfc/rfc9110.html).
+Nguồn: [PostgreSQL Transactions](https://www.postgresql.org/docs/17/tutorial-transactions.html), [HTTP Semantics RFC 9110](https://www.rfc-editor.org/rfc/rfc9110.html).
