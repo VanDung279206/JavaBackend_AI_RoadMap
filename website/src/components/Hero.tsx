@@ -1,4 +1,3 @@
-import catalogue from "@/generated/catalogue.json";
 import Link from "next/link";
 import { ArrowRight, BookOpen, Boxes, Braces, CircleCheck, Database, Sparkles } from "lucide-react";
 
@@ -13,18 +12,18 @@ export default function Hero() {
     <section className="hero-section">
       <div className="hero-inner layout-container">
         <div className="hero-copy">
-          <span className="eyebrow">JAVA BACKEND + AI</span>
+          <span className="eyebrow">JAVA BACKEND · 7 CHẶNG</span>
           <h1 className="hero-title">
             Từ file Java đầu tiên
             <br />
             <span>đến API có kiểm thử.</span>
           </h1>
           <p className="hero-description">
-            {catalogue.phases.length} nhóm học, {catalogue.exercises.length} bài tập và hai dự án. Mỗi chặng ghi rõ việc cần làm, file cần sửa và cách kiểm tra kết quả.
+            Bảy chặng, 24 bài tập và hai dự án. Mỗi chặng ghi rõ việc cần làm, file cần sửa và cách kiểm tra kết quả.
           </p>
           <div className="hero-actions">
-            <Link href="/today" className="button-primary">
-              Hôm nay học gì? <ArrowRight size={16} aria-hidden="true" />
+            <Link href="/docs/01_Java" className="button-primary">
+              Bắt đầu với Java <ArrowRight size={16} aria-hidden="true" />
             </Link>
             <Link href="/roadmap" className="button-secondary">
               <BookOpen size={16} aria-hidden="true" /> Xem toàn bộ lộ trình
@@ -33,8 +32,8 @@ export default function Hero() {
           <p className="hero-footnote">Không cần tài khoản để bắt đầu.</p>
 
           <div className="hero-stats" aria-label="Quy mô lộ trình">
-            <div className="hero-stat"><strong>{catalogue.phases.length}</strong><span>nhóm học</span></div>
-            <div className="hero-stat"><strong>{catalogue.exercises.length}</strong><span>bài thực hành</span></div>
+            <div className="hero-stat"><strong>7</strong><span>chặng học</span></div>
+            <div className="hero-stat"><strong>24</strong><span>bài thực hành</span></div>
             <div className="hero-stat"><strong>2</strong><span>dự án xuyên suốt</span></div>
           </div>
         </div>
