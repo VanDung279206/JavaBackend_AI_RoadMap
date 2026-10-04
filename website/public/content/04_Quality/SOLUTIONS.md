@@ -2,7 +2,7 @@
 
 ## P4.1 — Kiểm tra quyền
 
-Mã ở [BackendLab.java](https://github.com/VanDung279206/JavaBackend_AI_RoadMap/blob/RoadMap_v3/labs/src/BackendLab.java). Tra cứu theo ID; nếu null hoặc owner khác principal thì ném `NotFound`; chỉ sau đó mới trả nội dung. Lời giải HTTP có thể dùng truy vấn `findByIdAndOwnerId` của phase 3 để giới hạn ngay tại database.
+Mã ở [BackendLab.java](../../labs/src/BackendLab.java). Tra cứu theo ID; nếu null hoặc owner khác principal thì ném `NotFound`; chỉ sau đó mới trả nội dung. Lời giải HTTP có thể dùng truy vấn `findByIdAndOwnerId` của phase 3 để giới hạn ngay tại database.
 
 `principalUserId` không được lấy từ tham số do client tự khai. Trong ứng dụng thật, kiểm tra danh tính từ session/token đã xác minh và ánh xạ sang user ID nội bộ.
 
@@ -16,7 +16,7 @@ Mã ở [BackendLab.java](https://github.com/VanDung279206/JavaBackend_AI_RoadMa
 | Thêm lại ID đã có | Exception; bản gốc còn nguyên | Ghi đè trước khi báo lỗi |
 | Page rất lớn | Danh sách rỗng | Tràn số khi tính offset |
 
-Các ca Java thuần được thực thi bởi [LabChecks.java](https://github.com/VanDung279206/JavaBackend_AI_RoadMap/blob/RoadMap_v3/labs/src/LabChecks.java). Nếu bỏ kiểm tra owner, ca user 2 sẽ thất bại. Kiểm tra này xác minh quy tắc trong hàm; để xác minh cả HTTP/security filter/database, cần bài kiểm thử tích hợp ứng dụng Spring.
+Các ca Java thuần được thực thi bởi [LabChecks.java](../../labs/src/LabChecks.java). Nếu bỏ kiểm tra owner, ca user 2 sẽ thất bại. Kiểm tra này xác minh quy tắc trong hàm; để xác minh cả HTTP/security filter/database, cần bài kiểm thử tích hợp ứng dụng Spring.
 
 ## P4.3 — Dockerfile mẫu
 
@@ -51,4 +51,4 @@ Trong repo này, bước kiểm tra Java thuần là `python3 labs/run_checks.py
 
 Pipeline dừng khi lệnh trả exit code khác 0. Chỉ đóng gói sau kiểm tra thành công. Log nên có request ID, endpoint, status, thời gian và loại lỗi. Không ghi mật khẩu/API key; hạn chế ghi nguyên văn tài liệu riêng tư. Có thể đối chiếu request ID để tìm luồng lỗi.
 
-Nguồn: [Spring Security](https://docs.spring.io/spring-security/reference/6.5/index.html), [Dockerfile reference](https://docs.docker.com/reference/dockerfile/).
+Nguồn: [Spring Security](https://docs.spring.io/spring-security/reference/index.html), [Dockerfile reference](https://docs.docker.com/reference/dockerfile/).
