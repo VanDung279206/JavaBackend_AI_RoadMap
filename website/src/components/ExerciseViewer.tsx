@@ -3,8 +3,6 @@
 import { useEffect, useMemo, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { ArrowRight, BookOpenCheck, Check, ChevronDown, CircleHelp, ExternalLink, Play } from "lucide-react";
-import catalogue from "@/generated/catalogue.json";
-import LearningTools from "@/components/LearningTools";
 import CodePlayground from "@/components/CodePlayground";
 import { getPlaygroundSeed } from "@/lib/playground-seeds";
 
@@ -61,16 +59,35 @@ function formatTables(markdown: string) {
   return output.join("\n");
 }
 
-function localCheck(id: string) { return catalogue.exercises.find(e => e.id === id)?.check ?? null; }
+function localCheck(id: string) {
+  const supported = /^(P1\.[1-4]|P3\.3|P4\.1|P5\.[1-4]|P6\.[1-4])$/.test(id);
+  if (supported) {
+    return {
+      kind: "java" as const,
+      file: id.startsWith("P1.") ? "practice/starter/JavaCoreLab.java" : id.startsWith("P3.") || id.startsWith("P4.") ? "practice/starter/BackendLab.java" : id.startsWith("P5.") ? "practice/starter/AiLab.java" : "practice/starter/RagLab.java",
+      command: `py scripts\\check.py --id ${id}`,
+      note: "Lệnh này biên dịch starter trong repo và chạy assertion của đúng bài. Trên macOS/Linux thay py bằng python3.",
+    };
+  }
+  if (/^P3\./.test(id)) {
+    return { kind: "project" as const, file: "projects/knowledge-assistant/pom.xml", command: ".\\mvnw.cmd -f projects\\knowledge-assistant\\pom.xml test", note: "Bài này dùng nhiều file Spring và dependency. Trình chạy một file không thay thế Maven; integration test có thể cần PostgreSQL/Docker theo README của dự án." };
+  }
+  if (id === "P4.2") {
+    return { kind: "project" as const, file: "practice/tests/PracticeChecks.java", command: "py scripts\\check.py --id P1.2,P3.3,P4.1", note: "Các nhóm test này bao phủ ID trùng, phân trang và quyền sở hữu để bạn thử bỏ một điều kiện rồi quan sát test đỏ." };
+  }
+  if (id === "P4.3" || id === "P4.4") {
+    return { kind: "project" as const, file: id === "P4.3" ? "projects/knowledge-assistant/Dockerfile" : ".github/workflows/verify.yml", command: id === "P4.3" ? "docker compose up --build" : "py scripts\\verify.py --suite offline", note: id === "P4.3" ? "Chạy trong thư mục dự án sau khi tạo Dockerfile và khai báo cấu hình môi trường." : "Workflow còn chạy bộ integration riêng; bước đó cần Docker và PostgreSQL." };
+  }
+  return null;
+}
 
 export default function ExerciseViewer({ phase, exercises, solutions, exerciseLabels }: Props) {
   const exerciseData = useMemo(() => splitByExercise(exercises), [exercises]);
   const solutionData = useMemo(() => splitByExercise(solutions), [solutions]);
   const phaseCriteria = useMemo(() => getPhaseCriteria(exercises), [exercises]);
   const exerciseBlocks: ExerciseBlock[] = exerciseLabels.map((item) => {
-    const entry = catalogue.exercises.find(e => e.id === item.id);
-    const exercise = entry ? {title:entry.title,markdown:entry.markdown} : exerciseData.blocks.get(item.id);
-    const solution = entry ? {markdown:entry.solution} : solutionData.blocks.get(item.id);
+    const exercise = exerciseData.blocks.get(item.id);
+    const solution = solutionData.blocks.get(item.id);
     return {
       id: item.id,
       title: exercise?.title || item.label.replace(`${item.id} — `, ""),
@@ -100,13 +117,13 @@ export default function ExerciseViewer({ phase, exercises, solutions, exerciseLa
 
   const seed = getPlaygroundSeed(active.id);
   const local = localCheck(active.id);
-  const number = catalogue.phases.find(p=>p.slug===phase)?.number ?? "";
+  const number = phase.match(/\d+/)?.[0] ?? "";
 
   return (
     <div className="exercise-workspace">
       <aside className="exercise-index" aria-label="Danh sách bài tập">
         <div className="exercise-index-heading">
-          <span>CHẶNG {/^\d+$/.test(number) ? number.padStart(2,"0") : number}</span>
+          <span>CHẶNG {number.padStart(2, "0")}</span>
           <h2>Bài tập</h2>
         </div>
         <nav className="exercise-index-list">
@@ -162,8 +179,8 @@ export default function ExerciseViewer({ phase, exercises, solutions, exerciseLa
                 <div className="local-run-heading">
                   <span className="local-run-icon"><Play size={16} aria-hidden="true" /></span>
                   <div>
-                    <h3>{local?.kind === "java" ? "Chạy Java trên máy" : local?.kind === "project" ? "Chạy trong dự án" : "Bài thiết kế"}</h3>
-                    <p>{local?.kind === "java" ? "Biên dịch starter và chạy test theo mã bài" : local?.kind === "project" ? "Bài dùng nhiều file hoặc công cụ hệ thống" : "Bài này cần bản hợp đồng hoặc truy vấn phù hợp"}</p>
+                    <h3>{local?.kind === "project" ? "Chạy trong dự án" : "Bài thiết kế"}</h3>
+                    <p>{local?.kind === "project" ? "Bài dùng nhiều file hoặc công cụ hệ thống" : "Bài này cần bản hợp đồng hoặc truy vấn phù hợp"}</p>
                   </div>
                 </div>
                 {local ? (
@@ -192,8 +209,6 @@ export default function ExerciseViewer({ phase, exercises, solutions, exerciseLa
             )}
           </div>
         </div>
-
-        <LearningTools key={active.id} exerciseId={active.id} />
 
         <details className="exercise-solution" open={solutionOpen} onToggle={(event) => setSolutionOpen(event.currentTarget.open)}>
           <summary>
