@@ -39,7 +39,7 @@ Nếu không nhớ hoặc cần gợi ý, quay lại một mốc ôn gần hơn.
 
 ## Cách phối hợp ba mảng
 
-Trong một buổi, chọn một bài phase, một bài DSA phù hợp và một nhóm từ vựng nhỏ. Khi gặp từ trong mã hoặc tài liệu, dùng nó trong một câu mô tả chính bài đang làm. Kết thúc bằng hai câu hỏi trong [FLASHCARDS.md](../review/FLASHCARDS.md).
+Trong một buổi, chọn một bài phase, một bài DSA phù hợp và một nhóm từ vựng nhỏ. Khi gặp từ trong mã hoặc tài liệu, dùng nó trong một câu mô tả chính bài đang làm. Kết thúc bằng hai câu hỏi trong [FLASHCARDS.md](FLASHCARDS.md).
 
 Ví dụ: học ownership → làm P4.1 → ôn D12 → viết “Authorization checks whether the user may read the document.” Khi ôn DSA, dùng mẫu giải thích ở [PATTERNS.md](../dsa/PATTERNS.md).
 
