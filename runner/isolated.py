@@ -2,14 +2,37 @@
 import argparse,json,re,subprocess,tempfile,uuid
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
-RUN_SCRIPT='''import pathlib,subprocess,json
-files=list(pathlib.Path('/source').glob('*.java'))
-with open('/work/output','wb') as out:
- try:
-  c=subprocess.run(['javac','--release','17','-encoding','UTF-8','-d','/work/classes']+list(map(str,files)),stdout=out,stderr=out,timeout=20)
-  print(json.dumps({'verdict':'BLOCKED' if c.returncode==0 else 'COMPILE_ERROR','reason':'Compilation probe only; trusted test worker not deployed'}))
- except subprocess.TimeoutExpired:print(json.dumps({'verdict':'TIMEOUT'}))
-print(pathlib.Path('/work/output').read_bytes()[:32000].decode('utf8',errors='replace'))
+FILE_LIMIT=8*1024*1024
+OUTPUT_LIMIT=32000
+RUN_SCRIPT='''import pathlib,subprocess,json,threading
+OUTPUT_LIMIT=32000
+
+def capture(command,timeout):
+ # Drain the pipe continuously; retain only bounded diagnostics, never a log file.
+ output=bytearray();truncated=False
+ with subprocess.Popen(command,stdout=subprocess.PIPE,stderr=subprocess.STDOUT) as process:
+  def drain():
+   nonlocal truncated
+   while chunk:=process.stdout.read(8192):
+    remaining=OUTPUT_LIMIT-len(output)
+    output.extend(chunk[:remaining]);truncated|=len(chunk)>remaining
+  reader=threading.Thread(target=drain,daemon=True);reader.start()
+  timed_out=False
+  try:process.wait(timeout=timeout)
+  except subprocess.TimeoutExpired:
+   timed_out=True;process.kill();process.wait()
+  reader.join(timeout=2)
+  if reader.is_alive():raise RuntimeError('Compiler output stream did not close')
+ return process.returncode,bytes(output),truncated,timed_out
+
+def compile_java(files,work,timeout=20):
+ code,output,truncated,timed_out=capture(['javac','--release','17','-encoding','UTF-8','-proc:none','-d',str(pathlib.Path(work)/'classes')]+list(map(str,files)),timeout)
+ return {'verdict':'TIMEOUT' if timed_out else 'BLOCKED' if code==0 else 'COMPILE_ERROR',
+         'reason':'Compilation probe only; trusted test worker not deployed',
+         'diagnostics':output.decode('utf8',errors='replace'),'output_truncated':truncated}
+
+if __name__=='__main__':
+ print(json.dumps(compile_java(list(pathlib.Path('/source').glob('*.java')),'/work'),ensure_ascii=False))
 '''
 
 def prepare_job(job,files):
@@ -33,7 +56,7 @@ def command(image,source,job,name):
     if not re.fullmatch(r'[\w./:-]+@sha256:[0-9a-f]{64}',image):raise ValueError('Pin an image digest')
     return ['docker','run','--pull=never','--name',name,'--network=none','--read-only','--user=65534:65534',
       '--cap-drop=ALL','--security-opt=no-new-privileges','--pids-limit=64','--cpus=1',
-      '--memory=512m','--memory-swap=512m','--ulimit','fsize=4096:4096',
+      '--memory=512m','--memory-swap=512m','--ulimit',f'fsize={FILE_LIMIT}:{FILE_LIMIT}',
       '--tmpfs','/tmp:rw,noexec,nosuid,size=64m','--tmpfs','/work:rw,nosuid,size=64m',
       '--mount',f'type=bind,source={source},target=/source,readonly',
       '--mount',f'type=bind,source={job},target=/job,readonly',image,'python3','/job/run.py']
@@ -47,7 +70,7 @@ def main():
     files=list(source.glob('*.java'))
     if not files or sum(f.stat().st_size for f in files)>120000:p.error('Source missing or larger than 120 KB')
     name='roadmap-probe-'+uuid.uuid4().hex
-    # Output stays in the bounded container filesystem; docker logs never receives arbitrary program output.
+    # The trusted script drains compiler diagnostics and emits only a bounded JSON result.
     try:
       with tempfile.TemporaryDirectory(prefix='roadmap-job-') as job:
         snapshot=prepare_job(job,files)
