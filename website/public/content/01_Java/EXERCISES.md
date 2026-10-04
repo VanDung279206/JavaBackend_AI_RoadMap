@@ -1,6 +1,6 @@
 # Phase 1 — Java Core
 
-Đọc đề, tự viết mã, rồi mới mở [lời giải](https://github.com/VanDung279206/JavaBackend_AI_RoadMap/blob/RoadMap_v3/phases/01_Java/SOLUTIONS.md). Các đầu vào bên dưới là dữ liệu bài tập. DSA đi kèm: D01–D04 trong [bộ DSA](https://github.com/VanDung279206/JavaBackend_AI_RoadMap/blob/RoadMap_v3/dsa/EXERCISES.md).
+Đọc đề, tự viết mã, rồi mới mở [lời giải](SOLUTIONS.md). Các đầu vào bên dưới là dữ liệu bài tập. DSA đi kèm: D01–D04 trong [bộ DSA](../../dsa/EXERCISES.md).
 
 ## P1.1 — Chuẩn hóa tiêu đề · Cơ bản
 
@@ -37,4 +37,4 @@ Với `(3,"Java AI"), (1,"Java Core"), (2,"SQL")`, tìm `" java "` → ID `[1,3]
 - [ ] Viết lại P1.1 và P1.2 không xem lời giải.
 - [ ] Chạy được ví dụ và các trường hợp lỗi.
 - [ ] Giải thích được vì sao chọn `Map`, `Optional` và bản sao danh sách.
-- [ ] Dùng được 10 từ vựng nhóm Phase 1 trong [glossary](https://github.com/VanDung279206/JavaBackend_AI_RoadMap/blob/RoadMap_v3/english/GLOSSARY.md).
+- [ ] Dùng được 10 từ vựng nhóm Phase 1 trong [glossary](../../english/GLOSSARY.md).
