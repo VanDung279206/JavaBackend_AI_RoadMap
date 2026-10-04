@@ -2,6 +2,33 @@
 import argparse,json,re,subprocess,tempfile,uuid
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
+RUN_SCRIPT='''import pathlib,subprocess,json
+files=list(pathlib.Path('/source').glob('*.java'))
+with open('/work/output','wb') as out:
+ try:
+  c=subprocess.run(['javac','--release','17','-encoding','UTF-8','-d','/work/classes']+list(map(str,files)),stdout=out,stderr=out,timeout=20)
+  print(json.dumps({'verdict':'BLOCKED' if c.returncode==0 else 'COMPILE_ERROR','reason':'Compilation probe only; trusted test worker not deployed'}))
+ except subprocess.TimeoutExpired:print(json.dumps({'verdict':'TIMEOUT'}))
+print(pathlib.Path('/work/output').read_bytes()[:32000].decode('utf8',errors='replace'))
+'''
+
+def prepare_job(job,files):
+    """Readable snapshot for UID 65534; never chmod the user's originals."""
+    job=Path(job)
+    source=job/'source';source.mkdir(mode=0o755)
+    total=0
+    for file in files:
+        file=Path(file)
+        if file.is_symlink() or not file.is_file():raise ValueError('Use regular Java files')
+        content=file.read_bytes();total+=len(content)
+        if total>120000:raise ValueError('Source larger than 120 KB')
+        target=source/file.name;target.write_bytes(content);target.chmod(0o444)
+    script=job/'run.py';script.write_text(RUN_SCRIPT,encoding='utf8');script.chmod(0o444)
+    source.chmod(0o755)
+    # TemporaryDirectory defaults to 0700 on Linux, which excludes the container UID.
+    job.chmod(0o755)
+    return source
+
 def command(image,source,job,name):
     if not re.fullmatch(r'[\w./:-]+@sha256:[0-9a-f]{64}',image):raise ValueError('Pin an image digest')
     return ['docker','run','--pull=never','--name',name,'--network=none','--read-only','--user=65534:65534',
@@ -21,19 +48,10 @@ def main():
     if not files or sum(f.stat().st_size for f in files)>120000:p.error('Source missing or larger than 120 KB')
     name='roadmap-probe-'+uuid.uuid4().hex
     # Output stays in the bounded container filesystem; docker logs never receives arbitrary program output.
-    script='''import pathlib,subprocess,json
-files=list(pathlib.Path('/source').glob('*.java'))
-with open('/work/output','wb') as out:
- try:
-  c=subprocess.run(['javac','--release','17','-d','/work/classes']+list(map(str,files)),stdout=out,stderr=out,timeout=20)
-  print(json.dumps({'verdict':'BLOCKED' if c.returncode==0 else 'COMPILE_ERROR','reason':'Compilation probe only; trusted test worker not deployed'}))
- except subprocess.TimeoutExpired:print(json.dumps({'verdict':'TIMEOUT'}))
-print(pathlib.Path('/work/output').read_bytes()[:32000].decode('utf8',errors='replace'))
-'''
     try:
       with tempfile.TemporaryDirectory(prefix='roadmap-job-') as job:
-        Path(job,'run.py').write_text(script,encoding='utf8')
-        result=subprocess.run(command(a.image,source,job,name),capture_output=True,text=True,timeout=30)
+        snapshot=prepare_job(job,files)
+        result=subprocess.run(command(a.image,snapshot,job,name),capture_output=True,text=True,timeout=30)
         print(result.stdout[:40000]);print(result.stderr[:2000])
         return 2 if result.returncode==0 else 1
     except (OSError,subprocess.TimeoutExpired,ValueError) as error:
