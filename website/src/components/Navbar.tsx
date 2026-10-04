@@ -8,7 +8,6 @@ import AuthButton from "@/components/AuthButton";
 import SearchCommand from "@/components/command/SearchCommand";
 
 const links = [
-  { href: "/today", label: "Hôm nay" },
   { href: "/roadmap", label: "Lộ trình" },
   { href: "/docs", label: "Bài tập" },
   { href: "/materials", label: "Tài liệu" },
