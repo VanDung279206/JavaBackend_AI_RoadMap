@@ -196,8 +196,8 @@
       "check": {
         "kind": "project",
         "file": "work/spring-p3/pom.xml",
-        "command": "py scripts/new_spring_lab.py --phase 3 --destination work/spring-p3\npy scripts/maven.py -f work/spring-p3/pom.xml test",
-        "note": "Tạo bản tự làm một lần; các lần sau chỉ chạy Maven trong bản đó. Không chấm bản projects/knowledge-assistant."
+        "command": "py scripts/new_spring_lab.py --phase 3 --destination work/spring-p3\npy scripts/maven.py -f work/spring-p3/pom.xml -Dtest=LearningContractTest#createsValidatedOwnedDocument test",
+        "note": "Tạo bản một lần, sau đó chỉ chạy Maven trên bản đó. Test theo bài; phải hoàn thiện bài tiên quyết trước. Hết phase chạy toàn bộ test. Không cấp tiến độ từ bản tham chiếu."
       },
       "playground": null
     },
@@ -216,8 +216,8 @@
       "check": {
         "kind": "project",
         "file": "work/spring-p3/pom.xml",
-        "command": "py scripts/new_spring_lab.py --phase 3 --destination work/spring-p3\npy scripts/maven.py -f work/spring-p3/pom.xml test",
-        "note": "Tạo bản tự làm một lần; các lần sau chỉ chạy Maven trong bản đó. Không chấm bản projects/knowledge-assistant."
+        "command": "py scripts/new_spring_lab.py --phase 3 --destination work/spring-p3\npy scripts/maven.py -f work/spring-p3/pom.xml -Dtest=LearningContractTest#findsOnlyOwnedDocument test",
+        "note": "Tạo bản một lần, sau đó chỉ chạy Maven trên bản đó. Test theo bài; phải hoàn thiện bài tiên quyết trước. Hết phase chạy toàn bộ test. Không cấp tiến độ từ bản tham chiếu."
       },
       "playground": null
     },
@@ -237,8 +237,8 @@
       "check": {
         "kind": "project",
         "file": "work/spring-p3/pom.xml",
-        "command": "py scripts/new_spring_lab.py --phase 3 --destination work/spring-p3\npy scripts/maven.py -f work/spring-p3/pom.xml test",
-        "note": "Tạo bản tự làm một lần; các lần sau chỉ chạy Maven trong bản đó. Không chấm bản projects/knowledge-assistant."
+        "command": "py scripts/new_spring_lab.py --phase 3 --destination work/spring-p3\npy scripts/maven.py -f work/spring-p3/pom.xml -Dtest=LearningContractTest#listsStableOwnedPages test",
+        "note": "Tạo bản một lần, sau đó chỉ chạy Maven trên bản đó. Test theo bài; phải hoàn thiện bài tiên quyết trước. Hết phase chạy toàn bộ test. Không cấp tiến độ từ bản tham chiếu."
       },
       "playground": null
     },
@@ -258,8 +258,8 @@
       "check": {
         "kind": "project",
         "file": "work/spring-p3/pom.xml",
-        "command": "py scripts/new_spring_lab.py --phase 3 --destination work/spring-p3\npy scripts/maven.py -f work/spring-p3/pom.xml test",
-        "note": "Tạo bản tự làm một lần; các lần sau chỉ chạy Maven trong bản đó. Không chấm bản projects/knowledge-assistant."
+        "command": "py scripts/new_spring_lab.py --phase 3 --destination work/spring-p3\npy scripts/maven.py -f work/spring-p3/pom.xml -Dtest=TransactionTest test",
+        "note": "Tạo bản một lần, sau đó chỉ chạy Maven trên bản đó. Test theo bài; phải hoàn thiện bài tiên quyết trước. Hết phase chạy toàn bộ test. Không cấp tiến độ từ bản tham chiếu."
       },
       "playground": null
     },
@@ -278,8 +278,8 @@
       "check": {
         "kind": "project",
         "file": "work/spring-p4/pom.xml",
-        "command": "py scripts/new_spring_lab.py --phase 4 --destination work/spring-p4\npy scripts/maven.py -f work/spring-p4/pom.xml test",
-        "note": "Tạo bản tự làm một lần; các lần sau chỉ chạy Maven trong bản đó. Không chấm bản projects/knowledge-assistant."
+        "command": "py scripts/new_spring_lab.py --phase 4 --destination work/spring-p4\npy scripts/maven.py -f work/spring-p4/pom.xml -Dtest=ApiTest#anonymousCannotRead+wrongPasswordCannotRead test",
+        "note": "Tạo bản một lần, sau đó chỉ chạy Maven trên bản đó. Test theo bài; phải hoàn thiện bài tiên quyết trước. Hết phase chạy toàn bộ test. Không cấp tiến độ từ bản tham chiếu."
       },
       "playground": null
     },
@@ -299,8 +299,8 @@
       "check": {
         "kind": "project",
         "file": "work/spring-p4/pom.xml",
-        "command": "py scripts/new_spring_lab.py --phase 4 --destination work/spring-p4\npy scripts/maven.py -f work/spring-p4/pom.xml test",
-        "note": "Tạo bản tự làm một lần; các lần sau chỉ chạy Maven trong bản đó. Không chấm bản projects/knowledge-assistant."
+        "command": "py scripts/new_spring_lab.py --phase 4 --destination work/spring-p4\npy scripts/maven.py -f work/spring-p4/pom.xml -Dtest=OwnershipLearnerTest,ApiTest#ownerIsolationForReadWriteSummaryAndIndex test",
+        "note": "Tạo bản một lần, sau đó chỉ chạy Maven trên bản đó. Test theo bài; phải hoàn thiện bài tiên quyết trước. Hết phase chạy toàn bộ test. Không cấp tiến độ từ bản tham chiếu."
       },
       "playground": null
     },
@@ -317,10 +317,10 @@
       ],
       "solution": "phases/04_Quality/SOLUTIONS.md",
       "check": {
-        "kind": "project",
-        "file": "work/spring-p4/pom.xml",
-        "command": "py scripts/new_spring_lab.py --phase 4 --destination work/spring-p4\npy scripts/maven.py -f work/spring-p4/pom.xml test",
-        "note": "Tạo bản tự làm một lần; các lần sau chỉ chạy Maven trong bản đó. Không chấm bản projects/knowledge-assistant."
+        "kind": "manual",
+        "file": "work/spring-p4/Dockerfile",
+        "command": "py scripts/new_spring_lab.py --phase 4 --destination work/spring-p4\ndocker build -t roadmap-learning-p4 work/spring-p4",
+        "note": "Tạo bản một lần. Build chưa chứng minh health/non-root/persistence; cần chạy image của bạn và lưu bằng chứng. Maven PASS không xác nhận Dockerfile."
       },
       "playground": null
     },
@@ -338,10 +338,10 @@
       ],
       "solution": "phases/04_Quality/SOLUTIONS.md",
       "check": {
-        "kind": "project",
-        "file": "work/spring-p4/pom.xml",
-        "command": "py scripts/new_spring_lab.py --phase 4 --destination work/spring-p4\npy scripts/maven.py -f work/spring-p4/pom.xml test",
-        "note": "Tạo bản tự làm một lần; các lần sau chỉ chạy Maven trong bản đó. Không chấm bản projects/knowledge-assistant."
+        "kind": "manual",
+        "file": "work/spring-p4/LEARNER_CI.yml",
+        "command": "py scripts/new_spring_lab.py --phase 4 --destination work/spring-p4\n# Hoàn thiện LEARNER_CI.yml, đặt tại .github/workflows trong repository học riêng.\n# Push branch học, lưu URL CI; thử một lỗi có chủ ý và kiểm CI thật sự thất bại.",
+        "note": "Tạo bản một lần. Chỉ khi workflow đã thực chạy đủ check và thất bại đúng với lỗi thử mới có bằng chứng CI. Test Maven của bản tham chiếu không xác nhận bài này."
       },
       "playground": null
     },
