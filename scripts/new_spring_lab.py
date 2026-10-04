@@ -15,10 +15,27 @@ if a.phase=='3':
  i=s.rfind('}');s=s[:i]+'''    private DocumentEntity unfinishedCreate(String owner,WriteDocument request){throw new UnsupportedOperationException("TODO P3.1");}
     private org.springframework.data.domain.Page<DocumentEntity> unfinishedPage(String owner,int page,int size){throw new UnsupportedOperationException("TODO P3.3");}
 '''+s[i:]
+ (dest/'src/main/resources/lab-fetch.jpql').write_text('select a from LabAuthor a order by a.id\n',encoding='utf-8')
  # P3.4: remove only create transaction so rollback test exposes the missing boundary.
  s=s.replace('    @Transactional\n    public DocumentView create','    // TODO P3.4: transaction boundary\n    public DocumentView create')
  f.write_text(s,encoding='utf-8')
 else:
+ (base/'RequestMetricsFilter.java').write_text('''package vn.roadmap.knowledge;
+import jakarta.servlet.*;
+import jakarta.servlet.http.*;
+import java.io.IOException;
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
+@Component
+public class RequestMetricsFilter extends OncePerRequestFilter {
+    public record Snapshot(long requests,long errors,long totalNanos) {}
+    public Snapshot snapshot(){return new Snapshot(0,0,0);}
+    @Override protected void doFilterInternal(HttpServletRequest request,HttpServletResponse response,FilterChain chain)throws ServletException,IOException {
+        // TODO O01: validated request ID, MDC cleanup and counters, including failures.
+        chain.doFilter(request,response);
+    }
+}
+''',encoding='utf-8')
  f=base/'SecurityConfig.java';s=f.read_text().replace('.anyRequest().authenticated()', '.anyRequest().permitAll() /* TODO P4.1 */');f.write_text(s)
  put=dest/'src/test/java/vn/roadmap/knowledge/OwnershipLearnerTest.java'
  put.write_text('''package vn.roadmap.knowledge;
