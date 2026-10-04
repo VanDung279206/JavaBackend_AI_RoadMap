@@ -51,4 +51,4 @@ Trong repo này, bước kiểm tra Java thuần là `python3 labs/run_checks.py
 
 Pipeline dừng khi lệnh trả exit code khác 0. Chỉ đóng gói sau kiểm tra thành công. Log nên có request ID, endpoint, status, thời gian và loại lỗi. Không ghi mật khẩu/API key; hạn chế ghi nguyên văn tài liệu riêng tư. Có thể đối chiếu request ID để tìm luồng lỗi.
 
-Nguồn: [Spring Security](https://docs.spring.io/spring-security/reference/6.5/index.html), [Dockerfile reference](https://docs.docker.com/reference/dockerfile/).
+Nguồn: [Spring Security](https://docs.spring.io/spring-security/reference/index.html), [Dockerfile reference](https://docs.docker.com/reference/dockerfile/).
