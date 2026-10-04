@@ -1,5 +1,25 @@
 # Kiểm chứng RoadMap_v3
 
+## PR #8 — hai P2 còn lại (05/10/2026)
+
+Review `5407110865` xác nhận bảy lỗi trước đã được xử lý, bổ sung hai lỗi trên commit `2c34a5c`:
+
+| Nhận xét | Sửa và kiểm chứng |
+| --- | --- |
+| [4178395501](https://github.com/VanDung279206/JavaBackend_AI_RoadMap/pull/8#discussion_r4178395501) — bỏ sót pending khi RPC đang chạy | Đọc trạng thái hiện tại theo từng ID, chạy tiếp hàng đợi sau lượt thành công, chỉ báo đồng bộ khi hết pending. Regression chạy production store với RPC trì hoãn: bài mới, bài đã sạch, sửa cùng bài, lỗi RPC/thử lại, xung đột và đổi tài khoản |
+| [4178395506](https://github.com/VanDung279206/JavaBackend_AI_RoadMap/pull/8#discussion_r4178395506) — UID 65534 không đọc được job Linux 0700 | Sao chép Java vào snapshot riêng; job/source 0755, script/Java 0444, hai bind mount vẫn readonly. Không đổi quyền file gốc; kiểm lại giới hạn 120 KB theo byte thực đọc. Thêm regression và bước CI chuyển sang UID/GID 65534 để đọc/traverse và kiểm tra không được ghi |
+
+| Lệnh / phạm vi mới | Kết quả thực tế |
+| --- | --- |
+| `node website/tests/run.mjs` trước sửa store, sau khi thêm regression | **FAIL đúng lỗi**, 15/18 PASS, 3 FAIL; không phải kết quả đạt của bản sửa |
+| npm CLI `--prefix website test` sau sửa | **PASS 18/18**, không skip; gồm sáu regression production store mới |
+| Python `-m unittest discover -s scripts/tests` | **PASS 27/27**, gồm snapshot/quyền POSIX và chặn nguồn quá giới hạn; Windows không chứng minh UID Linux |
+| `scripts/verify.py --suite offline --output checks/runs/pr8-p2-offline` | **PASS 19 gates**, không có merge marker; nguồn tham chiếu và starter rejection |
+| `node scripts/build_catalogue.mjs --check`; npm CLI `run lint`, `run build` | **PASS**, 84 bài/32 sessions; TypeScript/export 29 trang; postbuild 14 track/84 bài |
+| Linux `sudo -n python3 runner/check_job_access.py` | **Chờ CI**, Windows không hỗ trợ kiểm tra chuyển UID POSIX này |
+
+Log cục bộ: `checks/review-sync-before.log`, `checks/review-sync-after.log`, `checks/review-p2-python.log`, `checks/review-p2-build.log`, `checks/runs/pr8-p2-offline/`. Probe quyền chỉ chạy fixture tin cậy, không chạy mã người học và không chứng minh Docker compilation/chấm web. Compile probe vẫn trả BLOCKED khi biên dịch thành công vì chưa có worker test tin cậy. Không cần migration hoặc đổi phiên bản cho hai sửa này.
+
 ## PR #8 — sửa review Dung06-tech (04/10/2026)
 
 Review trên [PR #8](https://github.com/VanDung279206/JavaBackend_AI_RoadMap/pull/8) kiểm tra commit `d6b11ff`, đã phát hiện đúng các lỗi do phần hoàn tác được commit: thiếu nguồn/route/schema và marker xung đột. Các PASS trong phần lịch sử bên dưới **không áp dụng cho d6b11ff**. Phần này ghi các lượt kiểm tra mới sau khi sửa review.
