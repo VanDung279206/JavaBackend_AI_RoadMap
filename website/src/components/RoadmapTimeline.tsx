@@ -4,8 +4,14 @@ import { PHASE_GUIDES } from "@/lib/phase-guides";
 import CodePlayground from "@/components/CodePlayground";
 import { getPlaygroundSeed } from "@/lib/playground-seeds";
 
-import {PHASES} from "@/lib/phases";
-const phaseLinks=Object.fromEntries(PHASES.map(p=>[p.number.padStart(2,"0"),{slug:p.slug,title:p.title}]));
+const phaseLinks: Record<string, { slug: string; title: string }> = {
+  "01": { slug: "01_Java", title: "Bài Java" },
+  "02": { slug: "02_Http-Sql", title: "Bài HTTP & SQL" },
+  "03": { slug: "03_Spring", title: "Bài Spring" },
+  "04": { slug: "04_Quality", title: "Bài kiểm thử" },
+  "05": { slug: "05_AI", title: "Bài tích hợp AI" },
+  "06": { slug: "06_RAG", title: "Bài RAG" },
+};
 
 export default function RoadmapTimeline() {
   return (
@@ -19,7 +25,7 @@ export default function RoadmapTimeline() {
                 <span className="phase-guide-number">{phase.number}</span>
                 <div className="phase-guide-heading-copy">
                   <span className="phase-guide-label">CHẶNG {phase.number}</span>
-                  <h2>{link?.title}</h2>
+                  <h2>{phase.number === "00" ? "Cài công cụ và chạy Java đầu tiên" : ["", "Java nền tảng", "HTTP & SQL", "Spring Boot", "Kiểm thử & triển khai", "Tích hợp AI", "RAG & đánh giá"][Number(phase.number)]}</h2>
                   <p>{phase.objective}</p>
                 </div>
                 <ChevronDown className="phase-guide-chevron" size={20} aria-hidden="true" />
@@ -49,10 +55,10 @@ export default function RoadmapTimeline() {
                   ))}
                 </ol>
 
-                {phase.number === "00" && getPlaygroundSeed("P0.2") && (
+                {phase.number === "00" && getPlaygroundSeed("P0.1") && (
                   <section className="phase-guide-live-runner" aria-label="Chạy thử chương trình Java đầu tiên">
                     <div className="phase-guide-runner-label">Thử chạy chương trình đầu tiên</div>
-                    <CodePlayground exerciseId="P0.2" seed={getPlaygroundSeed("P0.1")!} />
+                    <CodePlayground exerciseId="P0.1" seed={getPlaygroundSeed("P0.1")!} />
                   </section>
                 )}
 
