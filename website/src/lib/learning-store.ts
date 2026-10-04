@@ -26,6 +26,11 @@ function read(owner:string|null):Entries {
  return parseStoredEntries(JSON.parse(raw),[...valid.keys()]);
 }
 function persist(owner:string|null,entries:Entries) { localStorage.setItem(storageKey(owner),JSON.stringify(entries)); }
+function syncMessage(entries:Entries) {
+ const waiting=Object.values(entries).filter(e=>e.pending);
+ if(waiting.some(e=>e.conflict))return 'Có xung đột. Chọn bản máy chủ hoặc giữ bản trên thiết bị.';
+ return waiting.length?'Đã lưu trên thiết bị; đang chờ đồng bộ.':'Đã đồng bộ với máy chủ.';
+}
 async function load(owner:string|null) {
  const version=++epoch;
  publish({owner,entries:{},verified:[],loading:true,message:''});
@@ -50,10 +55,11 @@ export async function sync() {
  const owner=snapshot.owner,version=epoch;
  if(!owner || unreadable.has(storageKey(owner)) || syncing.has(owner))return;
  syncing.add(owner);
- let reschedule=false;
+ let completed=false;
  try {
-  for(const [id,entry] of Object.entries(snapshot.entries)) {
+  for(const id of Object.keys(snapshot.entries)) {
    if(version!==epoch)return;
+   const entry=snapshot.entries[id];
    if(!entry.pending||entry.conflict)continue;
    const e=valid.get(id)!;
    const {data,error}=await supabase.rpc('save_learning_progress',{p_owner:owner,p_phase:e.phase,p_exercise_id:id,p_status:entry.status,p_revision:entry.revision,p_due_at:entry.due_at,p_hint_level:entry.hint_level,p_error_tags:entry.error_tags});
@@ -68,11 +74,19 @@ export async function sync() {
    const current=snapshot.entries[id];
    // Do not discard an edit made while the network request was in flight.
    const next=current===entry?{...entry,revision:row.revision,pending:false,conflict:false}:{...current,revision:row.revision};
-   if(current!==entry)reschedule=true;
-   const entries={...snapshot.entries,[id]:next};persist(owner,entries);publish({entries,message:next.pending?'Đã lưu trên thiết bị; đang chờ đồng bộ.':'Đã đồng bộ với máy chủ.'});
+   const entries={...snapshot.entries,[id]:next};persist(owner,entries);publish({entries,message:syncMessage(entries)});
   }
+  if(version!==epoch)return;
+  completed=true;
+  publish({message:syncMessage(snapshot.entries)});
  }catch {if(version===epoch)publish({message:'Chưa xác nhận đồng bộ. Kiểm tra mạng và bộ nhớ thiết bị.'});}
- finally {syncing.delete(owner);if((reschedule&&version===epoch)||(version!==epoch&&snapshot.owner===owner&&!snapshot.loading))queueMicrotask(()=>void sync());}
+ finally {
+  syncing.delete(owner);
+  // Retry a successful pass if any exercise was queued while it was running.
+  // Failed RPCs and conflicts wait for reconnect/manual action, avoiding a busy loop.
+  const pending=Object.values(snapshot.entries).some(e=>e.pending&&!e.conflict);
+  if((completed&&version===epoch&&pending)||(version!==epoch&&snapshot.owner===owner&&!snapshot.loading))queueMicrotask(()=>void sync());
+ }
 }
 export function updateEntry(id:string,patch:Partial<Entry>) {
  if(snapshot.owner===undefined||snapshot.loading||unreadable.has(storageKey(snapshot.owner))||!valid.has(id))return false;
