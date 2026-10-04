@@ -1,6 +1,6 @@
 # Lời giải Phase 1
 
-Mã đầy đủ: [JavaCoreLab.java](https://github.com/VanDung279206/JavaBackend_AI_RoadMap/blob/RoadMap_v3/labs/src/JavaCoreLab.java). Cách chạy: [labs/README.md](https://github.com/VanDung279206/JavaBackend_AI_RoadMap/blob/RoadMap_v3/labs/README.md).
+Mã đầy đủ: [JavaCoreLab.java](../../labs/src/JavaCoreLab.java). Cách chạy: [labs/README.md](../../labs/README.md).
 
 ## P1.1
 
