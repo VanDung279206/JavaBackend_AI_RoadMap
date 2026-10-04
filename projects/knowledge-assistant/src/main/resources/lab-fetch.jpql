@@ -1,0 +1,1 @@
+select distinct a from LabAuthor a left join fetch a.books order by a.id
