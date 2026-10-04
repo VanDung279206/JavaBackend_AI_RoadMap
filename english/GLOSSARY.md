@@ -128,4 +128,4 @@ Ví dụ dùng cặp: “Authentication identifies the user, while authorization
 
 Văn phong: trung tính hoặc kỹ thuật. Trong IELTS Task 2, dùng thuật ngữ khi phù hợp chủ đề và giải thích nếu người đọc phổ thông có thể không biết; ví dụ có thể diễn giải “authentication” thành “identity verification”, “authorization” thành “permission to access”.
 
-Nguồn thuật ngữ theo ngữ cảnh: [Java](https://dev.java/learn/), [HTTP](https://www.rfc-editor.org/rfc/rfc9110.html), [Spring Security](https://docs.spring.io/spring-security/reference/6.5/index.html), [Spring AI](https://github.com/spring-projects/spring-ai/blob/v1.1.8/spring-ai-docs/src/main/antora/modules/ROOT/pages/index.adoc).
+Nguồn thuật ngữ theo ngữ cảnh: [Java](https://dev.java/learn/), [HTTP](https://www.rfc-editor.org/rfc/rfc9110.html), [Spring Security](https://docs.spring.io/spring-security/reference/index.html), [Spring AI](https://docs.spring.io/spring-ai/reference/index.html).
