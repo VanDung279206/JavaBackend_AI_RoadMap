@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Download, RotateCcw, SquareTerminal } from "lucide-react";
-import {useLearning} from "@/lib/learning-store";
 import type { PlaygroundSeed } from "@/lib/playground-seeds";
 
 type Props = {
@@ -51,19 +50,13 @@ function expandJavaSnippet(files: EditorFile[]): EditorFile[] | null {
   );
 }
 
-export default function CodePlayground(props:Props) {
- const {owner}=useLearning();
- if(owner===undefined)return <p>Đang xác định tài khoản cho bản nháp…</p>;
- return <ScopedPlayground key={owner||'guest'} {...props} owner={owner}/>;
-}
-function ScopedPlayground({ exerciseId, seed, owner }: Props & {owner:string|null}) {
+export default function CodePlayground({ exerciseId, seed }: Props) {
   const frameRef = useRef<HTMLIFrameElement>(null);
-  const storageBlocked = useRef(false);
   const seedRef = useRef(seed);
   const [ready, setReady] = useState(false);
   const [hasDraft, setHasDraft] = useState(false);
   const [message, setMessage] = useState("Đang mở trình chạy…");
-  const storageKey = `roadmap-code-v3-${owner||"guest"}-${exerciseId}`;
+  const storageKey = `roadmap-code-v2-${exerciseId}`;
   const [files, setFiles] = useState<EditorFile[]>([{ name: seed.filename, content: "" }]);
   const hasCode = files.some((file) => file.content.trim().length > 0);
 
@@ -100,15 +93,14 @@ function ScopedPlayground({ exerciseId, seed, owner }: Props & {owner:string|nul
           setHasDraft(true);
           setMessage("Đã khôi phục bản nháp");
         } else {
-          storageBlocked.current = true;
-          setMessage("Bản nháp không hợp lệ; đã khóa ghi để giữ dữ liệu cũ");
+          localStorage.removeItem(storageKey);
+          setMessage("Trình chạy sẵn sàng");
         }
       } else {
         setMessage("Trình chạy sẵn sàng");
       }
     } catch {
-      storageBlocked.current = true;
-      setMessage("Không đọc được bản nháp; chưa thể lưu thay đổi");
+      setMessage("Trình chạy sẵn sàng");
     }
     window.setTimeout(() => sendFiles(files), 180);
   }, [sendFiles, storageKey]);
@@ -122,7 +114,6 @@ function ScopedPlayground({ exerciseId, seed, owner }: Props & {owner:string|nul
       const nextFiles = data.language === "java" ? expandJavaSnippet(files) ?? files : files;
       if (nextFiles !== files) sendFiles(nextFiles);
       setFiles(nextFiles);
-      if (storageBlocked.current) return;
       try {
         if (nextFiles.some((file) => file.content.trim().length > 0)) {
           localStorage.setItem(storageKey, JSON.stringify({ language: data.language, files: nextFiles }));
@@ -142,25 +133,12 @@ function ScopedPlayground({ exerciseId, seed, owner }: Props & {owner:string|nul
   }, [seed.language, sendFiles, storageKey]);
 
   const reset = () => {
-    try { localStorage.removeItem(storageKey); } catch { setMessage("Không xóa được bản nháp trên thiết bị"); return; }
-    storageBlocked.current = false;
+    try { localStorage.removeItem(storageKey); } catch { /* Storage can be disabled by the browser. */ }
     setHasDraft(false);
     const initialFiles = [{ name: seed.filename, content: "" }];
     setFiles(initialFiles);
     setMessage("Đã xóa mã");
     sendFiles(initialFiles);
-  };
-
-  const importLegacy = () => {
-    try {
-      const parsed = JSON.parse(localStorage.getItem(`roadmap-code-v2-${exerciseId}`) || 'null') as EditorMessage | null;
-      const restored = toEditorFiles(parsed?.files);
-      if (!restored || parsed?.language !== seed.language) { setMessage("Không có bản nháp v2 hợp lệ cho bài này"); return; }
-      if (hasCode || localStorage.getItem(storageKey)) { setMessage("Hãy tải và xử lý bản nháp hiện tại trước khi nhập bản cũ"); return; }
-      localStorage.setItem(storageKey, JSON.stringify(parsed));
-      setFiles(restored);setHasDraft(true);sendFiles(restored);
-      setMessage("Đã sao chép bản nháp v2 vào khách; giữ nguyên bản gốc");
-    } catch { setMessage("Không nhập được bản nháp cũ; dữ liệu gốc được giữ nguyên"); }
   };
 
   const download = () => {
@@ -185,7 +163,6 @@ function ScopedPlayground({ exerciseId, seed, owner }: Props & {owner:string|nul
           </div>
         </div>
         <div className="code-playground-actions">
-          {owner === null && <button type="button" className="code-reset-button" disabled={!ready || hasCode} onClick={importLegacy}>Nhập bản nháp v2</button>}
           <span className="code-playground-status" role="status">{message}</span>
           <button type="button" className="code-reset-button" onClick={reset} title="Xóa mã để bắt đầu lại" disabled={!ready || !hasCode}>
             <RotateCcw size={14} aria-hidden="true" />
