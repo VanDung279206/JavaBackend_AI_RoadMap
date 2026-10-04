@@ -1035,5 +1035,198 @@
       "database_log_verified": true,
       "subsequent_changes": "Two documentation/result commits only"
     }
+  },
+  "review_compile_limit": {
+    "review_id": 5407387608,
+    "reviewed_commit": "dab8d2c654d971b7defa2f136c34700e34de6221",
+    "comments": [
+      4178662387
+    ],
+    "before_fix": {
+      "status": "FAIL",
+      "tests": 3,
+      "pass": 2,
+      "fail": 1,
+      "class_bytes": 8724,
+      "file_limit_bytes": 4096,
+      "log": "checks/review-fsize-before.log"
+    },
+    "python_tests": {
+      "status": "PASS",
+      "tests": 31,
+      "skipped": 0,
+      "log": "checks/review-fsize-after.log"
+    },
+    "website_tests": {
+      "status": "PASS",
+      "tests": 18
+    },
+    "catalogue_check": "PASS",
+    "diff_check": "PASS",
+    "offline": {
+      "created_at": "2026-10-04T18:01:43.397216+00:00",
+      "scope": "reference verification; not learner completion",
+      "status": "PASS",
+      "checks": [
+        {
+          "name": "merge-markers",
+          "status": "PASS",
+          "detail": "exit=0",
+          "log": "merge-markers.log",
+          "elapsed_seconds": 0.24
+        },
+        {
+          "name": "environment-offline",
+          "status": "PASS",
+          "detail": "Required probes passed"
+        },
+        {
+          "name": "legacy-labs",
+          "status": "PASS",
+          "detail": "exit=0",
+          "log": "legacy-labs.log",
+          "elapsed_seconds": 1.5
+        },
+        {
+          "name": "practice-reference",
+          "status": "PASS",
+          "detail": "exit=0",
+          "log": "practice-reference.log",
+          "elapsed_seconds": 1.61
+        },
+        {
+          "name": "debug-reference",
+          "status": "PASS",
+          "detail": "exit=0",
+          "log": "debug-reference.log",
+          "elapsed_seconds": 1.11
+        },
+        {
+          "name": "mixed-reference",
+          "status": "PASS",
+          "detail": "exit=0",
+          "log": "mixed-reference.log",
+          "elapsed_seconds": 1.19
+        },
+        {
+          "name": "concurrency-reference",
+          "status": "PASS",
+          "detail": "exit=0",
+          "log": "concurrency-reference.log",
+          "elapsed_seconds": 2.22
+        },
+        {
+          "name": "app-core",
+          "status": "PASS",
+          "detail": "exit=0",
+          "log": "app-core.log",
+          "elapsed_seconds": 0.98
+        },
+        {
+          "name": "learning-tools",
+          "status": "PASS",
+          "detail": "exit=0",
+          "log": "learning-tools.log",
+          "elapsed_seconds": 6.88
+        },
+        {
+          "name": "english-diagnostics",
+          "status": "PASS",
+          "detail": "exit=0",
+          "log": "english-diagnostics.log",
+          "elapsed_seconds": 2.59
+        },
+        {
+          "name": "foundations-reference",
+          "status": "PASS",
+          "detail": "exit=0",
+          "log": "foundations-reference.log",
+          "elapsed_seconds": 9.14
+        },
+        {
+          "name": "rag-safety-reference",
+          "status": "PASS",
+          "detail": "exit=0",
+          "log": "rag-safety-reference.log",
+          "elapsed_seconds": 1.16
+        },
+        {
+          "name": "markdown-links",
+          "status": "PASS",
+          "detail": "exit=0",
+          "log": "markdown-links.log",
+          "elapsed_seconds": 0.28
+        },
+        {
+          "name": "practice-rejects-unfinished-starter",
+          "status": "PASS",
+          "detail": "exit=1",
+          "log": "practice-rejects-unfinished-starter.log",
+          "elapsed_seconds": 1.42
+        },
+        {
+          "name": "debug-rejects-unfinished-starter",
+          "status": "PASS",
+          "detail": "exit=1",
+          "log": "debug-rejects-unfinished-starter.log",
+          "elapsed_seconds": 1.08
+        },
+        {
+          "name": "mixed-rejects-unfinished-starter",
+          "status": "PASS",
+          "detail": "exit=1",
+          "log": "mixed-rejects-unfinished-starter.log",
+          "elapsed_seconds": 1.09
+        },
+        {
+          "name": "concurrency-rejects-unfinished-starter",
+          "status": "PASS",
+          "detail": "exit=1",
+          "log": "concurrency-rejects-unfinished-starter.log",
+          "elapsed_seconds": 1.08
+        },
+        {
+          "name": "foundations-rejects-unfinished-starter",
+          "status": "PASS",
+          "detail": "exit=1",
+          "log": "foundations-rejects-unfinished-starter.log",
+          "elapsed_seconds": 1.03
+        },
+        {
+          "name": "advanced-rejects-unfinished-starter",
+          "status": "PASS",
+          "detail": "exit=1",
+          "log": "advanced-rejects-unfinished-starter.log",
+          "elapsed_seconds": 1.03
+        }
+      ]
+    },
+    "file_limit_bytes": 8388608,
+    "diagnostics_retained_bytes": 32000,
+    "linux_compile": {
+      "status": "PASS",
+      "scope": "trusted MoreDsa fixture under actual UID/GID 65534 and RLIMIT_FSIZE from Docker command; not a Docker probe run",
+      "class_bytes": 8724,
+      "old_limit_control": "PASS: 4096-byte fsize rejects valid MoreDsa bytecode",
+      "oversized_file_rejected": true,
+      "actual_uid": 65534,
+      "actual_gid": 65534,
+      "verdict": "BLOCKED"
+    },
+    "docker_probe_local": {
+      "status": "BLOCKED",
+      "reason": "Docker daemon pipe unavailable"
+    },
+    "migration": "None",
+    "trusted_web_grader": "BLOCKED: trusted test worker/image/runtime not deployed",
+    "ci": {
+      "status": "PASS",
+      "validated_commit": "2314e119634dbcc343a2b869971f59d135bd2775",
+      "website_url": "https://github.com/VanDung279206/JavaBackend_AI_RoadMap/actions/runs/37222841422",
+      "reference_url": "https://github.com/VanDung279206/JavaBackend_AI_RoadMap/actions/runs/37222841316",
+      "compile_limit_log_verified": true,
+      "database_log_verified": true,
+      "subsequent_changes": "Two documentation/result commits only"
+    }
   }
 }
