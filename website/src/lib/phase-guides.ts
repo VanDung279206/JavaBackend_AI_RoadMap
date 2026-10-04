@@ -1,3 +1,4 @@
+import catalogue from "@/generated/catalogue.json";
 export type GuideStep = {
   title: string;
   detail: string;
@@ -120,7 +121,7 @@ export const PHASE_GUIDES: PhaseGuide[] = [
       { title: "Dùng DTO và validation", detail: "Tạo request DTO có @NotBlank và @Size. Không nhận entity trực tiếp từ client; không để client tự chọn ownerId. Ánh xạ request sang domain ở service.", check: "Request sai trả 400 với lỗi xác định được trường nào sai." },
       { title: "Theo dõi schema bằng migration", detail: "Tạo migration V1__...sql, khởi động trên PostgreSQL rỗng rồi mới thêm entity/repository. Migration là lịch sử thay đổi, không phải file SQL bị sửa tùy hứng sau khi deploy.", check: "Dựng lại database mới chỉ bằng cấu hình và migration." },
       { title: "Thêm truy vấn và lỗi có quy ước", detail: "Viết truy vấn có ownerId cùng resource ID. Ánh xạ NotFound thành 404, input không hợp lệ thành 400; không trả stack trace trong response.", check: "Người dùng khác không thể đọc tài liệu bằng cách đoán ID." },
-      { title: "Kiểm tra thao tác nghiệp vụ", detail: "Viết một test cho đường thành công và một test cho lỗi. Với database, khởi động PostgreSQL test thay vì chỉ mock repository cho mọi thứ.", command: ".\\mvnw.cmd test", check: "Build và test chạy trên cùng phiên bản Java đã ghi trong README." },
+      { title: "Kiểm tra thao tác nghiệp vụ", detail: "Viết một test cho đường thành công và một test cho lỗi. Với database, khởi động PostgreSQL test thay vì chỉ mock repository cho mọi thứ.", command: catalogue.exercises.find(e=>e.id==="P3.1")!.check.command, check: "Build và test chạy trên cùng phiên bản Java đã ghi trong README." },
     ],
     deliverable: "API tạo/đọc/sửa/xóa tài liệu có DTO, validation, migration và database PostgreSQL.",
     checklist: ["Ứng dụng khởi động lại vẫn còn dữ liệu.", "Request không hợp lệ bị từ chối.", "Quyền được kiểm tra ở server.", "README có lệnh dựng database, chạy test và khởi động app."],
@@ -138,7 +139,7 @@ export const PHASE_GUIDES: PhaseGuide[] = [
       { title: "Viết test từ ranh giới hành vi", detail: "Tạo test cho đầu vào sai, tài nguyên không tồn tại, ID trùng và danh sách rỗng. Mỗi test nên thất bại vì đúng một hành vi sai.", check: "Khi cố ý bỏ quy tắc, test tương ứng phải đỏ." },
       { title: "Tách xác thực khỏi phân quyền", detail: "Xác thực trả lời ai đang gọi; phân quyền trả lời người đó được làm gì. Lấy user ID từ security principal, rồi truy vấn theo cả resource ID và user ID.", check: "Hai người dùng thử cùng ID; người ngoài phạm vi nhận kết quả đã chọn trong API contract." },
       { title: "Kiểm tra database thật", detail: "Dùng integration test cho migration, truy vấn và transaction. Test fixture phải tạo dữ liệu riêng và dọn dẹp để kết quả không phụ thuộc lần chạy trước.", check: "Test chạy lại nhiều lần mà không cần sửa tay database." },
-      { title: "Đóng gói cấu hình", detail: "Build JAR, tạo image JRE 21 và truyền database URL/password qua biến môi trường. Trong Docker Compose, app gọi database theo tên service, không theo localhost.", command: ".\\mvnw.cmd package\ndocker compose up --build", check: "Một người khác chạy các lệnh từ bản clone sạch và gọi được endpoint." },
+      { title: "Đóng gói cấu hình", detail: "Build JAR, tạo image JRE 21 và truyền database URL/password qua biến môi trường. Trong Docker Compose, app gọi database theo tên service, không theo localhost.", command: catalogue.exercises.find(e=>e.id==="P4.3")!.check.command, check: "Một người khác chạy các lệnh từ bản clone sạch và gọi được endpoint." },
       { title: "Đặt tiêu chí cho CI", detail: "Pipeline chạy format/lint nếu có, unit test, integration test và package theo cùng thứ tự. Một lỗi test làm pipeline dừng; log ghi request ID nhưng không in token hay nội dung tài liệu riêng tư.", check: "Mở một commit làm test thất bại và xác nhận job không báo xanh." },
     ],
     deliverable: "Bộ test quyền và nghiệp vụ, cấu hình Docker, cùng pipeline CI có thể chặn thay đổi sai.",
