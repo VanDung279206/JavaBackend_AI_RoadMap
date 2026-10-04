@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { ArrowUpRight, Check, RefreshCw, X } from "lucide-react";
+import catalogue from "@/generated/catalogue.json";
 import { supabase } from "@/lib/supabase";
 
 type PendingResource = {
@@ -18,15 +19,7 @@ type PendingResource = {
   preview_url?: string;
 };
 
-const PHASE_NAMES: Record<string, string> = {
-  "00_Setup": "Chặng 00 · Cài đặt",
-  "01_Java": "Chặng 01 · Java",
-  "02_Http-Sql": "Chặng 02 · HTTP & SQL",
-  "03_Spring": "Chặng 03 · Spring Boot",
-  "04_Quality": "Chặng 04 · Kiểm thử",
-  "05_AI": "Chặng 05 · AI",
-  "06_RAG": "Chặng 06 · RAG",
-};
+const PHASE_NAMES: Record<string, string> = Object.fromEntries(catalogue.phases.map(p=>[p.slug,p.title]));
 
 const PURPOSE_NAMES: Record<string, string> = {
   lesson: "Bài giảng",
