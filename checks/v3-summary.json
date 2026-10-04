@@ -1,5 +1,5 @@
 {
-  "recorded_at": "2026-10-04T01:23:01.704694+00:00",
+  "recorded_at": "2026-10-04T01:27:53.108968+00:00",
   "branch": "RoadMap_v3",
   "base": "e50b9fd",
   "scope": "Reference/fixtures only; never learner completion",
@@ -228,8 +228,8 @@
     },
     "linux_ci": {
       "status": "PASS",
-      "commit": "ff5ee2eff455b2ff0cfc426e1cf43d66b26439db",
-      "url": "https://github.com/VanDung279206/JavaBackend_AI_RoadMap/actions/runs/37166868206"
+      "commit": "533f6d6688b667413a85f390a3e344919119b66f",
+      "url": "https://github.com/VanDung279206/JavaBackend_AI_RoadMap/actions/runs/37167868679"
     }
   },
   "python_tests": {
@@ -399,12 +399,12 @@
         "http": 200
       },
       {
-        "url": "https://github.com/VanDung279206/JavaBackend_AI_RoadMap/actions/runs/37166868171",
+        "url": "https://github.com/VanDung279206/JavaBackend_AI_RoadMap/actions/runs/37167868726",
         "status": "PASS",
         "http": 200
       },
       {
-        "url": "https://github.com/VanDung279206/JavaBackend_AI_RoadMap/actions/runs/37166868206",
+        "url": "https://github.com/VanDung279206/JavaBackend_AI_RoadMap/actions/runs/37167868679",
         "status": "PASS",
         "http": 200
       },
@@ -652,9 +652,9 @@
     "initial_status": "FAIL database step; offline/integration PASS",
     "fix": "TCP readiness instead of temporary Unix-socket server; retain database log",
     "rerun_status": "PASS",
-    "validated_commit": "ff5ee2eff455b2ff0cfc426e1cf43d66b26439db",
-    "reference_url": "https://github.com/VanDung279206/JavaBackend_AI_RoadMap/actions/runs/37166868206",
-    "website_url": "https://github.com/VanDung279206/JavaBackend_AI_RoadMap/actions/runs/37166868171"
+    "validated_commit": "533f6d6688b667413a85f390a3e344919119b66f",
+    "reference_url": "https://github.com/VanDung279206/JavaBackend_AI_RoadMap/actions/runs/37167868679",
+    "website_url": "https://github.com/VanDung279206/JavaBackend_AI_RoadMap/actions/runs/37167868726"
   },
   "website_lint": {
     "status": "PASS",
