@@ -1,5 +1,5 @@
 {
-  "recorded_at": "2026-10-04T14:52:42.169252+00:00",
+  "recorded_at": "2026-10-04T15:01:20.553819+00:00",
   "branch": "RoadMap_v3",
   "base": "e50b9fd",
   "scope": "Reference/fixtures only; never learner completion",
@@ -836,7 +836,13 @@
       "reason": "Docker Desktop LinuxEngine pipe unavailable"
     },
     "ci": {
-      "status": "PENDING"
+      "status": "PASS",
+      "validated_commit": "99c2ba88910c3a6ec51f182b46a23d4b3bcfdbad",
+      "website_url": "https://github.com/VanDung279206/JavaBackend_AI_RoadMap/actions/runs/37211092695",
+      "reference_url": "https://github.com/VanDung279206/JavaBackend_AI_RoadMap/actions/runs/37211092706",
+      "database_log_verified": true,
+      "database_scope": "V1-V6, catalogue seed, legacy preservation, RLS/account/admin/fake-grade assertions, Q01/starter rejection, custom dump/restore",
+      "subsequent_changes": "Two documentation/result commits only"
     },
     "historical_scope": "Earlier top-level evidence does not validate d6b11ff; review_fix records new runs only"
   }
