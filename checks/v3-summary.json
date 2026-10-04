@@ -1,5 +1,5 @@
 {
-  "recorded_at": "2026-10-03T15:14:31.877891+00:00",
+  "recorded_at": "2026-10-04T01:23:01.704694+00:00",
   "branch": "RoadMap_v3",
   "base": "e50b9fd",
   "scope": "Reference/fixtures only; never learner completion",
@@ -220,23 +220,47 @@
   "database": {
     "status": "PASS",
     "log": "checks/database-v3-account-guard.log",
-    "scope": "V1-V6, legacy preservation, owner/revision/RLS, fake grade, SQL Q01, seeded backup/restore"
+    "scope": "V1-V6, legacy preservation, owner/revision/RLS, fake grade, SQL Q01, seeded backup/restore",
+    "latest_windows_attempt": {
+      "status": "BLOCKED",
+      "date": "2026-10-04",
+      "reason": "Docker Desktop LinuxEngine pipe unavailable; start did not establish daemon readiness"
+    },
+    "linux_ci": {
+      "status": "PASS",
+      "commit": "ff5ee2eff455b2ff0cfc426e1cf43d66b26439db",
+      "url": "https://github.com/VanDung279206/JavaBackend_AI_RoadMap/actions/runs/37166868206"
+    }
   },
   "python_tests": {
     "status": "PASS",
-    "tests": 21
+    "tests": 22,
+    "log": "checks/python-v3-contract.log"
   },
   "website_domain_tests": {
     "status": "PASS",
-    "tests": 9
+    "tests": 10
   },
   "spring_reference": {
     "status": "PASS",
-    "tests": 16
+    "tests": 19,
+    "log": "checks/spring-contract-v3.log"
   },
   "learner_negative_tests": {
     "F01": "Expected assertion: 1 query vs 4",
-    "O01": "Expected two failures: missing propagated/generated request ID"
+    "O01": "Expected two failures: missing propagated/generated request ID",
+    "P3.1-P3.2": {
+      "status": "PASS regression",
+      "starter_p31": "FAIL TODO P3.1",
+      "repaired_p31": "PASS 1 test",
+      "unfinished_p32": "FAIL TODO P3.2",
+      "scope": "Own fixture; never learner completion",
+      "logs": [
+        "checks/spring-p31-starter.log",
+        "checks/spring-p31-repaired.log",
+        "checks/spring-p32-unfinished.log"
+      ]
+    }
   },
   "blocked": [
     "Trusted Java/Maven web grading worker implementation/deployment",
@@ -246,8 +270,7 @@
     "Commit evidence integration and model tutor"
   ],
   "markdown_links": {
-    "checked_on": "2026-10-04",
-    "local_count": 149,
+    "local_count": 317,
     "local_errors": [],
     "external": [
       {
@@ -372,6 +395,16 @@
       },
       {
         "url": "https://git-scm.com/book/en/v2/Getting-Started-First-Time-Git-Setup",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://github.com/VanDung279206/JavaBackend_AI_RoadMap/actions/runs/37166868171",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://github.com/VanDung279206/JavaBackend_AI_RoadMap/actions/runs/37166868206",
         "status": "PASS",
         "http": 200
       },
@@ -611,12 +644,25 @@
         "http": 200
       }
     ],
+    "checked_on": "2026-10-04",
     "scope": "HTTP reachability; external fragments/content not verified"
   },
   "ci_followup": {
     "initial_run": "https://github.com/VanDung279206/JavaBackend_AI_RoadMap/actions/runs/37132699991",
     "initial_status": "FAIL database step; offline/integration PASS",
     "fix": "TCP readiness instead of temporary Unix-socket server; retain database log",
-    "rerun_status": "PENDING"
+    "rerun_status": "PASS",
+    "validated_commit": "ff5ee2eff455b2ff0cfc426e1cf43d66b26439db",
+    "reference_url": "https://github.com/VanDung279206/JavaBackend_AI_RoadMap/actions/runs/37166868206",
+    "website_url": "https://github.com/VanDung279206/JavaBackend_AI_RoadMap/actions/runs/37166868171"
+  },
+  "website_lint": {
+    "status": "PASS",
+    "log": "checks/website-lint-v3-contract.log"
+  },
+  "website_build": {
+    "status": "PASS",
+    "pages": 29,
+    "log": "checks/website-build-v3-contract.log"
   }
 }
