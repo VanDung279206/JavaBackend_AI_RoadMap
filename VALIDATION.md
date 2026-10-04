@@ -9,7 +9,7 @@ Review trên [PR #8](https://github.com/VanDung279206/JavaBackend_AI_RoadMap/pul
 | `4178091896` — component thiếu | Khôi phục ReviewImport/PersonalNote; website build mới PASS |
 | `4178091902` — YAML xung đột | Giải quyết workflow; test parse tất cả workflow bằng js-yaml đã khóa qua dependency ESLint; thêm gate chặn marker merge |
 | `4178091907` — catalogue hỏng/thiếu schema | Khôi phục phases/phase/prerequisites, assessment, hints/sessions và nội dung; generator sinh lại website/seed/bản đồ, `--check` PASS |
-| `4178091909` — schema/RPC thiếu | V4 → seed → V5 → V6 và fixture nâng cấp/restore có đủ trong nhánh; regression nguồn SQL PASS, kiểm chứng PostgreSQL mới chờ CI Linux |
+| `4178091909` — schema/RPC thiếu | V4 → seed → V5 → V6 và fixture nâng cấp/restore có đủ trong nhánh; regression nguồn SQL và kiểm chứng PostgreSQL/RLS/backup–restore mới trên CI Linux PASS |
 | `4178091912` — implementation/fixture thiếu | Khôi phục foundations/advanced/SQL, lab fetch, metrics/OpenAPI, runner probe; offline và test Java mới PASS |
 | `4178091916` — route/store chưa nối | Docs dùng phases từ catalogue và cùng store v3 với today; render LearningTools; khôi phục skills/lab/reset; kiểm tra HTML export 14 track/84 bài và các trang này PASS |
 | `4178091918` — test runner thiếu | Khôi phục runner biên dịch TypeScript, npm test và CI regression; thêm regression mất route/learning tools |
@@ -20,9 +20,11 @@ Review trên [PR #8](https://github.com/VanDung279206/JavaBackend_AI_RoadMap/pul
 | `node scripts/build_catalogue.mjs --check` | **PASS**, 84 bài/32 sessions, nguồn và output nhất quán |
 | npm CLI `--prefix website test`, `run lint`, `run build` | **PASS**, 12 tests; lint; TypeScript/export 29 trang; postbuild kiểm tra 14 track/84 bài, today/skills/lab/auth/reset |
 | `maven.py -f projects/knowledge-assistant/pom.xml test` | **PASS 19 tests**, 0 failure/error/skipped; sau khi cấp quyền mạng cho Maven Wrapper |
+| [Website CI của PR](https://github.com/VanDung279206/JavaBackend_AI_RoadMap/actions/runs/37211092695), commit `99c2ba8` | **PASS** trên Node 20: catalogue, 12 tests, YAML, lint, build và kiểm tra route/learning tools sau export |
+| [Reference CI của PR](https://github.com/VanDung279206/JavaBackend_AI_RoadMap/actions/runs/37211092706), commit `99c2ba8` | **PASS** trên Java 21/Python 3.12: offline, Spring/PostgreSQL/SQL/Docker HTTP, V1–V6/seed/legacy/RLS/Q01, starter rejection và custom dump/restore |
 | Docker daemon cục bộ | **BLOCKED**, pipe dockerDesktopLinuxEngine không tồn tại. Không coi kiểm tra fixture tồn tại là PASS tích hợp database |
 
-Log mới: `checks/runs/pr8-review-offline/`, `checks/website-build-pr8-review.log`, `checks/spring-pr8-review.log`. CI mới cho bản sửa chưa có kết quả ở thời điểm ghi bảng này. Chấm web/model thật/Supabase gateway/kiểm tra trực quan cuối vẫn theo các giới hạn bên dưới.
+Log mới: `checks/runs/pr8-review-offline/`, `checks/website-build-pr8-review.log`, `checks/spring-pr8-review.log`. Đã đọc log CI xác nhận từng migration/fixture và backup–restore PASS. Hai commit sau `99c2ba8` chỉ ghi kết quả vào VALIDATION/JSON, không đổi mã đã kiểm chứng. Chấm web/model thật/Supabase gateway/kiểm tra trực quan cuối vẫn theo các giới hạn bên dưới.
 
 ## Lịch sử kiểm chứng trước review
 
