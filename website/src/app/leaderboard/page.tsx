@@ -6,20 +6,26 @@ import { supabase, type LeaderboardEntry } from "@/lib/supabase";
 
 export default function LeaderboardPage() {
   const [data, setData] = useState<LeaderboardEntry[]>([]);
+  const [kind,setKind]=useState<"leaderboard"|"verified_leaderboard">("leaderboard");
+  const [error,setError]=useState("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let active=true;
     supabase
-      .from("leaderboard")
+      .from(kind)
       .select("*")
       .order("completed_count", { ascending: false })
       .order("updated_at", { ascending: false })
       .limit(50)
-      .then(({ data: rows }) => {
+      .then(({ data: rows,error }) => {
+        if(!active)return;
+        setError(error?"Không tải được bảng xếp hạng. Kiểm tra kết nối và migration V4.":"");
         setData((rows as LeaderboardEntry[]) ?? []);
         setLoading(false);
       });
-  }, []);
+    return()=>{active=false;};
+  }, [kind]);
 
   return (
     <section className="page-shell leaderboard-shell">
@@ -29,19 +35,20 @@ export default function LeaderboardPage() {
         <p className="page-description">Ghi nhận những người học đang bền bỉ hoàn thành bài thực hành.</p>
       </header>
 
+      <div className="learning-actions"><button onClick={()=>{setLoading(true);setData([]);setKind("leaderboard");}}>Tự khai báo</button><button onClick={()=>{setLoading(true);setData([]);setKind("verified_leaderboard");}}>Có bằng chứng kiểm thử</button></div><p>{kind==="leaderboard"?"Bảng tự khai báo: không chứng minh đã qua test.":"Chỉ tính bài nộp PASS có phiên bản bộ test và thời điểm chấm. Chạy thử không được tính."}</p>
       <div className="leaderboard-panel">
         <div className="leaderboard-heading">
           <span>NGƯỜI HỌC</span>
           <span>BÀI ĐÃ HOÀN THÀNH</span>
         </div>
 
-        {loading ? (
+        {error ? <p role="alert">{error}</p> : loading ? (
           <div className="leaderboard-message" role="status">Đang tải bảng xếp hạng…</div>
         ) : data.length === 0 ? (
           <div className="leaderboard-empty">
             <span className="empty-rank-mark">01</span>
             <h2>Bảng xếp hạng đang chờ bạn</h2>
-            <p>Đăng nhập và đánh dấu bài tập đã hoàn thành để xuất hiện tại đây.</p>
+            <p>Chưa có dữ liệu thuộc loại xếp hạng đang chọn.</p>
           </div>
         ) : (
           <ol className="leaderboard-list">
