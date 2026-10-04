@@ -2,11 +2,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 
-import catalogue from "@/generated/catalogue.json";
 const pages = [
-  { label: "Hôm nay học gì?", href: "/today" },
-  { label: "Bản đồ kiến thức và kiểm tra đầu vào", href: "/skills" },
-  { label: "Bàn thử nghiệm RAG và trực quan hóa", href: "/lab" },
   { label: "Trang chủ", href: "/" },
   { label: "Roadmap", href: "/roadmap" },
   { label: "Dự án thực tế", href: "/projects" },
@@ -37,11 +33,9 @@ export default function SearchCommand() {
     return () => window.removeEventListener("keydown", handler);
   }, []);
 
-  const searchable = [...pages.map(p=>({...p, text:p.label})), ...catalogue.exercises.map(e=>({label:`${e.id} — ${e.title}`,href:`/docs/${e.phase}#${e.id}`,text:[e.id,e.title,e.markdown,e.phase,...e.tags,...e.tags.map(tag=>catalogue.tags[tag as keyof typeof catalogue.tags]||tag)].join(" ")}))];
-  const normalize = (s: string) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[đĐ]/g,"d").toLowerCase();
   const results = query.trim()
-    ? searchable.filter(p => normalize(p.text).includes(normalize(query))).slice(0,60)
-    : searchable.slice(0,20);
+    ? pages.filter((p) => p.label.toLowerCase().includes(query.toLowerCase()))
+    : pages;
 
   const go = useCallback((href: string) => {
     setOpen(false);
