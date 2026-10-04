@@ -22,8 +22,9 @@ function Tools({exerciseId}:{exerciseId:string}) {
   finally{setSaving(false);}
  }
  function recordError(){
+  if(state.loading||state.owner===undefined){setMessage("Đang tải tài khoản/tiến độ; chưa lưu nhật ký.");return;}
   if(!prediction.trim()||!cause.trim()){setMessage('Ghi dự đoán và nguyên nhân trước khi lưu nhật ký.');return;}
-  try{const key=`error-clinic:${state.owner||'guest'}`;const old=JSON.parse(localStorage.getItem(key)||'[]');old.push({exerciseId,prediction,cause,tag,hint,date:new Date().toISOString()});localStorage.setItem(key,JSON.stringify(old));updateEntry(exerciseId,{status:'needs_review',error_tags:[tag],hint_level:hint,due_at:new Date(Date.now()+86400000).toISOString()});setMessage('Đã lưu nhật ký lỗi trên thiết bị, trong phạm vi tài khoản này.');}catch{setMessage('Không lưu được nhật ký lỗi.');}
+  try{const key=`error-clinic:${state.owner||'guest'}`;const old=JSON.parse(localStorage.getItem(key)||'[]');old.push({exerciseId,prediction,cause,tag,hint,date:new Date().toISOString()});localStorage.setItem(key,JSON.stringify(old));const scheduled=updateEntry(exerciseId,{status:'needs_review',error_tags:[tag],hint_level:hint,due_at:new Date(Date.now()+86400000).toISOString()});setMessage(scheduled?'Đã lưu nhật ký và lịch ôn trên thiết bị, trong phạm vi tài khoản này.':'Đã lưu nhật ký; chưa lưu được lịch ôn. Xem thông báo tiến độ.');}catch{setMessage('Không lưu được nhật ký lỗi.');}
  }
  return <div className="learning-tools">
  <section className="learning-card"><h3>Gia sư gợi ý theo cấp</h3><p>Gợi ý bám hợp đồng bài; mức hỗ trợ đã dùng được lưu vào tiến độ. AI không cấp kết quả đạt.</p><div className="learning-actions">{exercise.hints.map((_,i)=><button key={i} onClick={()=>{setHint(i+1);updateEntry(exerciseId,{hint_level:Math.max(i+1,state.entries[exerciseId]?.hint_level||0)});}}>Gợi ý {i+1}</button>)}</div>{hint>0&&<p>{exercise.hints[hint-1]}</p>}{!exercise.hints.length&&<p>Bài này chưa có bộ gợi ý ba cấp.</p>}</section>

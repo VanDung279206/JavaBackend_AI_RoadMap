@@ -367,8 +367,8 @@
       "check": {
         "kind": "project",
         "file": "work/spring-p3/pom.xml",
-        "command": "py scripts/new_spring_lab.py --phase 3 --destination work/spring-p3\npy scripts/maven.py -f work/spring-p3/pom.xml test",
-        "note": "Tạo bản tự làm một lần; các lần sau chỉ chạy Maven trong bản đó. Không chấm bản projects/knowledge-assistant."
+        "command": "py scripts/new_spring_lab.py --phase 3 --destination work/spring-p3\npy scripts/maven.py -f work/spring-p3/pom.xml -Dtest=LearningContractTest#createsValidatedOwnedDocument test",
+        "note": "Tạo bản một lần, sau đó chỉ chạy Maven trên bản đó. Test theo bài; phải hoàn thiện bài tiên quyết trước. Hết phase chạy toàn bộ test. Không cấp tiến độ từ bản tham chiếu."
       },
       "playground": null,
       "markdown": "Tạo `CreateDocumentRequest(title, content)`. Title không trắng, tối đa 120 ký tự; content không null. `POST /documents` nhận DTO, lấy user từ danh tính đã xác thực và trả DTO kết quả với status 201. Viết hai ví dụ request sai và vị trí bắt lỗi.",
@@ -394,8 +394,8 @@
       "check": {
         "kind": "project",
         "file": "work/spring-p3/pom.xml",
-        "command": "py scripts/new_spring_lab.py --phase 3 --destination work/spring-p3\npy scripts/maven.py -f work/spring-p3/pom.xml test",
-        "note": "Tạo bản tự làm một lần; các lần sau chỉ chạy Maven trong bản đó. Không chấm bản projects/knowledge-assistant."
+        "command": "py scripts/new_spring_lab.py --phase 3 --destination work/spring-p3\npy scripts/maven.py -f work/spring-p3/pom.xml -Dtest=LearningContractTest#findsOnlyOwnedDocument test",
+        "note": "Tạo bản một lần, sau đó chỉ chạy Maven trên bản đó. Test theo bài; phải hoàn thiện bài tiên quyết trước. Hết phase chạy toàn bộ test. Không cấp tiến độ từ bản tham chiếu."
       },
       "playground": null,
       "markdown": "Viết truy vấn tìm tài liệu bằng cả ID và owner ID. Cùng ID=101, người 1 tìm thấy, người 2 không tìm thấy. Giải thích vì sao không nhận owner ID từ query parameter làm căn cứ quyền truy cập.",
@@ -422,8 +422,8 @@
       "check": {
         "kind": "project",
         "file": "work/spring-p3/pom.xml",
-        "command": "py scripts/new_spring_lab.py --phase 3 --destination work/spring-p3\npy scripts/maven.py -f work/spring-p3/pom.xml test",
-        "note": "Tạo bản tự làm một lần; các lần sau chỉ chạy Maven trong bản đó. Không chấm bản projects/knowledge-assistant."
+        "command": "py scripts/new_spring_lab.py --phase 3 --destination work/spring-p3\npy scripts/maven.py -f work/spring-p3/pom.xml -Dtest=LearningContractTest#listsStableOwnedPages test",
+        "note": "Tạo bản một lần, sau đó chỉ chạy Maven trên bản đó. Test theo bài; phải hoàn thiện bài tiên quyết trước. Hết phase chạy toàn bộ test. Không cấp tiến độ từ bản tham chiếu."
       },
       "playground": null,
       "markdown": "Cho phép `page >= 0`, `1 <= size <= 100`; sắp `createdAt DESC, id DESC`. Input page=-1 hoặc size=0 phải là lỗi 400. ID không tìm thấy trong phạm vi người dùng trả 404. Với danh sách `[10,20,30]`, page=1,size=2 → `[30]`; page rất lớn → `[]` ở bài Java thuần.",
@@ -450,8 +450,8 @@
       "check": {
         "kind": "project",
         "file": "work/spring-p3/pom.xml",
-        "command": "py scripts/new_spring_lab.py --phase 3 --destination work/spring-p3\npy scripts/maven.py -f work/spring-p3/pom.xml test",
-        "note": "Tạo bản tự làm một lần; các lần sau chỉ chạy Maven trong bản đó. Không chấm bản projects/knowledge-assistant."
+        "command": "py scripts/new_spring_lab.py --phase 3 --destination work/spring-p3\npy scripts/maven.py -f work/spring-p3/pom.xml -Dtest=TransactionTest test",
+        "note": "Tạo bản một lần, sau đó chỉ chạy Maven trên bản đó. Test theo bài; phải hoàn thiện bài tiên quyết trước. Hết phase chạy toàn bộ test. Không cấp tiến độ từ bản tham chiếu."
       },
       "playground": null,
       "markdown": "Một thao tác phải lưu cả tài liệu và audit. Thiết kế service transaction; nếu lưu audit ném unchecked exception, kỳ vọng tài liệu mới cũng không được lưu. Nêu cách kiểm chứng bằng integration test với database thật và các điều kiện khiến transaction không được áp dụng.",
@@ -477,8 +477,8 @@
       "check": {
         "kind": "project",
         "file": "work/spring-p4/pom.xml",
-        "command": "py scripts/new_spring_lab.py --phase 4 --destination work/spring-p4\npy scripts/maven.py -f work/spring-p4/pom.xml test",
-        "note": "Tạo bản tự làm một lần; các lần sau chỉ chạy Maven trong bản đó. Không chấm bản projects/knowledge-assistant."
+        "command": "py scripts/new_spring_lab.py --phase 4 --destination work/spring-p4\npy scripts/maven.py -f work/spring-p4/pom.xml -Dtest=ApiTest#anonymousCannotRead+wrongPasswordCannotRead test",
+        "note": "Tạo bản một lần, sau đó chỉ chạy Maven trên bản đó. Test theo bài; phải hoàn thiện bài tiên quyết trước. Hết phase chạy toàn bộ test. Không cấp tiến độ từ bản tham chiếu."
       },
       "playground": null,
       "markdown": "Viết `requireOwned(docs, id, principalUserId)` cho kho tài liệu trong bộ nhớ. User 1 có doc 101. User 1 đọc 101 được; user 2 đọc 101 và user 1 đọc ID=999 đều ném `NotFound`. Thiết kế này chỉ kiểm tra quyền sở hữu; đầu vào `principalUserId` phải đến từ lớp xác thực tin cậy.",
@@ -505,8 +505,8 @@
       "check": {
         "kind": "project",
         "file": "work/spring-p4/pom.xml",
-        "command": "py scripts/new_spring_lab.py --phase 4 --destination work/spring-p4\npy scripts/maven.py -f work/spring-p4/pom.xml test",
-        "note": "Tạo bản tự làm một lần; các lần sau chỉ chạy Maven trong bản đó. Không chấm bản projects/knowledge-assistant."
+        "command": "py scripts/new_spring_lab.py --phase 4 --destination work/spring-p4\npy scripts/maven.py -f work/spring-p4/pom.xml -Dtest=OwnershipLearnerTest,ApiTest#ownerIsolationForReadWriteSummaryAndIndex test",
+        "note": "Tạo bản một lần, sau đó chỉ chạy Maven trên bản đó. Test theo bài; phải hoàn thiện bài tiên quyết trước. Hết phase chạy toàn bộ test. Không cấp tiến độ từ bản tham chiếu."
       },
       "playground": null,
       "markdown": "Viết kiểm tra cho ba trường hợp P4.1, ID trùng ở P1.2 và page quá lớn ở P3.3. Sau đó cố ý bỏ điều kiện owner: kiểm tra nào phải thất bại? Đầu ra: kết quả kiểm tra và giải thích lỗi được phát hiện.",
@@ -530,10 +530,10 @@
       ],
       "solution": "Ví dụ dưới đây giả định bạn đã tạo `app.jar` là executable JAR của dự án và có image JRE 21 đã chọn. Đặt image cụ thể vào build argument để ghi nhận đúng phiên bản/image digest khi áp dụng.\n\n```dockerfile\nARG JAVA_RUNTIME_IMAGE\nFROM ${JAVA_RUNTIME_IMAGE}\nWORKDIR /app\nCOPY app.jar /app/app.jar\nUSER 10001\nEXPOSE 8080\nENTRYPOINT [\"java\", \"-jar\", \"/app/app.jar\"]\n```\n\n`JAVA_RUNTIME_IMAGE` là placeholder cần cung cấp; image được chọn phải cho user 10001 đọc/chạy Java và ứng dụng. Cấu hình môi trường Spring dùng `SPRING_DATASOURCE_URL`, `SPRING_DATASOURCE_USERNAME`, `SPRING_DATASOURCE_PASSWORD`; tên biến khóa AI phụ thuộc provider/config của dự án.\n\nLệnh Bash mẫu, sau khi đã gán biến và tạo network cùng database:\n\n```bash\ndocker build --build-arg JAVA_RUNTIME_IMAGE=\"$JAVA_RUNTIME_IMAGE\" -t knowledge-assistant:local .\ndocker run --rm --network knowledge-net -p 8080:8080 \\\n  -e SPRING_DATASOURCE_URL -e SPRING_DATASOURCE_USERNAME \\\n  -e SPRING_DATASOURCE_PASSWORD knowledge-assistant:local\n```\n\nDatabase URL phải trỏ tới hostname truy cập được từ network container. `localhost` là chính container ứng dụng. Kiểm tra một endpoint đã có, rồi khởi động lại ứng dụng và đọc lại dữ liệu. `EXPOSE` là metadata; `-p` mới thiết lập ánh xạ cổng trong lệnh trên.",
       "check": {
-        "kind": "project",
-        "file": "work/spring-p4/pom.xml",
-        "command": "py scripts/new_spring_lab.py --phase 4 --destination work/spring-p4\npy scripts/maven.py -f work/spring-p4/pom.xml test",
-        "note": "Tạo bản tự làm một lần; các lần sau chỉ chạy Maven trong bản đó. Không chấm bản projects/knowledge-assistant."
+        "kind": "manual",
+        "file": "work/spring-p4/Dockerfile",
+        "command": "py scripts/new_spring_lab.py --phase 4 --destination work/spring-p4\ndocker build -t roadmap-learning-p4 work/spring-p4",
+        "note": "Tạo bản một lần. Build chưa chứng minh health/non-root/persistence; cần chạy image của bạn và lưu bằng chứng. Maven PASS không xác nhận Dockerfile."
       },
       "playground": null,
       "markdown": "Với JAR đã build của ứng dụng Spring, viết Dockerfile chạy bằng JRE 21. Database URL/username/password và API key đi qua cấu hình môi trường khi chạy. Đầu ra: Dockerfile, lệnh build/run và cách kiểm tra ứng dụng. Giải thích vì sao `localhost` của container ứng dụng không mặc nhiên là database ở container khác.",
@@ -558,10 +558,10 @@
       ],
       "solution": "Trong repo này, bước kiểm tra Java thuần là `python3 labs/run_checks.py`. Với ứng dụng Maven đã có wrapper, bước ứng dụng có thể là `./mvnw verify`; muốn các integration test chạy trong `verify`, phải cấu hình lifecycle/plugin tương ứng và cung cấp database cần thiết.\n\nPipeline dừng khi lệnh trả exit code khác 0. Chỉ đóng gói sau kiểm tra thành công. Log nên có request ID, endpoint, status, thời gian và loại lỗi. Không ghi mật khẩu/API key; hạn chế ghi nguyên văn tài liệu riêng tư. Có thể đối chiếu request ID để tìm luồng lỗi.\n\nNguồn: [Spring Security](https://docs.spring.io/spring-security/reference/6.5/index.html), [Dockerfile reference](https://docs.docker.com/reference/dockerfile/).",
       "check": {
-        "kind": "project",
-        "file": "work/spring-p4/pom.xml",
-        "command": "py scripts/new_spring_lab.py --phase 4 --destination work/spring-p4\npy scripts/maven.py -f work/spring-p4/pom.xml test",
-        "note": "Tạo bản tự làm một lần; các lần sau chỉ chạy Maven trong bản đó. Không chấm bản projects/knowledge-assistant."
+        "kind": "manual",
+        "file": "work/spring-p4/LEARNER_CI.yml",
+        "command": "py scripts/new_spring_lab.py --phase 4 --destination work/spring-p4\n# Hoàn thiện LEARNER_CI.yml, đặt tại .github/workflows trong repository học riêng.\n# Push branch học, lưu URL CI; thử một lỗi có chủ ý và kiểm CI thật sự thất bại.",
+        "note": "Tạo bản một lần. Chỉ khi workflow đã thực chạy đủ check và thất bại đúng với lỗi thử mới có bằng chứng CI. Test Maven của bản tham chiếu không xác nhận bài này."
       },
       "playground": null,
       "markdown": "Thiết kế các bước: checkout → chuẩn bị JDK → kiểm tra Java thuần → chạy kiểm thử ứng dụng → đóng gói. Một kiểm tra lỗi phải làm pipeline dừng. Xác định thông tin cần ghi khi API lỗi và những dữ liệu không nên đưa vào log.",

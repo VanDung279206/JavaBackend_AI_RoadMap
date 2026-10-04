@@ -3,6 +3,11 @@ export type Entry = { status: LearningStatus; revision: number; due_at: string |
 export type Entries = Record<string, Entry>;
 export const emptyEntry = (): Entry => ({status:'not_started',revision:0,due_at:null,hint_level:0,error_tags:[]});
 export const storageKey = (owner: string | null) => `roadmap-v3:${owner ? `user:${owner}` : 'guest'}`;
+export function bangkokDate(instant:Date|string):string {
+ const parts=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Bangkok',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date(instant));
+ const part=(type:string)=>parts.find(p=>p.type===type)!.value;
+ return `${part('year')}-${part('month')}-${part('day')}`;
+}
 export function parseStoredEntries(input:unknown,ids:string[]):Entries {
  if(!input||typeof input!=='object'||Array.isArray(input))throw Error('Invalid backup');
  const entries:Entries={};

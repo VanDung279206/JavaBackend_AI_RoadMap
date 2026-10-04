@@ -20,6 +20,24 @@ class CatalogueTests(unittest.TestCase):
  def test_bad_exercise_id_rejected(self):
   result=subprocess.run([sys.executable,str(ROOT/'scripts/check.py'),'--id','P999.1'],capture_output=True,text=True)
   self.assertNotEqual(result.returncode,0)
+ def test_spring_checks_select_real_contracts_and_do_not_certify_docker_or_ci_with_maven(self):
+  exercises=json.loads((ROOT/'learning/catalogue.json').read_text(encoding='utf8'))['exercises']
+  with tempfile.TemporaryDirectory() as folder:
+   dest=Path(folder)/'learner'
+   result=subprocess.run([sys.executable,str(ROOT/'scripts/new_spring_lab.py'),'--phase','4','--destination',str(dest)],capture_output=True,text=True)
+   self.assertEqual(result.returncode,0,result.stderr)
+   tests=dest/'src/test/java/vn/roadmap/knowledge'
+   for id in ('P3.1','P3.2','P3.3','P3.4','P4.1','P4.2'):
+    command=exercises[id]['check']['command']
+    selection=command.split('-Dtest=',1)[1].split()[0]
+    for contract in selection.split(','):
+     name,_,methods=contract.partition('#')
+     source=(tests/(name+'.java')).read_text(encoding='utf8')
+     for method in methods.split('+') if methods else []:
+      self.assertIn('void '+method+'(',source,id)
+  for id in ('P4.3','P4.4'):
+   self.assertEqual(exercises[id]['check']['kind'],'manual')
+   self.assertNotIn('maven.py',exercises[id]['check']['command'])
  def test_operations_copy_is_not_reference_filter(self):
   with tempfile.TemporaryDirectory() as folder:
    dest=Path(folder)/'learner'

@@ -1,6 +1,6 @@
 # Kiểm chứng RoadMap_v3
 
-Ngày 03/10/2026, Asia/Bangkok. Nhánh `RoadMap_v3` bắt đầu từ `origin/main` commit `e50b9fd`. Đã đọc cấu trúc, mã hiện có và AGENTS do Next.js sinh. Không đổi phiên bản dependency: Java target 17, Boot 3.5.16, Spring AI 1.1.8, Next 16.3.6. Máy kiểm tra dùng Java 26.0.1/Node 24.21.0; CI giữ Java 21/Node 20.
+Các lượt chạy ngày 03–04/10/2026, Asia/Bangkok. Nhánh `RoadMap_v3` bắt đầu từ `origin/main` commit `e50b9fd`. Đã đọc cấu trúc, mã hiện có và AGENTS do Next.js sinh. Không đổi phiên bản dependency: Java target 17, Boot 3.5.16, Spring AI 1.1.8, Next 16.3.6. Máy kiểm tra dùng Java 26.0.1/Node 24.21.0; CI giữ Java 21/Node 20.
 
 Kết quả dưới đây chỉ chứng minh repository/bản tham chiếu/fixture. **Không ghi thành tiến độ người học.** Starter thất bại đúng assertion là PASS của regression chống chấm nhầm; bài starter đó vẫn chưa hoàn thành.
 
@@ -18,12 +18,12 @@ Máy khác thay `& $pyRunner` bằng `python3`/Python 3 đã cài. `verify.py` y
 | Lệnh / phạm vi | Kết quả | Bằng chứng cục bộ |
 | --- | --- | --- |
 | `& $pyRunner scripts/verify.py --suite offline --output checks/runs/v3-handoff-offline` | **PASS**, 18 gates: references, tooling, Markdown và starter rejection | `checks/runs/v3-handoff-offline/report.json` |
-| `& $pyRunner -m unittest discover -s scripts/tests` | **PASS**, 21 test: invalid ID, đúng bản Spring tự làm, bảo toàn destination, O01 starter, runner limits và các test cũ | `checks/python-v3-final.log` |
+| `& $pyRunner -m unittest discover -s scripts/tests` | **PASS**, 22 test: invalid ID, đúng bản Spring tự làm, bảo toàn destination, hợp đồng theo bài, O01 starter, runner limits và các test cũ | `checks/python-v3-contract.log` |
 | `node scripts/build_catalogue.mjs --check` | **PASS**, 84 ID/32 sessions; phase, prerequisite, hints, seed/generated không lệch | stdout |
-| `node website/tests/run.mjs` | **PASS**, 9 test: namespace, offline/conflict, guest/CLI import, backup hỏng, lịch ôn và retrieval | Node test output |
-| `node "C:\Program Files\nodejs\node_modules\npm\bin\npm-cli.js" --prefix website run lint` | **PASS** | `checks/website-lint-v3.log` |
-| Cùng npm CLI, `--prefix website run build` | **PASS**, TypeScript và static export 29 trang theo build output | `checks/website-build-v3-final.log` |
-| `& $pyRunner scripts/maven.py -f projects/knowledge-assistant/pom.xml test` | **PASS**, 16 JUnit tests: HTTP/auth/owner/version, fetch/transaction, request ID, OpenAPI route/DTO drift | `checks/maven-v3-final.log` |
+| `node website/tests/run.mjs` | **PASS**, 10 test: namespace, offline/conflict, guest/CLI import, backup hỏng, lịch ôn Asia/Bangkok và retrieval | Node test output |
+| `node "C:\Program Files\nodejs\node_modules\npm\bin\npm-cli.js" --prefix website run lint` | **PASS** | `checks/website-lint-v3-contract.log` |
+| Cùng npm CLI, `--prefix website run build` | **PASS**, TypeScript và static export 29 trang theo build output | `checks/website-build-v3-contract.log` |
+| `& $pyRunner scripts/maven.py -f projects/knowledge-assistant/pom.xml test` | **PASS**, 19 JUnit tests: hợp đồng P3.1–P3.3, HTTP/auth/owner/version, fetch/transaction, request ID, OpenAPI route/DTO drift | `checks/spring-contract-v3.log` |
 | `& $pyRunner scripts/verify.py --suite integration --output checks/runs/v3-handoff-integration` | **PASS**, 8 gates: Maven, adapter AI compile, PostgreSQL, SQL, Docker build, HTTP CRUD/owner/stale write/restart persistence | `checks/runs/v3-handoff-integration/report.json` |
 | `& $pyRunner scripts/check_database.py` | **PASS**, V1–V6, catalogue seed, legacy archive, ID/phase/status/revision/account guard, admin escalation, cross-account, fake grade, run vs submit, Q01 | `checks/database-v3-account-guard.log` |
 | Cùng database checker: custom dump → DB trống → `pg_restore --exit-on-error` | **PASS**, giữ 100.000 events/archive cũ, RLS và SQL assertions sau restore | Cùng log database |
@@ -63,7 +63,9 @@ Chấm web vẫn thiếu implementation/deployment của trusted worker. Có b�
 
 ## Bổ sung 04/10/2026
 
-- Kiểm tra sau khi đẩy nhánh: **PASS 149 link nội bộ và 72/72 URL HTTP**, 0 FAIL/0 BLOCKED. Đã sửa URL structured output đúng file ở tag Spring AI v1.1.8. HTTP PASS không xác minh fragment hay mọi nội dung upstream.
-- CI đầu tiên tại commit e8d7460: offline và integration PASS; bước database website FAIL. Đã sửa chờ readiness TCP (tránh server socket tạm của initdb) và giữ log database trong artifact; lượt CI mới đang chờ xác nhận. Không gọi toàn bộ CI PASS trước khi có kết quả.
-- Python regression sau sửa: **21 test PASS**. Website CI nay chạy trên push RoadMap_v3, chỉ lint/test/build; workflow deploy vẫn chỉ main.
-- Docker Desktop đã tắt ở phiên tiếp tục. Đã khởi động lại bằng CLI, nhưng probe hiện chưa kết nối được daemon; chưa có kết quả chạy lại database cho thay đổi TCP. Các PASS ngày 03/10 vẫn là bằng chứng của lượt đó.
+- Kiểm tra mới nhất: **317 link nội bộ và 74/74 URL HTTP PASS**, 0 FAIL/0 BLOCKED. Đã sửa URL structured output đúng file ở tag Spring AI v1.1.8. HTTP PASS không xác minh fragment hay mọi nội dung upstream. Bản đồ đủ 84 bài đã được kiểm tra lại file/anchor.
+- CI đầu tiên tại commit e8d7460: offline và integration PASS; bước database website FAIL. Đã sửa chờ readiness TCP (tránh server socket tạm của initdb) và giữ log database trong artifact. Tại **ff5ee2e**, [reference CI](https://github.com/VanDung279206/JavaBackend_AI_RoadMap/actions/runs/37166868206) **PASS**, gồm PostgreSQL/RLS/Q01/dump–restore; [website CI Node 20](https://github.com/VanDung279206/JavaBackend_AI_RoadMap/actions/runs/37166868171) **PASS**. Đây là bằng chứng cho commit đó.
+- `docs/EXERCISE_MAP.md` nay được sinh từ catalogue. P3.1–P3.4 có test chọn theo bài; P4.3/P4.4 ghi rõ cần bằng chứng Docker/CI, không dùng Maven PASS để xác nhận.
+- Tạo `work/v3-contract-validation` bằng `new_spring_lab.py --phase 3`. Test `LearningContractTest#createsValidatedOwnedDocument` trên starter **FAIL** ở TODO P3.1; chỉ sửa create trong fixture rồi chạy lại **PASS 1 test**. Test `LearningContractTest#findsOnlyOwnedDocument` vẫn **FAIL** ở TODO P3.2. Regression kiểm tra tăng dần **PASS**; không ghi tiến độ người học. Log: `checks/spring-p31-starter.log`, `spring-p31-repaired.log`, `spring-p32-unfinished.log`.
+- Website dùng ngày Asia/Bangkok khi PostgreSQL trả timestamp UTC; nhật ký lỗi chỉ thông báo đã lưu lịch ôn khi ghi thiết bị thật sự thành công. Python **22 test PASS**, website **10 test PASS**, Spring tham chiếu **19 test PASS**. Website CI chạy trên push RoadMap_v3, chỉ lint/test/build; workflow deploy vẫn chỉ main.
+- Docker Desktop đang không có daemon cục bộ khả dụng dù lệnh start trả thành công; lượt chạy database mới tại máy Windows **BLOCKED**. Kết quả database CI Linux ff5ee2e và các PASS cục bộ ngày 03/10 được ghi riêng, không coi start là bằng chứng chạy test.

@@ -1,6 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {emptyEntry,storageKey,mergeRemote,importGuest,recommend,parseReviewImport,parseStoredEntries} from '../.test-dist/progress-core.js';
+import {emptyEntry,storageKey,mergeRemote,importGuest,recommend,parseReviewImport,parseStoredEntries,bangkokDate} from '../.test-dist/progress-core.js';
+test('review date stays in Bangkok after PostgreSQL serializes the timestamp in UTC',()=>{
+ assert.equal(bangkokDate('2026-10-02T17:00:00Z'),'2026-10-03');
+ assert.equal(bangkokDate('2026-10-03T00:00:00+07:00'),'2026-10-03');
+ assert.equal(bangkokDate('2026-10-02T16:59:59Z'),'2026-10-02');
+});
 test('corrupt backup is rejected as a whole and cannot forge verified evidence',()=>{
  assert.throws(()=>parseStoredEntries({x:{...emptyEntry(),revision:null}},['x']));
  assert.throws(()=>parseStoredEntries({x:emptyEntry(),unknown:emptyEntry()},['x']));

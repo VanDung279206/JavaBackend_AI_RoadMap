@@ -88,10 +88,10 @@ Java practice chạy không cần dependency ngoài. App có demo H2+trích đo�
 
 ```bash
 python3 scripts/new_spring_lab.py --phase 3 --destination work/spring-p3
-./mvnw -f work/spring-p3/pom.xml test
+./mvnw -f work/spring-p3/pom.xml -Dtest=LearningContractTest#createsValidatedOwnedDocument test
 ```
 
-Bản copy chứa TODO; test bắt đầu đỏ. Script từ chối ghi đè thư mục cũ. Mã hoàn chỉnh để đối chiếu vẫn ở `projects/knowledge-assistant/`.
+Bản copy chứa TODO; test bắt đầu đỏ. Tạo bản một lần, sau đó chạy test theo bài trong [bản đồ kiểm tra](docs/EXERCISE_MAP.md); hết phase chạy toàn bộ `test`. Script từ chối ghi đè thư mục cũ. Mã hoàn chỉnh để đối chiếu vẫn ở `projects/knowledge-assistant/`.
 
 ## Tiêu chí hoàn thành một bài
 

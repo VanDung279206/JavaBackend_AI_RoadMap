@@ -11,7 +11,7 @@ Các migration cũ giữ nguyên. Schema khởi tạo cũ cần chạy V2/V3 nh�
 6. Thêm URL `/JavaBackend_AI_RoadMap/auth/reset` vào Supabase Auth Redirect URLs. Không đặt service-role key trong `NEXT_PUBLIC_*`.
 7. Chạy regression SQL trong `database/tests/rls.sql` bằng database thử nghiệm và runner ngoài web theo [runner](../runner/README.md).
 
-`learning/catalogue.json` là nguồn ID/phase/prerequisite/check. `learning/hints.json` và `sessions.json` tham chiếu ID đó. Sau chỉnh nội dung chạy `node scripts/build_catalogue.mjs`; CI dùng `--check` phát hiện bản sinh lệch.
+`learning/catalogue.json` là nguồn ID/phase/prerequisite/check. `learning/hints.json` và `sessions.json` tham chiếu ID đó. Sau chỉnh nội dung chạy `node scripts/build_catalogue.mjs`; script sinh catalogue website, seed database và [EXERCISE_MAP](EXERCISE_MAP.md). CI dùng `--check` phát hiện bản sinh lệch; không sửa trực tiếp những file đã sinh.
 
 Hai RPC tiến độ/nộp bài yêu cầu `p_owner` khớp `auth.uid()`; token đổi tài khoản trong khi request đang gửi bị từ chối bằng `ACCOUNT_CHANGED`. Client không thể dùng tham số này để mạo danh.
 
