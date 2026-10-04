@@ -1,6 +1,6 @@
 # Lời giải Phase 3
 
-Các đoạn Spring bên dưới là mẫu tích hợp vào ứng dụng đang học, không phải một ứng dụng Spring hoàn chỉnh. Chúng cần entity, bean, security và datasource tương ứng. Phần tính toán phân trang độc lập nằm trong [BackendLab.java](https://github.com/VanDung279206/JavaBackend_AI_RoadMap/blob/RoadMap_v3/labs/src/BackendLab.java) và có kiểm tra chạy được.
+Các đoạn Spring bên dưới là mẫu tích hợp vào ứng dụng đang học, không phải một ứng dụng Spring hoàn chỉnh. Chúng cần entity, bean, security và datasource tương ứng. Phần tính toán phân trang độc lập nằm trong [BackendLab.java](../../labs/src/BackendLab.java) và có kiểm tra chạy được.
 
 ## P3.1 — DTO
 
@@ -85,4 +85,4 @@ Mặc định Spring rollback khi unchecked exception/`Error` đi ra khỏi phư
 
 Kiểm chứng: gọi service qua Spring bean, làm thao tác audit thất bại, rồi đọc lại ở transaction khác và xác nhận không có tài liệu mới. Đặt unique marker cho fixture để truy vấn đúng bản ghi. Chỉ unit test một mock repository không chứng minh database đã rollback.
 
-Nguồn: [Validation](https://docs.spring.io/spring-framework/reference/6.2/web/webmvc/mvc-controller/ann-validation.html), [Query methods](https://docs.spring.io/spring-data/jpa/reference/3.5/repositories/query-methods-details.html), [Rollback rules](https://docs.spring.io/spring-framework/reference/6.2/data-access/transaction/declarative/rolling-back.html).
+Nguồn: [Validation](https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-controller/ann-validation.html), [Query methods](https://docs.spring.io/spring-data/jpa/reference/repositories/query-methods-details.html), [Rollback rules](https://docs.spring.io/spring-framework/reference/data-access/transaction/declarative/rolling-back.html).
