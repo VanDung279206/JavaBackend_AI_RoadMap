@@ -46,4 +46,8 @@ Vòng lặp có attempt=1,2. Chỉ bắt `UpstreamFailure`; nếu status thuộc
 
 Mã bài tập không chờ giữa các lần gọi. Adapter mạng thực tế cần timeout và backoff theo điều kiện provider, xử lý `Retry-After` khi áp dụng, giới hạn tổng thời gian và chi phí. Không áp dụng retry này trực tiếp cho tool có tác động ghi dữ liệu: cần thiết kế idempotency/kiểm soát tác động riêng.
 
+<<<<<<< HEAD
 Nguồn: [ChatClient](https://github.com/spring-projects/spring-ai/blob/v1.1.8/spring-ai-docs/src/main/antora/modules/ROOT/pages/api/chatclient.adoc), [Output Converters](https://github.com/spring-projects/spring-ai/blob/v1.1.8/spring-ai-docs/src/main/antora/modules/ROOT/pages/api/structured-output-converter.adoc).
+=======
+Nguồn: [ChatClient](https://docs.spring.io/spring-ai/reference/api/chatclient.html), [Output Converters](https://docs.spring.io/spring-ai/reference/api/structured-output/converters.html).
+>>>>>>> parent of e8d7460 (Build catalogue-driven learning platform and verified progress foundation)
