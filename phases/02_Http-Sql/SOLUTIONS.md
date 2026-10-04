@@ -44,4 +44,4 @@ psql $env:DATABASE_URL -v ON_ERROR_STOP=1 -f solution.sql
 
 Script sử dụng bảng tạm trong một phiên kết nối. Các kết quả trên là kết quả kỳ vọng của fixture; xem phạm vi đã kiểm tra trong [VALIDATION.md](../../VALIDATION.md).
 
-Nguồn: [PostgreSQL Transactions](https://www.postgresql.org/docs/17/tutorial-transactions.html), [HTTP Semantics RFC 9110](https://www.rfc-editor.org/rfc/rfc9110.html).
+Nguồn: [PostgreSQL Transactions](https://www.postgresql.org/docs/current/tutorial-transactions.html), [HTTP Semantics RFC 9110](https://www.rfc-editor.org/rfc/rfc9110.html).
