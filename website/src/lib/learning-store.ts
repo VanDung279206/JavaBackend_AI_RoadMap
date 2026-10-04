@@ -75,13 +75,13 @@ export async function sync() {
  finally {syncing.delete(owner);if((reschedule&&version===epoch)||(version!==epoch&&snapshot.owner===owner&&!snapshot.loading))queueMicrotask(()=>void sync());}
 }
 export function updateEntry(id:string,patch:Partial<Entry>) {
- if(snapshot.owner===undefined||snapshot.loading||unreadable.has(storageKey(snapshot.owner))||!valid.has(id))return;
+ if(snapshot.owner===undefined||snapshot.loading||unreadable.has(storageKey(snapshot.owner))||!valid.has(id))return false;
  const entry={...(snapshot.entries[id]||emptyEntry()),...patch,pending:true};
  entry.hint_level=Math.max(snapshot.entries[id]?.hint_level||0,entry.hint_level);
- if(!['not_started','in_progress','self_completed','needs_review'].includes(entry.status))return;
+ if(!['not_started','in_progress','self_completed','needs_review'].includes(entry.status))return false;
  const entries={...snapshot.entries,[id]:entry};
- try {persist(snapshot.owner,entries);publish({entries,message:'Đã lưu trên thiết bị.'});void sync();}
- catch {publish({message:'Lưu thất bại: bộ nhớ thiết bị không khả dụng. Thay đổi chưa được lưu.'});}
+ try {persist(snapshot.owner,entries);publish({entries,message:'Đã lưu trên thiết bị.'});void sync();return true;}
+ catch {publish({message:'Lưu thất bại: bộ nhớ thiết bị không khả dụng. Thay đổi chưa được lưu.'});return false;}
 }
 export function importGuestProgress() {
  if(!snapshot.owner||snapshot.loading||unreadable.has(storageKey(snapshot.owner)))return;
