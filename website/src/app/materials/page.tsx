@@ -1,11 +1,9 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
+import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { ArrowUpRight, BookOpenText, Check, Clock3, FilePlus2, Link2, Search, Upload } from "lucide-react";
 import type { User } from "@supabase/supabase-js";
-import PersonalNote from "@/components/PersonalNote";
-import catalogue from "@/generated/catalogue.json";
 import AuthButton from "@/components/AuthButton";
 import { supabase } from "@/lib/supabase";
 
@@ -29,7 +27,15 @@ type Resource = {
   download_url?: string;
 };
 
-const PHASES = catalogue.phases.map(p=>[p.slug,p.title] as const);
+const PHASES = [
+  ["00_Setup", "Chặng 00 · Cài đặt"],
+  ["01_Java", "Chặng 01 · Java"],
+  ["02_Http-Sql", "Chặng 02 · HTTP & SQL"],
+  ["03_Spring", "Chặng 03 · Spring Boot"],
+  ["04_Quality", "Chặng 04 · Kiểm thử & triển khai"],
+  ["05_AI", "Chặng 05 · Tích hợp AI"],
+  ["06_RAG", "Chặng 06 · RAG"],
+] as const;
 
 const PURPOSES: { id: ResourcePurpose; label: string; detail: string }[] = [
   { id: "lesson", label: "Bài giảng", detail: "Giải thích khái niệm hoặc quy trình." },
@@ -64,9 +70,6 @@ function safeFileName(name: string) {
 }
 
 export default function MaterialsPage() {
-  const [page,setPage]=useState(0);
-  const [total,setTotal]=useState(0);
-  const publishedRequest=useRef(0), mineRequest=useRef(0);
   const [user, setUser] = useState<User | null>(null);
   const [tab, setTab] = useState<"library" | "submit" | "mine">("library");
   const [resources, setResources] = useState<Resource[]>([]);
@@ -93,7 +96,7 @@ export default function MaterialsPage() {
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
       if (!mounted) return;
       authEventSeen = true;
-      mineRequest.current++; setMine([]); setUser(session?.user ?? null);
+      setUser(session?.user ?? null);
     });
     supabase.auth.getSession().then(({ data }) => {
       if (mounted && !authEventSeen) setUser(data.session?.user ?? null);
@@ -107,14 +110,12 @@ export default function MaterialsPage() {
   const loadPublished = useCallback(async () => {
     setLoading(true);
     setLoadError("");
-    const request=++publishedRequest.current;
-    let query=supabase.from("community_resources").select("id,title,purpose,phase_slug,description,resource_type,file_path,source_url,submitted_by,status,moderation_note,created_at",{count:"exact"}).eq("status","approved");
-    if(phaseFilter!=="all")query=query.eq("phase_slug",phaseFilter);
-    if(purposeFilter!=="all")query=query.eq("purpose",purposeFilter);
-    if(search.trim())query=query.ilike("search_text","%"+search.trim().replace(/[%_\\]/g," ")+"%");
-    const {data,error,count}=await query.order("created_at",{ascending:false}).order("id").range(page*12,page*12+11);
-    if(request!==publishedRequest.current)return;
-    setTotal(count||0);
+    const { data, error } = await supabase
+      .from("community_resources")
+      .select("id,title,purpose,phase_slug,description,resource_type,file_path,source_url,submitted_by,status,moderation_note,created_at")
+      .eq("status", "approved")
+      .order("created_at", { ascending: false })
+      .limit(100);
     if (error) {
       setResources([]);
       setLoadError(displayError(error));
@@ -129,17 +130,15 @@ export default function MaterialsPage() {
         .createSignedUrl(item.file_path, 60 * 60);
       return { ...item, download_url: signed?.signedUrl } as Resource;
     }));
-    if(request!==publishedRequest.current)return;
     setResources(withLinks);
     setLoading(false);
-  }, [page,phaseFilter,purposeFilter,search]);
+  }, []);
 
   const loadMine = useCallback(async () => {
     if (!user) {
       setMine([]);
       return;
     }
-    const request=++mineRequest.current;
     setMyLoading(true);
     const { data, error } = await supabase
       .from("community_resources")
@@ -147,7 +146,6 @@ export default function MaterialsPage() {
       .eq("submitted_by", user.id)
       .order("created_at", { ascending: false })
       .limit(50);
-    if(request!==mineRequest.current)return;
     if (error) setNotice(displayError(error));
     else setMine((data ?? []) as Resource[]);
     setMyLoading(false);
@@ -162,7 +160,15 @@ export default function MaterialsPage() {
     return () => window.cancelAnimationFrame(frame);
   }, [loadMine]);
 
-  const visibleResources = resources;
+  const visibleResources = useMemo(() => {
+    const query = search.trim().toLocaleLowerCase("vi");
+    return resources.filter((item) => {
+      const matchesPhase = phaseFilter === "all" || item.phase_slug === phaseFilter;
+      const matchesPurpose = purposeFilter === "all" || item.purpose === purposeFilter;
+      const matchesSearch = !query || `${item.title} ${item.description}`.toLocaleLowerCase("vi").includes(query);
+      return matchesPhase && matchesPurpose && matchesSearch;
+    });
+  }, [resources, phaseFilter, purposeFilter, search]);
 
   const chooseFile = (next: File | null) => {
     setNotice("");
@@ -285,25 +291,24 @@ export default function MaterialsPage() {
             <label className="materials-search">
               <Search size={16} aria-hidden="true" />
               <span className="sr-only">Tìm tài liệu</span>
-              <input value={search} onChange={(event) => {setPage(0);setSearch(event.target.value);}} placeholder="Tìm theo tên hoặc nội dung" />
+              <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Tìm theo tên hoặc nội dung" />
             </label>
             <label className="materials-select-label">
               <span className="sr-only">Lọc theo chặng</span>
-              <select value={phaseFilter} onChange={(event) => {setPage(0);setPhaseFilter(event.target.value);}}>
+              <select value={phaseFilter} onChange={(event) => setPhaseFilter(event.target.value)}>
                 <option value="all">Tất cả chặng</option>
                 {PHASES.map(([slug, label]) => <option key={slug} value={slug}>{label}</option>)}
               </select>
             </label>
           </div>
           <div className="materials-purpose-filters" aria-label="Lọc theo mục đích">
-            <button type="button" className={purposeFilter === "all" ? "is-active" : ""} onClick={() => {setPage(0);setPurposeFilter("all");}}>Tất cả</button>
+            <button type="button" className={purposeFilter === "all" ? "is-active" : ""} onClick={() => setPurposeFilter("all")}>Tất cả</button>
             {PURPOSES.map((item) => (
-              <button type="button" key={item.id} className={purposeFilter === item.id ? "is-active" : ""} onClick={() => {setPage(0);setPurposeFilter(item.id);}}>
+              <button type="button" key={item.id} className={purposeFilter === item.id ? "is-active" : ""} onClick={() => setPurposeFilter(item.id)}>
                 {item.label}
               </button>
             ))}
           </div>
-          <div className="learning-actions" aria-label="Phân trang tài liệu"><button disabled={loading||page===0} onClick={()=>setPage(page-1)}>Trước</button><span>Trang {page+1} / {Math.max(1,Math.ceil(total/12))} · {total} tài liệu</span><button disabled={loading||(page+1)*12>=total} onClick={()=>setPage(page+1)}>Sau</button></div>
           {loadError ? (
             <div className="resource-empty-state resource-load-error" role="alert">
               <p>{loadError}</p>
@@ -338,7 +343,6 @@ export default function MaterialsPage() {
                         </a>
                       ) : <span className="material-link-expired">Liên kết tải đang lỗi</span>}
                     </div>
-                    <PersonalNote resourceKey={`material:${item.id}`} />
                   </article>
                 );
               })}
