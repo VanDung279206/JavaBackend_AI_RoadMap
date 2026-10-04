@@ -1,6 +1,6 @@
 # Lời giải Phase 6
 
-Mã đầy đủ: [RagLab.java](https://github.com/VanDung279206/JavaBackend_AI_RoadMap/blob/RoadMap_v3/labs/src/RagLab.java). Đây là bài toán vector và quy tắc xử lý trong bộ nhớ; kết nối pgvector và embedding model là bước tích hợp vào dự án chính.
+Mã đầy đủ: [RagLab.java](../../labs/src/RagLab.java). Đây là bài toán vector và quy tắc xử lý trong bộ nhớ; kết nối pgvector và embedding model là bước tích hợp vào dự án chính.
 
 ## P6.1
 
@@ -40,4 +40,4 @@ Trong top-2, chỉ A thuộc gold: có 1 hit liên quan. Precision@2=1/2=0.5; Re
 
 Không đặt recall bằng 1 cho gold rỗng để làm đẹp số liệu. Đánh giá riêng khả năng từ chối trả lời khi thiếu bằng chứng. Retrieval tốt vẫn có thể đi kèm câu trả lời sai; thêm cột độ đúng câu trả lời và độ đúng nguồn, có kiểm tra thủ công.
 
-Nguồn: [Spring AI RAG](https://github.com/spring-projects/spring-ai/blob/v1.1.8/spring-ai-docs/src/main/antora/modules/ROOT/pages/api/retrieval-augmented-generation.adoc), [PGvector](https://github.com/spring-projects/spring-ai/blob/v1.1.8/spring-ai-docs/src/main/antora/modules/ROOT/pages/api/vectordbs/pgvector.adoc), [Evaluation Testing](https://github.com/spring-projects/spring-ai/blob/v1.1.8/spring-ai-docs/src/main/antora/modules/ROOT/pages/api/testing.adoc).
+Nguồn: [Spring AI RAG](https://docs.spring.io/spring-ai/reference/api/retrieval-augmented-generation.html), [PGvector](https://docs.spring.io/spring-ai/reference/api/vectordbs/pgvector.html), [Evaluation Testing](https://docs.spring.io/spring-ai/reference/api/testing.html).
