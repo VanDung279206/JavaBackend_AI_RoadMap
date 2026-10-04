@@ -2,6 +2,12 @@
 from pathlib import Path
 import subprocess,uuid
 ROOT=Path(__file__).resolve().parents[1]
+def required_sql_files():
+ return ['database/tests/bootstrap.sql',*['database/migrations/'+p for p in ['V1__website_schema.sql','V2__public_leaderboard_and_auth_backfill.sql','V3__community_resources.sql']],
+   'database/tests/legacy_before_v4.sql','database/migrations/V4__learning_evidence.sql',
+   'database/catalogue_seed.sql','database/migrations/V5__catalogue_constraints.sql','database/migrations/V6__resource_search.sql',
+   'database/tests/legacy_after_v6.sql','database/tests/rls.sql',
+   'practice/sql/advanced/fixture.sql','practice/sql/advanced/solution.sql','practice/sql/advanced/tests.sql']
 def main():
  name='roadmap-rls-'+uuid.uuid4().hex
  try:
@@ -16,12 +22,7 @@ def main():
    time.sleep(.5)
   else:
    print('FAIL PostgreSQL did not become ready over TCP');return 1
-  files=['database/tests/bootstrap.sql',*['database/migrations/'+p for p in ['V1__website_schema.sql','V2__public_leaderboard_and_auth_backfill.sql','V3__community_resources.sql']],
-   'database/tests/legacy_before_v4.sql','database/migrations/V4__learning_evidence.sql',
-   'database/catalogue_seed.sql','database/migrations/V5__catalogue_constraints.sql','database/migrations/V6__resource_search.sql',
-   'database/tests/legacy_after_v6.sql','database/tests/rls.sql',
-   'practice/sql/advanced/fixture.sql','practice/sql/advanced/solution.sql','practice/sql/advanced/tests.sql']
-  for file in files:
+  for file in required_sql_files():
    result=subprocess.run(['docker','exec','-i',name,'psql','-U','postgres','-v','ON_ERROR_STOP=1'],input=(ROOT/file).read_text(encoding='utf8'),text=True,capture_output=True,timeout=60)
    if result.returncode:print('FAIL',file,result.stderr);return 1
    print('PASS',file)
