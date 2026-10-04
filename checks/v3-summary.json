@@ -845,5 +845,185 @@
       "subsequent_changes": "Two documentation/result commits only"
     },
     "historical_scope": "Earlier top-level evidence does not validate d6b11ff; review_fix records new runs only"
+  },
+  "review_followup": {
+    "review_id": 5407110865,
+    "reviewed_commit": "2c34a5c79b88f8e97b8cc1b42b8ddf59715585d1",
+    "comments": [
+      4178395501,
+      4178395506
+    ],
+    "before_store_fix": {
+      "status": "FAIL",
+      "tests": 18,
+      "pass": 15,
+      "fail": 3,
+      "log": "checks/review-sync-before.log"
+    },
+    "website_tests": {
+      "status": "PASS",
+      "tests": 18,
+      "skipped": 0,
+      "log": "checks/review-sync-after.log"
+    },
+    "python_tests": {
+      "status": "PASS",
+      "tests": 27,
+      "skipped": 0,
+      "log": "checks/review-p2-python.log"
+    },
+    "offline": {
+      "created_at": "2026-10-04T17:02:56.222338+00:00",
+      "scope": "reference verification; not learner completion",
+      "status": "PASS",
+      "checks": [
+        {
+          "name": "merge-markers",
+          "status": "PASS",
+          "detail": "exit=0",
+          "log": "merge-markers.log",
+          "elapsed_seconds": 0.31
+        },
+        {
+          "name": "environment-offline",
+          "status": "PASS",
+          "detail": "Required probes passed"
+        },
+        {
+          "name": "legacy-labs",
+          "status": "PASS",
+          "detail": "exit=0",
+          "log": "legacy-labs.log",
+          "elapsed_seconds": 1.49
+        },
+        {
+          "name": "practice-reference",
+          "status": "PASS",
+          "detail": "exit=0",
+          "log": "practice-reference.log",
+          "elapsed_seconds": 1.47
+        },
+        {
+          "name": "debug-reference",
+          "status": "PASS",
+          "detail": "exit=0",
+          "log": "debug-reference.log",
+          "elapsed_seconds": 1.03
+        },
+        {
+          "name": "mixed-reference",
+          "status": "PASS",
+          "detail": "exit=0",
+          "log": "mixed-reference.log",
+          "elapsed_seconds": 1.14
+        },
+        {
+          "name": "concurrency-reference",
+          "status": "PASS",
+          "detail": "exit=0",
+          "log": "concurrency-reference.log",
+          "elapsed_seconds": 2.14
+        },
+        {
+          "name": "app-core",
+          "status": "PASS",
+          "detail": "exit=0",
+          "log": "app-core.log",
+          "elapsed_seconds": 0.97
+        },
+        {
+          "name": "learning-tools",
+          "status": "PASS",
+          "detail": "exit=0",
+          "log": "learning-tools.log",
+          "elapsed_seconds": 3.5
+        },
+        {
+          "name": "english-diagnostics",
+          "status": "PASS",
+          "detail": "exit=0",
+          "log": "english-diagnostics.log",
+          "elapsed_seconds": 2.26
+        },
+        {
+          "name": "foundations-reference",
+          "status": "PASS",
+          "detail": "exit=0",
+          "log": "foundations-reference.log",
+          "elapsed_seconds": 9.05
+        },
+        {
+          "name": "rag-safety-reference",
+          "status": "PASS",
+          "detail": "exit=0",
+          "log": "rag-safety-reference.log",
+          "elapsed_seconds": 1.17
+        },
+        {
+          "name": "markdown-links",
+          "status": "PASS",
+          "detail": "exit=0",
+          "log": "markdown-links.log",
+          "elapsed_seconds": 0.28
+        },
+        {
+          "name": "practice-rejects-unfinished-starter",
+          "status": "PASS",
+          "detail": "exit=1",
+          "log": "practice-rejects-unfinished-starter.log",
+          "elapsed_seconds": 1.39
+        },
+        {
+          "name": "debug-rejects-unfinished-starter",
+          "status": "PASS",
+          "detail": "exit=1",
+          "log": "debug-rejects-unfinished-starter.log",
+          "elapsed_seconds": 1.06
+        },
+        {
+          "name": "mixed-rejects-unfinished-starter",
+          "status": "PASS",
+          "detail": "exit=1",
+          "log": "mixed-rejects-unfinished-starter.log",
+          "elapsed_seconds": 1.0
+        },
+        {
+          "name": "concurrency-rejects-unfinished-starter",
+          "status": "PASS",
+          "detail": "exit=1",
+          "log": "concurrency-rejects-unfinished-starter.log",
+          "elapsed_seconds": 1.03
+        },
+        {
+          "name": "foundations-rejects-unfinished-starter",
+          "status": "PASS",
+          "detail": "exit=1",
+          "log": "foundations-rejects-unfinished-starter.log",
+          "elapsed_seconds": 1.03
+        },
+        {
+          "name": "advanced-rejects-unfinished-starter",
+          "status": "PASS",
+          "detail": "exit=1",
+          "log": "advanced-rejects-unfinished-starter.log",
+          "elapsed_seconds": 0.97
+        }
+      ]
+    },
+    "website_lint": "PASS",
+    "website_build": {
+      "status": "PASS",
+      "pages": 29,
+      "tracks": 14,
+      "exercises": 84,
+      "log": "checks/review-p2-build.log"
+    },
+    "uid_access": {
+      "status": "PENDING",
+      "command": "sudo -n python3 runner/check_job_access.py",
+      "scope": "Linux trusted fixture under UID/GID 65534; not Docker compilation or learner grading"
+    },
+    "migration": "None",
+    "trusted_web_grader": "BLOCKED: trusted test worker/image/runtime not deployed"
   }
 }
