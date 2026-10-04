@@ -28,7 +28,7 @@ export default function LearningDashboard() {
         <div className="section-heading">
           <div className="section-heading-copy">
             <span className="eyebrow">TIẾN ĐỘ</span>
-            <h2 className="section-title" id="progress-title">Bài tập đã làm</h2>
+            <h2 className="section-title" id="progress-title">Tiến độ tự khai báo</h2>
             <p className="section-description">
               {loading ? "Đang tải…" : "Tiến độ lưu trên thiết bị này; đăng nhập để đồng bộ."}
             </p>
@@ -46,7 +46,7 @@ export default function LearningDashboard() {
                 <span className="progress-mark" aria-hidden="true">{item.mark}</span>
                 <div style={{ minWidth: 0 }}>
                   <h3 className="progress-card-title">{item.label}</h3>
-                  <p className="progress-card-count">{item.done} / {item.total} bài hoàn thành</p>
+                  <p className="progress-card-count">{item.done} / {item.total} bài tự đánh dấu</p>
                 </div>
               </div>
               <div
