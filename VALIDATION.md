@@ -1,5 +1,31 @@
 # Kiểm chứng RoadMap_v3
 
+## PR #8 — sửa review Dung06-tech (04/10/2026)
+
+Review trên [PR #8](https://github.com/VanDung279206/JavaBackend_AI_RoadMap/pull/8) kiểm tra commit `d6b11ff`, đã phát hiện đúng các lỗi do phần hoàn tác được commit: thiếu nguồn/route/schema và marker xung đột. Các PASS trong phần lịch sử bên dưới **không áp dụng cho d6b11ff**. Phần này ghi các lượt kiểm tra mới sau khi sửa review.
+
+| Nhận xét | Sửa và kiểm chứng |
+| --- | --- |
+| `4178091896` — component thiếu | Khôi phục ReviewImport/PersonalNote; website build mới PASS |
+| `4178091902` — YAML xung đột | Giải quyết workflow; test parse tất cả workflow bằng js-yaml đã khóa qua dependency ESLint; thêm gate chặn marker merge |
+| `4178091907` — catalogue hỏng/thiếu schema | Khôi phục phases/phase/prerequisites, assessment, hints/sessions và nội dung; generator sinh lại website/seed/bản đồ, `--check` PASS |
+| `4178091909` — schema/RPC thiếu | V4 → seed → V5 → V6 và fixture nâng cấp/restore có đủ trong nhánh; regression nguồn SQL PASS, kiểm chứng PostgreSQL mới chờ CI Linux |
+| `4178091912` — implementation/fixture thiếu | Khôi phục foundations/advanced/SQL, lab fetch, metrics/OpenAPI, runner probe; offline và test Java mới PASS |
+| `4178091916` — route/store chưa nối | Docs dùng phases từ catalogue và cùng store v3 với today; render LearningTools; khôi phục skills/lab/reset; kiểm tra HTML export 14 track/84 bài và các trang này PASS |
+| `4178091918` — test runner thiếu | Khôi phục runner biên dịch TypeScript, npm test và CI regression; thêm regression mất route/learning tools |
+
+| Lệnh chạy mới | Kết quả thực tế |
+| --- | --- |
+| `verify.py --suite offline --output checks/runs/pr8-review-offline` | **PASS 19 gates**, gồm **25 Python tests**, không có merge marker, starter rejection, Markdown và các nguồn bài |
+| `node scripts/build_catalogue.mjs --check` | **PASS**, 84 bài/32 sessions, nguồn và output nhất quán |
+| npm CLI `--prefix website test`, `run lint`, `run build` | **PASS**, 12 tests; lint; TypeScript/export 29 trang; postbuild kiểm tra 14 track/84 bài, today/skills/lab/auth/reset |
+| `maven.py -f projects/knowledge-assistant/pom.xml test` | **PASS 19 tests**, 0 failure/error/skipped; sau khi cấp quyền mạng cho Maven Wrapper |
+| Docker daemon cục bộ | **BLOCKED**, pipe dockerDesktopLinuxEngine không tồn tại. Không coi kiểm tra fixture tồn tại là PASS tích hợp database |
+
+Log mới: `checks/runs/pr8-review-offline/`, `checks/website-build-pr8-review.log`, `checks/spring-pr8-review.log`. CI mới cho bản sửa chưa có kết quả ở thời điểm ghi bảng này. Chấm web/model thật/Supabase gateway/kiểm tra trực quan cuối vẫn theo các giới hạn bên dưới.
+
+## Lịch sử kiểm chứng trước review
+
 Các lượt chạy ngày 03–04/10/2026, Asia/Bangkok. Nhánh `RoadMap_v3` bắt đầu từ `origin/main` commit `e50b9fd`. Đã đọc cấu trúc, mã hiện có và AGENTS do Next.js sinh. Không đổi phiên bản dependency: Java target 17, Boot 3.5.16, Spring AI 1.1.8, Next 16.3.6. Máy kiểm tra dùng Java 26.0.1/Node 24.21.0; CI giữ Java 21/Node 20.
 
 Kết quả dưới đây chỉ chứng minh repository/bản tham chiếu/fixture. **Không ghi thành tiến độ người học.** Starter thất bại đúng assertion là PASS của regression chống chấm nhầm; bài starter đó vẫn chưa hoàn thành.
