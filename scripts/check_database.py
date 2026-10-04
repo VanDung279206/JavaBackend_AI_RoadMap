@@ -10,8 +10,12 @@ def main():
   subprocess.run(['docker','run','-d','--name',name,'-e','POSTGRES_PASSWORD='+uuid.uuid4().hex,'postgres:17'],check=True,capture_output=True,timeout=180)
   import time
   for _ in range(60):
-   if subprocess.run(['docker','exec',name,'pg_isready','-U','postgres'],capture_output=True).returncode==0:break
+   # The image starts a temporary Unix-socket-only server during initdb.
+   # TCP readiness avoids applying migrations to that server just before it stops.
+   if subprocess.run(['docker','exec',name,'pg_isready','-h','127.0.0.1','-U','postgres'],capture_output=True,timeout=5).returncode==0:break
    time.sleep(.5)
+  else:
+   print('FAIL PostgreSQL did not become ready over TCP');return 1
   files=['database/tests/bootstrap.sql',*['database/migrations/'+p for p in ['V1__website_schema.sql','V2__public_leaderboard_and_auth_backfill.sql','V3__community_resources.sql']],
    'database/tests/legacy_before_v4.sql','database/migrations/V4__learning_evidence.sql',
    'database/catalogue_seed.sql','database/migrations/V5__catalogue_constraints.sql','database/migrations/V6__resource_search.sql',
