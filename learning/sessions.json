@@ -5,11 +5,7 @@
     "required": "P0.1–P0.2; chạy doctor offline và HelloRoadmap.",
     "evidence": "Lưu phiên bản JDK và output chương trình.",
     "extension": "Giải thích JDK/JRE/compiler bằng 3 câu tiếng Anh.",
-    "reading": "phases/00_setup/README.md",
-    "exercise_ids": [
-      "P0.1",
-      "P0.2"
-    ]
+    "reading": "phases/00_setup/README.md"
   },
   {
     "id": "S02",
@@ -17,11 +13,7 @@
     "required": "P0.3–P0.4; tái hiện lỗi, đặt breakpoint, sửa và commit.",
     "evidence": "Ảnh/ghi chú biến trước-sau và commit thực tế.",
     "extension": "Làm B01 sau khi hiểu map.",
-    "reading": "phases/00_setup/README.md",
-    "exercise_ids": [
-      "P0.3",
-      "P0.4"
-    ]
+    "reading": "phases/00_setup/README.md"
   },
   {
     "id": "S03",
@@ -29,10 +21,7 @@
     "required": "Ôn một bài đến hạn trong 5–10 phút; làm P1.1 trong starter; cuối buổi viết 3 câu tiếng Anh mô tả lỗi/cách sửa.",
     "evidence": "Chạy python3 scripts/check.py --id P1.1; lưu input biên, kết quả và giải thích.",
     "extension": "Làm D01; cuối mỗi phase tự chấm đề exams/P1.md trong một buổi riêng nếu cần.",
-    "reading": "phases/01_Java/EXERCISES.md",
-    "exercise_ids": [
-      "P1.1"
-    ]
+    "reading": "phases/01_Java/EXERCISES.md"
   },
   {
     "id": "S04",
@@ -40,10 +29,7 @@
     "required": "Ôn một bài đến hạn trong 5–10 phút; làm P1.2 trong starter; cuối buổi viết 3 câu tiếng Anh mô tả lỗi/cách sửa.",
     "evidence": "Chạy python3 scripts/check.py --id P1.2; lưu input biên, kết quả và giải thích.",
     "extension": "Làm D02; cuối mỗi phase tự chấm đề exams/P1.md trong một buổi riêng nếu cần.",
-    "reading": "phases/01_Java/EXERCISES.md",
-    "exercise_ids": [
-      "P1.2"
-    ]
+    "reading": "phases/01_Java/EXERCISES.md"
   },
   {
     "id": "S05",
@@ -51,10 +37,7 @@
     "required": "Ôn một bài đến hạn trong 5–10 phút; làm P1.3 trong starter; cuối buổi viết 3 câu tiếng Anh mô tả lỗi/cách sửa.",
     "evidence": "Chạy python3 scripts/check.py --id P1.3; lưu input biên, kết quả và giải thích.",
     "extension": "Làm D03; cuối mỗi phase tự chấm đề exams/P1.md trong một buổi riêng nếu cần.",
-    "reading": "phases/01_Java/EXERCISES.md",
-    "exercise_ids": [
-      "P1.3"
-    ]
+    "reading": "phases/01_Java/EXERCISES.md"
   },
   {
     "id": "S06",
@@ -62,10 +45,7 @@
     "required": "Ôn một bài đến hạn trong 5–10 phút; làm P1.4 trong starter; cuối buổi viết 3 câu tiếng Anh mô tả lỗi/cách sửa.",
     "evidence": "Chạy python3 scripts/check.py --id P1.4; lưu input biên, kết quả và giải thích.",
     "extension": "Làm D04; cuối mỗi phase tự chấm đề exams/P1.md trong một buổi riêng nếu cần.",
-    "reading": "phases/01_Java/EXERCISES.md",
-    "exercise_ids": [
-      "P1.4"
-    ]
+    "reading": "phases/01_Java/EXERCISES.md"
   },
   {
     "id": "S07",
@@ -73,10 +53,7 @@
     "required": "Ôn một bài đến hạn trong 5–10 phút; làm P2.1 trong starter; cuối buổi viết 3 câu tiếng Anh mô tả lỗi/cách sửa.",
     "evidence": "SQL/assertion hoặc API contract theo docs/EXERCISE_MAP.md; nếu thiếu DB ghi BLOCKED, không ghi pass.",
     "extension": "Làm D05; cuối mỗi phase tự chấm đề exams/P2.md trong một buổi riêng nếu cần.",
-    "reading": "phases/02_Http-Sql/EXERCISES.md",
-    "exercise_ids": [
-      "P2.1"
-    ]
+    "reading": "phases/02_Http-Sql/EXERCISES.md"
   },
   {
     "id": "S08",
@@ -84,10 +61,7 @@
     "required": "Ôn một bài đến hạn trong 5–10 phút; làm P2.2 trong starter; cuối buổi viết 3 câu tiếng Anh mô tả lỗi/cách sửa.",
     "evidence": "SQL/assertion hoặc API contract theo docs/EXERCISE_MAP.md; nếu thiếu DB ghi BLOCKED, không ghi pass.",
     "extension": "Làm D06; cuối mỗi phase tự chấm đề exams/P2.md trong một buổi riêng nếu cần.",
-    "reading": "phases/02_Http-Sql/EXERCISES.md",
-    "exercise_ids": [
-      "P2.2"
-    ]
+    "reading": "phases/02_Http-Sql/EXERCISES.md"
   },
   {
     "id": "S09",
@@ -95,10 +69,7 @@
     "required": "Ôn một bài đến hạn trong 5–10 phút; làm P2.3 trong starter; cuối buổi viết 3 câu tiếng Anh mô tả lỗi/cách sửa.",
     "evidence": "SQL/assertion hoặc API contract theo docs/EXERCISE_MAP.md; nếu thiếu DB ghi BLOCKED, không ghi pass.",
     "extension": "Làm D07; cuối mỗi phase tự chấm đề exams/P2.md trong một buổi riêng nếu cần.",
-    "reading": "phases/02_Http-Sql/EXERCISES.md",
-    "exercise_ids": [
-      "P2.3"
-    ]
+    "reading": "phases/02_Http-Sql/EXERCISES.md"
   },
   {
     "id": "S10",
@@ -106,10 +77,7 @@
     "required": "Ôn một bài đến hạn trong 5–10 phút; làm P2.4 trong starter; cuối buổi viết 3 câu tiếng Anh mô tả lỗi/cách sửa.",
     "evidence": "SQL/assertion hoặc API contract theo docs/EXERCISE_MAP.md; nếu thiếu DB ghi BLOCKED, không ghi pass.",
     "extension": "Làm D08; cuối mỗi phase tự chấm đề exams/P2.md trong một buổi riêng nếu cần.",
-    "reading": "phases/02_Http-Sql/EXERCISES.md",
-    "exercise_ids": [
-      "P2.4"
-    ]
+    "reading": "phases/02_Http-Sql/EXERCISES.md"
   },
   {
     "id": "S11",
@@ -117,10 +85,7 @@
     "required": "Ôn một bài đến hạn trong 5–10 phút; làm P3.1 trong starter; cuối buổi viết 3 câu tiếng Anh mô tả lỗi/cách sửa.",
     "evidence": "Test/HTTP/log của bản tự làm theo docs/EXERCISE_MAP.md; thiếu Maven/Docker thì ghi BLOCKED.",
     "extension": "Làm D09; cuối mỗi phase tự chấm đề exams/P3.md trong một buổi riêng nếu cần.",
-    "reading": "phases/03_Spring/EXERCISES.md",
-    "exercise_ids": [
-      "P3.1"
-    ]
+    "reading": "phases/03_Spring/EXERCISES.md"
   },
   {
     "id": "S12",
@@ -128,10 +93,7 @@
     "required": "Ôn một bài đến hạn trong 5–10 phút; làm P3.2 trong starter; cuối buổi viết 3 câu tiếng Anh mô tả lỗi/cách sửa.",
     "evidence": "Test/HTTP/log của bản tự làm theo docs/EXERCISE_MAP.md; thiếu Maven/Docker thì ghi BLOCKED.",
     "extension": "Làm D10; cuối mỗi phase tự chấm đề exams/P3.md trong một buổi riêng nếu cần.",
-    "reading": "phases/03_Spring/EXERCISES.md",
-    "exercise_ids": [
-      "P3.2"
-    ]
+    "reading": "phases/03_Spring/EXERCISES.md"
   },
   {
     "id": "S13",
@@ -139,10 +101,7 @@
     "required": "Ôn một bài đến hạn trong 5–10 phút; làm P3.3 trong starter; cuối buổi viết 3 câu tiếng Anh mô tả lỗi/cách sửa.",
     "evidence": "Test/HTTP/log của bản tự làm theo docs/EXERCISE_MAP.md; thiếu Maven/Docker thì ghi BLOCKED.",
     "extension": "Làm D11; cuối mỗi phase tự chấm đề exams/P3.md trong một buổi riêng nếu cần.",
-    "reading": "phases/03_Spring/EXERCISES.md",
-    "exercise_ids": [
-      "P3.3"
-    ]
+    "reading": "phases/03_Spring/EXERCISES.md"
   },
   {
     "id": "S14",
@@ -150,10 +109,7 @@
     "required": "Ôn một bài đến hạn trong 5–10 phút; làm P3.4 trong starter; cuối buổi viết 3 câu tiếng Anh mô tả lỗi/cách sửa.",
     "evidence": "Test/HTTP/log của bản tự làm theo docs/EXERCISE_MAP.md; thiếu Maven/Docker thì ghi BLOCKED.",
     "extension": "Làm D12; cuối mỗi phase tự chấm đề exams/P3.md trong một buổi riêng nếu cần.",
-    "reading": "phases/03_Spring/EXERCISES.md",
-    "exercise_ids": [
-      "P3.4"
-    ]
+    "reading": "phases/03_Spring/EXERCISES.md"
   },
   {
     "id": "S15",
@@ -161,10 +117,7 @@
     "required": "Ôn một bài đến hạn trong 5–10 phút; làm P4.1 trong starter; cuối buổi viết 3 câu tiếng Anh mô tả lỗi/cách sửa.",
     "evidence": "Test/HTTP/log của bản tự làm theo docs/EXERCISE_MAP.md; thiếu Maven/Docker thì ghi BLOCKED.",
     "extension": "Làm B03; cuối mỗi phase tự chấm đề exams/P4.md trong một buổi riêng nếu cần.",
-    "reading": "phases/04_Quality/EXERCISES.md",
-    "exercise_ids": [
-      "P4.1"
-    ]
+    "reading": "phases/04_Quality/EXERCISES.md"
   },
   {
     "id": "S16",
@@ -172,10 +125,7 @@
     "required": "Ôn một bài đến hạn trong 5–10 phút; làm P4.2 trong starter; cuối buổi viết 3 câu tiếng Anh mô tả lỗi/cách sửa.",
     "evidence": "Test/HTTP/log của bản tự làm theo docs/EXERCISE_MAP.md; thiếu Maven/Docker thì ghi BLOCKED.",
     "extension": "Làm B02; cuối mỗi phase tự chấm đề exams/P4.md trong một buổi riêng nếu cần.",
-    "reading": "phases/04_Quality/EXERCISES.md",
-    "exercise_ids": [
-      "P4.2"
-    ]
+    "reading": "phases/04_Quality/EXERCISES.md"
   },
   {
     "id": "S17",
@@ -183,10 +133,7 @@
     "required": "Ôn một bài đến hạn trong 5–10 phút; làm P4.3 trong starter; cuối buổi viết 3 câu tiếng Anh mô tả lỗi/cách sửa.",
     "evidence": "Test/HTTP/log của bản tự làm theo docs/EXERCISE_MAP.md; thiếu Maven/Docker thì ghi BLOCKED.",
     "extension": "Làm B01; cuối mỗi phase tự chấm đề exams/P4.md trong một buổi riêng nếu cần.",
-    "reading": "phases/04_Quality/EXERCISES.md",
-    "exercise_ids": [
-      "P4.3"
-    ]
+    "reading": "phases/04_Quality/EXERCISES.md"
   },
   {
     "id": "S18",
@@ -194,10 +141,7 @@
     "required": "Ôn một bài đến hạn trong 5–10 phút; làm P4.4 trong starter; cuối buổi viết 3 câu tiếng Anh mô tả lỗi/cách sửa.",
     "evidence": "Test/HTTP/log của bản tự làm theo docs/EXERCISE_MAP.md; thiếu Maven/Docker thì ghi BLOCKED.",
     "extension": "Làm B08; cuối mỗi phase tự chấm đề exams/P4.md trong một buổi riêng nếu cần.",
-    "reading": "phases/04_Quality/EXERCISES.md",
-    "exercise_ids": [
-      "P4.4"
-    ]
+    "reading": "phases/04_Quality/EXERCISES.md"
   },
   {
     "id": "S19",
@@ -205,10 +149,7 @@
     "required": "Ôn một bài đến hạn trong 5–10 phút; làm P5.1 trong starter; cuối buổi viết 3 câu tiếng Anh mô tả lỗi/cách sửa.",
     "evidence": "Chạy python3 scripts/check.py --id P5.1; lưu input biên, kết quả và giải thích.",
     "extension": "Làm B04; cuối mỗi phase tự chấm đề exams/P5.md trong một buổi riêng nếu cần.",
-    "reading": "phases/05_AI/EXERCISES.md",
-    "exercise_ids": [
-      "P5.1"
-    ]
+    "reading": "phases/05_AI/EXERCISES.md"
   },
   {
     "id": "S20",
@@ -216,10 +157,7 @@
     "required": "Ôn một bài đến hạn trong 5–10 phút; làm P5.2 trong starter; cuối buổi viết 3 câu tiếng Anh mô tả lỗi/cách sửa.",
     "evidence": "Chạy python3 scripts/check.py --id P5.2; lưu input biên, kết quả và giải thích.",
     "extension": "Làm B07; cuối mỗi phase tự chấm đề exams/P5.md trong một buổi riêng nếu cần.",
-    "reading": "phases/05_AI/EXERCISES.md",
-    "exercise_ids": [
-      "P5.2"
-    ]
+    "reading": "phases/05_AI/EXERCISES.md"
   },
   {
     "id": "S21",
@@ -227,10 +165,7 @@
     "required": "Ôn một bài đến hạn trong 5–10 phút; làm P5.3 trong starter; cuối buổi viết 3 câu tiếng Anh mô tả lỗi/cách sửa.",
     "evidence": "Chạy python3 scripts/check.py --id P5.3; lưu input biên, kết quả và giải thích.",
     "extension": "Làm B06; cuối mỗi phase tự chấm đề exams/P5.md trong một buổi riêng nếu cần.",
-    "reading": "phases/05_AI/EXERCISES.md",
-    "exercise_ids": [
-      "P5.3"
-    ]
+    "reading": "phases/05_AI/EXERCISES.md"
   },
   {
     "id": "S22",
@@ -238,10 +173,7 @@
     "required": "Ôn một bài đến hạn trong 5–10 phút; làm P5.4 trong starter; cuối buổi viết 3 câu tiếng Anh mô tả lỗi/cách sửa.",
     "evidence": "Chạy python3 scripts/check.py --id P5.4; lưu input biên, kết quả và giải thích.",
     "extension": "Làm B08; cuối mỗi phase tự chấm đề exams/P5.md trong một buổi riêng nếu cần.",
-    "reading": "phases/05_AI/EXERCISES.md",
-    "exercise_ids": [
-      "P5.4"
-    ]
+    "reading": "phases/05_AI/EXERCISES.md"
   },
   {
     "id": "S23",
@@ -249,10 +181,7 @@
     "required": "Ôn một bài đến hạn trong 5–10 phút; làm P6.1 trong starter; cuối buổi viết 3 câu tiếng Anh mô tả lỗi/cách sửa.",
     "evidence": "Chạy python3 scripts/check.py --id P6.1; lưu input biên, kết quả và giải thích.",
     "extension": "Làm V04; cuối mỗi phase tự chấm đề exams/P6.md trong một buổi riêng nếu cần.",
-    "reading": "phases/06_RAG/EXERCISES.md",
-    "exercise_ids": [
-      "P6.1"
-    ]
+    "reading": "phases/06_RAG/EXERCISES.md"
   },
   {
     "id": "S24",
@@ -260,10 +189,7 @@
     "required": "Ôn một bài đến hạn trong 5–10 phút; làm P6.2 trong starter; cuối buổi viết 3 câu tiếng Anh mô tả lỗi/cách sửa.",
     "evidence": "Chạy python3 scripts/check.py --id P6.2; lưu input biên, kết quả và giải thích.",
     "extension": "Làm V08; cuối mỗi phase tự chấm đề exams/P6.md trong một buổi riêng nếu cần.",
-    "reading": "phases/06_RAG/EXERCISES.md",
-    "exercise_ids": [
-      "P6.2"
-    ]
+    "reading": "phases/06_RAG/EXERCISES.md"
   },
   {
     "id": "S25",
@@ -271,10 +197,7 @@
     "required": "Ôn một bài đến hạn trong 5–10 phút; làm P6.3 trong starter; cuối buổi viết 3 câu tiếng Anh mô tả lỗi/cách sửa.",
     "evidence": "Chạy python3 scripts/check.py --id P6.3; lưu input biên, kết quả và giải thích.",
     "extension": "Làm V09; cuối mỗi phase tự chấm đề exams/P6.md trong một buổi riêng nếu cần.",
-    "reading": "phases/06_RAG/EXERCISES.md",
-    "exercise_ids": [
-      "P6.3"
-    ]
+    "reading": "phases/06_RAG/EXERCISES.md"
   },
   {
     "id": "S26",
@@ -282,10 +205,7 @@
     "required": "Ôn một bài đến hạn trong 5–10 phút; làm P6.4 trong starter; cuối buổi viết 3 câu tiếng Anh mô tả lỗi/cách sửa.",
     "evidence": "Chạy python3 scripts/check.py --id P6.4; lưu input biên, kết quả và giải thích.",
     "extension": "Làm V10; cuối mỗi phase tự chấm đề exams/P6.md trong một buổi riêng nếu cần.",
-    "reading": "phases/06_RAG/EXERCISES.md",
-    "exercise_ids": [
-      "P6.4"
-    ]
+    "reading": "phases/06_RAG/EXERCISES.md"
   },
   {
     "id": "S27",
@@ -293,12 +213,7 @@
     "required": "D13,D14,D15; có thể chia thành ba buổi nhỏ.",
     "evidence": "Kiểm tra từng ID; vẽ trace và giải thích visited so với active.",
     "extension": "Làm V11,V12 rồi ghi một lỗi có tag.",
-    "reading": "dsa/VARIANTS.md",
-    "exercise_ids": [
-      "D13",
-      "D14",
-      "D15"
-    ]
+    "reading": "dsa/VARIANTS.md"
   },
   {
     "id": "S28",
@@ -306,11 +221,7 @@
     "required": "C01,C02 trong concurrency/starter.",
     "evidence": "Chạy --track concurrency --id C01,C02; chỉ một cập nhật thắng; duplicate không tạo hai side effects.",
     "extension": "Đọc ConcurrentIT của app; chạy PostgreSQL integration khi đủ môi trường.",
-    "reading": "concurrency/README.md",
-    "exercise_ids": [
-      "C01",
-      "C02"
-    ]
+    "reading": "concurrency/README.md"
   },
   {
     "id": "S29",
@@ -318,10 +229,7 @@
     "required": "C03; đọc E01–E04 trong English error clinic.",
     "evidence": "Test timeout hữu hạn; ghi received/expected và mô tả fix bằng tiếng Anh.",
     "extension": "Đọc E05–E08 và kiểm tra model thật theo RUNNING.",
-    "reading": "english/ERROR_CLINIC.md",
-    "exercise_ids": [
-      "C03"
-    ]
+    "reading": "english/ERROR_CLINIC.md"
   },
   {
     "id": "S30",
@@ -329,13 +237,7 @@
     "required": "M01–M04; đọc đề không mở lời giải; có thể chia hai buổi.",
     "evidence": "Nộp lựa chọn cách làm, invariant, độ phức tạp và test.",
     "extension": "Đổi seed của test; tự tạo input phản ví dụ.",
-    "reading": "mixed/EXERCISES.md",
-    "exercise_ids": [
-      "M01",
-      "M02",
-      "M03",
-      "M04"
-    ]
+    "reading": "mixed/EXERCISES.md"
   },
   {
     "id": "S31",
@@ -343,13 +245,7 @@
     "required": "M05–M08; giải thích vì sao bỏ một hướng khác.",
     "evidence": "Mỗi bài có trace và code; chấm rubric trong mixed/README.md.",
     "extension": "Làm lại bài sai sau một ngày bằng dữ liệu khác.",
-    "reading": "mixed/EXERCISES.md",
-    "exercise_ids": [
-      "M05",
-      "M06",
-      "M07",
-      "M08"
-    ]
+    "reading": "mixed/EXERCISES.md"
   },
   {
     "id": "S32",
@@ -357,7 +253,6 @@
     "required": "Chạy verify theo môi trường; làm checklist docs/PROJECT.md; viết mô tả đúng phạm vi đã chạy.",
     "evidence": "Báo cáo PASS/FAIL/BLOCKED; trace HTTP; với AI phải chấm ngữ nghĩa thủ công.",
     "extension": "Tự chạy lại từ bản clone sạch; kiểm tra evidence không chứa secrets.",
-    "reading": "docs/RUNNING.md",
-    "exercise_ids": []
+    "reading": "docs/RUNNING.md"
   }
 ]
