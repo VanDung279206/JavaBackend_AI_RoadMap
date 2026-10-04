@@ -6,7 +6,7 @@ Mỗi chặng có bốn bài và lời giải trong [phases/README.md](phases/RE
 
 ## 0. Chạy, debug và lưu mã bằng Git
 
-Làm [Phase 0](phases/00-setup/README.md) nếu chưa tự chạy/debug/commit được. Sau đó dùng [bảng 24 bài](docs/EXERCISE_MAP.md), [starter/tests](practice/README.md) và [kiểm tra cuối phase](exams/README.md). App tham chiếu hiện có project trong `projects/knowledge-assistant/`, không cần tạo lại từ Initializr nếu theo cấu hình của repo.
+Làm [Phase 0](phases/00_setup/README.md) nếu chưa tự chạy/debug/commit được. Sau đó dùng [bảng 24 bài](docs/EXERCISE_MAP.md), [starter/tests](practice/README.md) và [kiểm tra cuối phase](exams/README.md). App tham chiếu hiện có project trong `projects/knowledge-assistant/`, không cần tạo lại từ Initializr nếu theo cấu hình của repo.
 
 ## 1. Java nền tảng và công cụ
 
@@ -44,7 +44,7 @@ Bài làm: tạo bảng người dùng và tài liệu; mỗi tài liệu thuộ
 
 Hoàn thành khi: truy vấn được dữ liệu liên quan; ràng buộc từ chối dữ liệu sai; giải thích được một tình huống cần transaction; mô tả đủ các API tạo, đọc, sửa và xóa tài liệu.
 
-Nguồn: [PostgreSQL Tutorial](https://www.postgresql.org/docs/current/tutorial.html), [Spring REST Guide](https://spring.io/guides/gs/rest-service/).
+Nguồn: [PostgreSQL Tutorial](https://www.postgresql.org/docs/17/tutorial.html), [Spring REST Guide](https://spring.io/guides/gs/rest-service/).
 
 ## 3. Spring Boot và REST API
 
@@ -64,7 +64,7 @@ Bài làm: API quản lý tài liệu, gồm `POST /documents`, `GET /documents`
 
 Hoàn thành khi: dữ liệu vẫn tồn tại sau khi khởi động lại ứng dụng; request sai bị từ chối; lỗi không tìm thấy được phân biệt với lỗi máy chủ; README mô tả được cách dựng database và chạy ứng dụng.
 
-Nguồn: [Spring REST Guide](https://spring.io/guides/gs/rest-service/), [Spring Boot Documentation](https://docs.spring.io/spring-boot/index.html).
+Nguồn: [Spring REST Guide](https://spring.io/guides/gs/rest-service/), [Spring Boot Documentation](https://docs.spring.io/spring-boot/3.5/index.html).
 
 ## 4. Kiểm thử, phân quyền và triển khai
 
@@ -85,7 +85,7 @@ Bài làm: hoàn thiện cách chạy dự án và các ca kiểm tra quyền tr
 
 Hoàn thành khi: người mới làm theo README có thể chạy ứng dụng; dữ liệu được giữ theo cấu hình đã công bố; thay đổi làm sai quy tắc nghiệp vụ khiến kiểm thử thất bại; người dùng không truy cập được tài liệu ngoài quyền của mình.
 
-Nguồn: [Spring Boot Testing](https://docs.spring.io/spring-boot/reference/testing/index.html), [Spring Security](https://docs.spring.io/spring-security/reference/index.html), [Docker Get Started](https://docs.docker.com/get-started/).
+Nguồn: [Spring Boot Testing](https://docs.spring.io/spring-boot/3.5/reference/testing/index.html), [Spring Security](https://docs.spring.io/spring-security/reference/6.5/index.html), [Docker Get Started](https://docs.docker.com/get-started/).
 
 ## 5. Tích hợp mô hình AI
 
@@ -105,7 +105,7 @@ Bài làm: `POST /documents/{id}/summary` trả bản tóm tắt từ nội dung
 
 Hoàn thành khi: có ví dụ thành công, thiếu quyền, tài liệu rỗng và lỗi gọi mô hình; xác định được prompt, cấu hình và mô hình đã dùng cho một lần thử; khóa truy cập được cung cấp qua cấu hình môi trường.
 
-Nguồn: [Spring AI Getting Started](https://docs.spring.io/spring-ai/reference/getting-started.html), [Chat Client API](https://docs.spring.io/spring-ai/reference/api/chatclient.html).
+Nguồn: [Spring AI Getting Started](https://github.com/spring-projects/spring-ai/blob/v1.1.8/spring-ai-docs/src/main/antora/modules/ROOT/pages/getting-started.adoc), [Chat Client API](https://github.com/spring-projects/spring-ai/blob/v1.1.8/spring-ai-docs/src/main/antora/modules/ROOT/pages/api/chatclient.adoc).
 
 ## 6. RAG và đánh giá chất lượng
 
@@ -128,13 +128,13 @@ Bài làm: `POST /questions` trả câu trả lời và danh sách nguồn. Khi 
 
 Hoàn thành khi: chạy lại được bộ câu hỏi đánh giá; xem được bằng chứng cho từng kết quả; không trả tài liệu ngoài quyền; ghi rõ các câu thất bại và thay đổi đã thử. Mục tiêu chất lượng phải được đặt trước khi đánh giá, gắn với bộ dữ liệu cụ thể.
 
-Nguồn: [Spring AI RAG](https://docs.spring.io/spring-ai/reference/api/retrieval-augmented-generation.html), [PGvector](https://docs.spring.io/spring-ai/reference/api/vectordbs/pgvector.html), [Evaluation Testing](https://docs.spring.io/spring-ai/reference/api/testing.html).
+Nguồn: [Spring AI RAG](https://github.com/spring-projects/spring-ai/blob/v1.1.8/spring-ai-docs/src/main/antora/modules/ROOT/pages/api/retrieval-augmented-generation.adoc), [PGvector](https://github.com/spring-projects/spring-ai/blob/v1.1.8/spring-ai-docs/src/main/antora/modules/ROOT/pages/api/vectordbs/pgvector.adoc), [Evaluation Testing](https://github.com/spring-projects/spring-ai/blob/v1.1.8/spring-ai-docs/src/main/antora/modules/ROOT/pages/api/testing.adoc).
 
 ## Sau khi hoàn thành sáu chặng
 
 Chọn phần mở rộng theo vấn đề thực tế của dự án: tool calling để tra cứu dữ liệu qua hàm backend; streaming để hiển thị câu trả lời dần; tối ưu truy vấn hoặc cache khi đã đo được điểm chậm. Với tool calling, backend cần tự kiểm tra quyền và tham số trước khi thực thi.
 
-Nguồn: [Spring AI Tool Calling](https://docs.spring.io/spring-ai/reference/api/tools.html).
+Nguồn: [Spring AI Tool Calling](https://github.com/spring-projects/spring-ai/blob/v1.1.8/spring-ai-docs/src/main/antora/modules/ROOT/pages/api/tools.adoc).
 
 ## Theo dõi tiến độ
 
