@@ -244,5 +244,379 @@
     "Supabase Auth/email/Storage gateway E2E",
     "Final desktop/mobile browser inspection blocked by browser policy",
     "Commit evidence integration and model tutor"
-  ]
+  ],
+  "markdown_links": {
+    "checked_on": "2026-10-04",
+    "local_count": 149,
+    "local_errors": [],
+    "external": [
+      {
+        "url": "https://VanDung279206.github.io/JavaBackend_AI_RoadMap",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://dev.java/learn/",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://dev.java/learn/api/collections-framework/",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://dev.java/learn/first-steps/first-java-code/getting-started/",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://docs.docker.com/get-started/",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://docs.docker.com/reference/dockerfile/",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://docs.jboss.org/hibernate/orm/6.6/userguide/html_single/Hibernate_User_Guide.html#fetching",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://docs.junit.org/5.13.1/user-guide/index.html",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/nio/file/Files.html",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/HashMap.html",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/LinkedHashMap.html",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/PriorityQueue.html",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/Future.html",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://docs.spring.io/spring-boot/3.5/appendix/dependency-versions/coordinates.html",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://docs.spring.io/spring-boot/3.5/index.html",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://docs.spring.io/spring-boot/3.5/reference/testing/index.html",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://docs.spring.io/spring-boot/3.5/system-requirements.html",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://docs.spring.io/spring-data/jpa/reference/3.5/jpa/locking.html",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://docs.spring.io/spring-data/jpa/reference/3.5/repositories/query-methods-details.html",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://docs.spring.io/spring-framework/reference/6.2/data-access/transaction/declarative/rolling-back.html",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://docs.spring.io/spring-framework/reference/6.2/web/webmvc/mvc-controller/ann-validation.html",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://docs.spring.io/spring-security/reference/6.5/index.html",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://git-scm.com/book/en/v2",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://git-scm.com/book/en/v2/Getting-Started-First-Time-Git-Setup",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://github.com/VanDung279206/JavaBackend_AI_RoadMap/blob/RoadMap_v3/VALIDATION.md",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://github.com/VanDung279206/JavaBackend_AI_RoadMap/blob/RoadMap_v3/dsa/EXERCISES.md",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://github.com/VanDung279206/JavaBackend_AI_RoadMap/blob/RoadMap_v3/english/GLOSSARY.md",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://github.com/VanDung279206/JavaBackend_AI_RoadMap/blob/RoadMap_v3/labs/README.md",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://github.com/VanDung279206/JavaBackend_AI_RoadMap/blob/RoadMap_v3/labs/src/AiLab.java",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://github.com/VanDung279206/JavaBackend_AI_RoadMap/blob/RoadMap_v3/labs/src/BackendLab.java",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://github.com/VanDung279206/JavaBackend_AI_RoadMap/blob/RoadMap_v3/labs/src/JavaCoreLab.java",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://github.com/VanDung279206/JavaBackend_AI_RoadMap/blob/RoadMap_v3/labs/src/LabChecks.java",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://github.com/VanDung279206/JavaBackend_AI_RoadMap/blob/RoadMap_v3/labs/src/RagLab.java",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://github.com/VanDung279206/JavaBackend_AI_RoadMap/blob/RoadMap_v3/phases/01_Java/SOLUTIONS.md",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://github.com/VanDung279206/JavaBackend_AI_RoadMap/blob/RoadMap_v3/phases/02_Http-Sql/SOLUTIONS.md",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://github.com/VanDung279206/JavaBackend_AI_RoadMap/blob/RoadMap_v3/phases/02_Http-Sql/solution.sql",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://github.com/VanDung279206/JavaBackend_AI_RoadMap/blob/RoadMap_v3/phases/03_Spring/SOLUTIONS.md",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://github.com/VanDung279206/JavaBackend_AI_RoadMap/blob/RoadMap_v3/phases/04_Quality/SOLUTIONS.md",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://github.com/VanDung279206/JavaBackend_AI_RoadMap/blob/RoadMap_v3/phases/05_AI/SOLUTIONS.md",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://github.com/VanDung279206/JavaBackend_AI_RoadMap/blob/RoadMap_v3/phases/06_RAG/EVALUATION_SET.md",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://github.com/VanDung279206/JavaBackend_AI_RoadMap/blob/RoadMap_v3/phases/06_RAG/SOLUTIONS.md",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://github.com/apache/maven-wrapper/releases/tag/maven-wrapper-3.3.4",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://github.com/pgvector/pgvector",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://github.com/spring-projects/spring-ai",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://github.com/spring-projects/spring-ai/blob/v1.1.8/spring-ai-docs/src/main/antora/modules/ROOT/pages/api/chat/ollama-chat.adoc",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://github.com/spring-projects/spring-ai/blob/v1.1.8/spring-ai-docs/src/main/antora/modules/ROOT/pages/api/chatclient.adoc",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://github.com/spring-projects/spring-ai/blob/v1.1.8/spring-ai-docs/src/main/antora/modules/ROOT/pages/api/embeddings/ollama-embeddings.adoc",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://github.com/spring-projects/spring-ai/blob/v1.1.8/spring-ai-docs/src/main/antora/modules/ROOT/pages/api/retrieval-augmented-generation.adoc",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://github.com/spring-projects/spring-ai/blob/v1.1.8/spring-ai-docs/src/main/antora/modules/ROOT/pages/api/structured-output-converter.adoc",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://github.com/spring-projects/spring-ai/blob/v1.1.8/spring-ai-docs/src/main/antora/modules/ROOT/pages/api/testing.adoc",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://github.com/spring-projects/spring-ai/blob/v1.1.8/spring-ai-docs/src/main/antora/modules/ROOT/pages/api/tools.adoc",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://github.com/spring-projects/spring-ai/blob/v1.1.8/spring-ai-docs/src/main/antora/modules/ROOT/pages/api/vectordbs/pgvector.adoc",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://github.com/spring-projects/spring-ai/blob/v1.1.8/spring-ai-docs/src/main/antora/modules/ROOT/pages/getting-started.adoc",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://github.com/spring-projects/spring-ai/blob/v1.1.8/spring-ai-docs/src/main/antora/modules/ROOT/pages/index.adoc",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://java.testcontainers.org/test_framework_integration/junit_5/",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://maven.apache.org/docs/3.9.11/release-notes.html",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://maven.apache.org/guides/getting-started/",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://maven.apache.org/install.html",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://maven.apache.org/tools/wrapper/",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://pubmed.ncbi.nlm.nih.gov/18276894/",
+        "status": "PASS",
+        "http": 203
+      },
+      {
+        "url": "https://pubmed.ncbi.nlm.nih.gov/19076480/",
+        "status": "PASS",
+        "http": 203
+      },
+      {
+        "url": "https://spring.io/blog/2026/06/12/spring-ai-1-1-8-1-0-9-avaialble-now/",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://spring.io/guides/gs/rest-service/",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://supabase.com/docs/guides/auth/passwords",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://supabase.com/docs/guides/database/postgres/row-level-security",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://www.postgresql.org/docs/17/transaction-iso.html",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://www.postgresql.org/docs/17/tutorial-transactions.html",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://www.postgresql.org/docs/17/tutorial-window.html",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://www.postgresql.org/docs/17/tutorial.html",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://www.postgresql.org/docs/17/using-explain.html",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+        "status": "PASS",
+        "http": 200
+      }
+    ],
+    "scope": "HTTP reachability; external fragments/content not verified"
+  },
+  "ci_followup": {
+    "initial_run": "https://github.com/VanDung279206/JavaBackend_AI_RoadMap/actions/runs/37132699991",
+    "initial_status": "FAIL database step; offline/integration PASS",
+    "fix": "TCP readiness instead of temporary Unix-socket server; retain database log",
+    "rerun_status": "PENDING"
+  }
 }
