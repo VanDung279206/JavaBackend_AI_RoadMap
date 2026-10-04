@@ -15,6 +15,12 @@ on:
   pull_request:
     paths:
       - "website/**"
+      - "learning/**"
+      - "scripts/**"
+      - "foundations/**"
+      - "advanced/**"
+      - "phases/**"
+      - "database/**"
       - ".github/workflows/website-ci.yml"
 
 jobs:
@@ -39,15 +45,12 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Copy markdown content
+      - name: Validate generated catalogue
         working-directory: ${{ github.workspace }}
-        run: |
-          for phase in phases/01_Java phases/02_Http-Sql phases/03_Spring phases/04_Quality phases/05_AI phases/06_RAG; do
-            slug=$(basename $phase)
-            mkdir -p website/public/content/$slug
-            [ -f "$phase/EXERCISES.md" ] && cp "$phase/EXERCISES.md" "website/public/content/$slug/EXERCISES.md"
-            [ -f "$phase/SOLUTIONS.md" ] && cp "$phase/SOLUTIONS.md" "website/public/content/$slug/SOLUTIONS.md"
-          done
+        run: node scripts/build_catalogue.mjs --check
+
+      - name: Regression tests
+        run: npm test
 
       - name: Lint
         run: npm run lint
