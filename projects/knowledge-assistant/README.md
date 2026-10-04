@@ -1,6 +1,6 @@
 # Knowledge Assistant — ứng dụng tham chiếu theo mốc học
 
-Có mã CRUD, owner authorization, audit transaction, summary, câu hỏi có nguồn và cấu hình chạy. **Xem [VALIDATION.md](../../VALIDATION.md) trước khi dùng kết quả kiểm tra làm bằng chứng:** RoadMap_v3 đã chạy Maven, PostgreSQL và Docker; model thật vẫn BLOCKED. Kết quả của bản tham chiếu không cấp tiến độ người học.
+Có mã CRUD, owner authorization, audit transaction, summary, câu hỏi có nguồn và cấu hình chạy. **Xem [VALIDATION.md](../../VALIDATION.md) trước khi dùng kết quả kiểm tra làm bằng chứng:** ở phiên soạn này, chỉ Java thuần đã được chạy; chưa build hoặc chạy Spring/Maven/Docker/model thật.
 
 | Chế độ | Database | Summary / hỏi đáp | Cần thêm |
 | --- | --- | --- | --- |
@@ -112,7 +112,7 @@ mvn -Preal-ai clean verify
 
 `ApiTest`: auth, CRUD, input, owner, summary/question. `TransactionTest`: rollback H2. `KnowledgeServiceTest`: không gọi generation khi thiếu context và chặn citation bịa. `PostgresIT`/`TransactionIT`: database thật; Maven Failsafe chỉ chạy khi có profile integration. Thiếu Docker phải làm job lỗi, không báo integration đã pass.
 
-Test model giả lập không đánh giá nội dung model thật. Chạy fixture trong `phases/06_RAG/EVALUATION_SET.md` rồi ghi config, model, câu hỏi, source và đánh giá thủ công khi tích hợp live.
+Test model giả lập không đánh giá nội dung model thật. Chạy fixture trong `phases/06-rag/EVALUATION_SET.md` rồi ghi config, model, câu hỏi, source và đánh giá thủ công khi tích hợp live.
 
 ## 6. Các giới hạn học tập cần hiểu
 
