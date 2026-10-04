@@ -1,5 +1,23 @@
 # Kiểm chứng RoadMap_v3
 
+## PR #8 — giới hạn bytecode compile probe (05/10/2026)
+
+Review `5407387608` trên commit `dab8d2c` xác nhận hai P2 trước đã sửa, phát hiện [4178662387](https://github.com/VanDung279206/JavaBackend_AI_RoadMap/pull/8#discussion_r4178662387): `fsize=4096:4096` áp dụng cho cả `.class`, khiến nguồn đúng báo COMPILE_ERROR. Sửa trong `runner/isolated.py`: 8 MiB/file, giữ tmpfs/CPU/RAM/network/timeout; stdout/stderr compiler được đọc liên tục qua pipe, chỉ giữ 32.000 byte đầu, có `output_truncated`, không lưu log file. Timeout giết compiler; biên dịch thành công vẫn BLOCKED, không cấp PASS người học.
+
+File bổ sung/sửa: `runner/isolated.py`, `runner/check_compile_limits.py`, `runner/README.md`, `scripts/tests/test_runner_job.py`, `.github/workflows/verify.yml`, `VALIDATION.md`, `checks/v3-summary.json`.
+
+| Lệnh / phạm vi | Kết quả thực tế |
+| --- | --- |
+| Python `-m unittest discover -s scripts/tests -p test_runner_job.py` trước sửa | **FAIL đúng lỗi**, 2/3 PASS, 1 FAIL: bytecode MoreDsa 8.724 byte vượt giới hạn 4.096 byte |
+| Python `-m unittest discover -s scripts/tests` sau sửa | **PASS 31/31**, không skip; biên dịch Java thật, lỗi cú pháp, timeout, log 4 triệu byte chỉ giữ 32.000 byte, quyền snapshot và giới hạn nguồn |
+| `scripts/verify.py --suite offline --output checks/runs/pr8-fsize-offline` | **PASS 19 gates**, gồm 31 test Python; nguồn tham chiếu và starter rejection |
+| npm CLI `--prefix website test`; `node scripts/build_catalogue.mjs --check`; `git diff --check` | **PASS**: 18 tests, YAML mới hợp lệ, 84 bài/32 sessions, không lỗi diff |
+| Linux `sudo -n --preserve-env=JAVA_HOME,PATH python3 runner/check_compile_limits.py` | **PASS** trên CI: control 4 KB tái hiện lỗi; UID/GID 65534 tạo `.class` 8.724 byte với fsize 8.388.608 byte; file vượt hạn bị từ chối; verdict vẫn BLOCKED |
+| [Website CI](https://github.com/VanDung279206/JavaBackend_AI_RoadMap/actions/runs/37222841422), commit `2314e11` | **PASS**: 18 tests, catalogue, lint, TypeScript/build/export và postbuild |
+| [Reference CI](https://github.com/VanDung279206/JavaBackend_AI_RoadMap/actions/runs/37222841316), commit `2314e11` | **PASS**: offline, quyền UID/compiler/file limit, Spring/PostgreSQL/SQL/Docker HTTP, V1–V6/seed/legacy/RLS/Q01 và backup–restore |
+
+Log cục bộ: `checks/review-fsize-before.log`, `checks/review-fsize-after.log`, `checks/runs/pr8-fsize-offline/`. Đã đọc log CI xác nhận control/biên dịch dưới UID 65534, từng migration/fixture và backup–restore. Hai commit sau `2314e11` chỉ ghi kết quả VALIDATION/JSON. Docker cục bộ **BLOCKED**: pipe daemon không tồn tại. Kiểm tra Linux/syscall này không phải lượt chạy Docker probe; chấm web vẫn **BLOCKED** vì thiếu worker/test image tin cậy. Không cần migration, cấu hình ứng dụng hoặc đổi phiên bản cho sửa này.
+
 ## PR #8 — hai P2 còn lại (05/10/2026)
 
 Review `5407110865` xác nhận bảy lỗi trước đã được xử lý, bổ sung hai lỗi trên commit `2c34a5c`:
