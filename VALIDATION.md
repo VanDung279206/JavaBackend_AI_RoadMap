@@ -60,3 +60,10 @@ Chưa áp dụng migration lên Supabase production, chưa triển khai Pages, c
 File chính: `learning/`, `scripts/build_catalogue.mjs`, `website/src/generated/`, `website/src/lib/learning-store.ts`, các trang today/skills/lab/auth/reset, `database/migrations/`, `database/tests/`, `foundations/`, `advanced/`, `practice/sql/advanced/`, JPA/metrics/OpenAPI trong `projects/knowledge-assistant/`, `runner/`. Danh sách đầy đủ nằm trong diff nhánh.
 
 Chấm web vẫn thiếu implementation/deployment của trusted worker. Có bảng submissions, lệnh Docker giới hạn tài nguyên hoặc build thành công không có nghĩa chức năng chấm tự động đã hoàn tất.
+
+## Bổ sung 04/10/2026
+
+- Kiểm tra sau khi đẩy nhánh: **PASS 149 link nội bộ và 72/72 URL HTTP**, 0 FAIL/0 BLOCKED. Đã sửa URL structured output đúng file ở tag Spring AI v1.1.8. HTTP PASS không xác minh fragment hay mọi nội dung upstream.
+- CI đầu tiên tại commit e8d7460: offline và integration PASS; bước database website FAIL. Đã sửa chờ readiness TCP (tránh server socket tạm của initdb) và giữ log database trong artifact; lượt CI mới đang chờ xác nhận. Không gọi toàn bộ CI PASS trước khi có kết quả.
+- Python regression sau sửa: **21 test PASS**. Website CI nay chạy trên push RoadMap_v3, chỉ lint/test/build; workflow deploy vẫn chỉ main.
+- Docker Desktop đã tắt ở phiên tiếp tục. Đã khởi động lại bằng CLI, nhưng probe hiện chưa kết nối được daemon; chưa có kết quả chạy lại database cho thay đổi TCP. Các PASS ngày 03/10 vẫn là bằng chứng của lượt đó.
