@@ -2,7 +2,7 @@
 
 | Bạn tự làm được gì? | Điểm bắt đầu |
 | --- | --- |
-| Chưa chạy/debug/commit Java được | [Phase 0](../phases/00_setup/README.md) |
+| Chưa chạy/debug/commit Java được | [Phase 0](../phases/00-setup/README.md) |
 | Có công cụ, còn yếu Java | [Practice](../practice/README.md), P1.1 |
 | Java cơ bản đã chắc | [Kiểm tra P1](../exams/P1.md), rồi SQL |
 | Đã xây CRUD và PostgreSQL | [Kiểm tra P3](../exams/P3.md), rồi quyền/test/AI |
