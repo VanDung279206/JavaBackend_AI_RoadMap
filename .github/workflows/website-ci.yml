@@ -1,6 +1,17 @@
 name: Website CI — Lint & Build check
 
 on:
+  push:
+    branches: [RoadMap_v3]
+    paths:
+      - "website/**"
+      - "learning/**"
+      - "scripts/**"
+      - "foundations/**"
+      - "advanced/**"
+      - "phases/**"
+      - "database/**"
+      - ".github/workflows/website-ci.yml"
   pull_request:
     paths:
       - "website/**"
