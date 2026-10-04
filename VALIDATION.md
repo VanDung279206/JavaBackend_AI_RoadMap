@@ -16,9 +16,11 @@ Review `5407110865` xác nhận bảy lỗi trước đã được xử lý, b�
 | Python `-m unittest discover -s scripts/tests` | **PASS 27/27**, gồm snapshot/quyền POSIX và chặn nguồn quá giới hạn; Windows không chứng minh UID Linux |
 | `scripts/verify.py --suite offline --output checks/runs/pr8-p2-offline` | **PASS 19 gates**, không có merge marker; nguồn tham chiếu và starter rejection |
 | `node scripts/build_catalogue.mjs --check`; npm CLI `run lint`, `run build` | **PASS**, 84 bài/32 sessions; TypeScript/export 29 trang; postbuild 14 track/84 bài |
-| Linux `sudo -n python3 runner/check_job_access.py` | **Chờ CI**, Windows không hỗ trợ kiểm tra chuyển UID POSIX này |
+| Linux `sudo -n python3 runner/check_job_access.py` | **PASS trên CI**, log xác nhận `PASS UID/GID 65534: traverse/read job and source; no write permission`; Windows không hỗ trợ kiểm tra chuyển UID POSIX này |
+| [Website CI](https://github.com/VanDung279206/JavaBackend_AI_RoadMap/actions/runs/37219151893), commit `24a0b6b` | **PASS**: 18 tests, catalogue, lint, build và postbuild export |
+| [Reference CI](https://github.com/VanDung279206/JavaBackend_AI_RoadMap/actions/runs/37219151892), commit `24a0b6b` | **PASS**: offline, kiểm tra UID 65534, Spring/PostgreSQL/SQL/Docker HTTP, V1–V6/seed/legacy/RLS/Q01 và backup–restore |
 
-Log cục bộ: `checks/review-sync-before.log`, `checks/review-sync-after.log`, `checks/review-p2-python.log`, `checks/review-p2-build.log`, `checks/runs/pr8-p2-offline/`. Probe quyền chỉ chạy fixture tin cậy, không chạy mã người học và không chứng minh Docker compilation/chấm web. Compile probe vẫn trả BLOCKED khi biên dịch thành công vì chưa có worker test tin cậy. Không cần migration hoặc đổi phiên bản cho hai sửa này.
+Log cục bộ: `checks/review-sync-before.log`, `checks/review-sync-after.log`, `checks/review-p2-python.log`, `checks/review-p2-build.log`, `checks/runs/pr8-p2-offline/`. Đã đọc log CI xác nhận UID 65534, từng migration/fixture và backup–restore PASS. Hai commit sau `24a0b6b` chỉ cập nhật kết quả VALIDATION/JSON. Probe quyền chỉ chạy fixture tin cậy, không chạy mã người học và không chứng minh Docker compilation/chấm web. Compile probe vẫn trả BLOCKED khi biên dịch thành công vì chưa có worker test tin cậy. Không cần migration hoặc đổi phiên bản cho hai sửa này.
 
 ## PR #8 — sửa review Dung06-tech (04/10/2026)
 
