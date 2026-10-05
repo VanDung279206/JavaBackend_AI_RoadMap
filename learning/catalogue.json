@@ -21,7 +21,20 @@
       "tags": [
         "validation"
       ],
-      "reading": "phases/01_Java/EXERCISES.md"
+      "reading": "phases/01_Java/EXERCISES.md",
+      "phase": "01_Java",
+      "track": "practice",
+      "prerequisites": [
+        "J01"
+      ],
+      "solution": "phases/01_Java/SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "practice/starter",
+        "command": "py scripts/check.py --track practice --id P1.1",
+        "note": "Chạy starter của bạn; kết quả tham chiếu không phải tiến độ người học."
+      },
+      "playground": "java"
     },
     "P1.2": {
       "title": "Danh mục tài liệu",
@@ -29,14 +42,40 @@
         "duplicates",
         "state"
       ],
-      "reading": "phases/01_Java/EXERCISES.md"
+      "reading": "phases/01_Java/EXERCISES.md",
+      "phase": "01_Java",
+      "track": "practice",
+      "prerequisites": [
+        "P1.1"
+      ],
+      "solution": "phases/01_Java/SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "practice/starter",
+        "command": "py scripts/check.py --track practice --id P1.2",
+        "note": "Chạy starter của bạn; kết quả tham chiếu không phải tiến độ người học."
+      },
+      "playground": "java"
     },
     "P1.3": {
       "title": "Đếm từ theo hợp đồng rõ ràng",
       "tags": [
         "duplicates"
       ],
-      "reading": "phases/01_Java/EXERCISES.md"
+      "reading": "phases/01_Java/EXERCISES.md",
+      "phase": "01_Java",
+      "track": "practice",
+      "prerequisites": [
+        "P1.1"
+      ],
+      "solution": "phases/01_Java/SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "practice/starter",
+        "command": "py scripts/check.py --track practice --id P1.3",
+        "note": "Chạy starter của bạn; kết quả tham chiếu không phải tiến độ người học."
+      },
+      "playground": "java"
     },
     "P1.4": {
       "title": "Tìm và sắp xếp",
@@ -44,7 +83,20 @@
         "ordering",
         "validation"
       ],
-      "reading": "phases/01_Java/EXERCISES.md"
+      "reading": "phases/01_Java/EXERCISES.md",
+      "phase": "01_Java",
+      "track": "practice",
+      "prerequisites": [
+        "P1.2"
+      ],
+      "solution": "phases/01_Java/SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "practice/starter",
+        "command": "py scripts/check.py --track practice --id P1.4",
+        "note": "Chạy starter của bạn; kết quả tham chiếu không phải tiến độ người học."
+      },
+      "playground": "java"
     },
     "P2.1": {
       "title": "Hợp đồng API",
@@ -52,14 +104,40 @@
         "validation",
         "owner"
       ],
-      "reading": "phases/02_Http-Sql/EXERCISES.md"
+      "reading": "phases/02_Http-Sql/EXERCISES.md",
+      "phase": "02_Http-Sql",
+      "track": "practice",
+      "prerequisites": [
+        "P1.4"
+      ],
+      "solution": "phases/02_Http-Sql/SOLUTIONS.md",
+      "check": {
+        "kind": "manual",
+        "file": "phases/02_Http-Sql/EXERCISES.md",
+        "command": "",
+        "note": "Đối chiếu tiêu chí và lưu bằng chứng. Chưa có bộ chấm tự động cho toàn bộ bài."
+      },
+      "playground": null
     },
     "P2.2": {
       "title": "Schema và đếm tài liệu",
       "tags": [
         "duplicates"
       ],
-      "reading": "phases/02_Http-Sql/EXERCISES.md"
+      "reading": "phases/02_Http-Sql/EXERCISES.md",
+      "phase": "02_Http-Sql",
+      "track": "practice",
+      "prerequisites": [
+        "P2.1"
+      ],
+      "solution": "phases/02_Http-Sql/SOLUTIONS.md",
+      "check": {
+        "kind": "project",
+        "file": "practice/sql/starter.sql",
+        "command": "psql -v ON_ERROR_STOP=1 -f practice/sql/fixture.sql -f practice/sql/starter.sql -f practice/sql/tests.sql",
+        "note": "Dùng database thực hành riêng; fixture đặt lại dữ liệu thực hành."
+      },
+      "playground": "postgresql"
     },
     "P2.3": {
       "title": "Phân trang và index",
@@ -67,28 +145,81 @@
         "off-by-one",
         "ordering"
       ],
-      "reading": "phases/02_Http-Sql/EXERCISES.md"
+      "reading": "phases/02_Http-Sql/EXERCISES.md",
+      "phase": "02_Http-Sql",
+      "track": "practice",
+      "prerequisites": [
+        "P2.2"
+      ],
+      "solution": "phases/02_Http-Sql/SOLUTIONS.md",
+      "check": {
+        "kind": "project",
+        "file": "practice/sql/starter.sql",
+        "command": "psql -v ON_ERROR_STOP=1 -f practice/sql/fixture.sql -f practice/sql/starter.sql -f practice/sql/tests.sql",
+        "note": "Dùng database thực hành riêng; fixture đặt lại dữ liệu thực hành."
+      },
+      "playground": "postgresql"
     },
     "P2.4": {
       "title": "Transaction",
       "tags": [
         "transaction"
       ],
-      "reading": "phases/02_Http-Sql/EXERCISES.md"
+      "reading": "phases/02_Http-Sql/EXERCISES.md",
+      "phase": "02_Http-Sql",
+      "track": "practice",
+      "prerequisites": [
+        "P2.2"
+      ],
+      "solution": "phases/02_Http-Sql/SOLUTIONS.md",
+      "check": {
+        "kind": "project",
+        "file": "practice/sql/starter.sql",
+        "command": "psql -v ON_ERROR_STOP=1 -f practice/sql/fixture.sql -f practice/sql/starter.sql -f practice/sql/tests.sql",
+        "note": "Dùng database thực hành riêng; fixture đặt lại dữ liệu thực hành."
+      },
+      "playground": "postgresql"
     },
     "P3.1": {
       "title": "DTO và validation",
       "tags": [
         "validation"
       ],
-      "reading": "phases/03_Spring/EXERCISES.md"
+      "reading": "phases/03_Spring/EXERCISES.md",
+      "phase": "03_Spring",
+      "track": "practice",
+      "prerequisites": [
+        "P2.1",
+        "P2.2"
+      ],
+      "solution": "phases/03_Spring/SOLUTIONS.md",
+      "check": {
+        "kind": "project",
+        "file": "work/spring-p3/pom.xml",
+        "command": "py scripts/new_spring_lab.py --phase 3 --destination work/spring-p3\npy scripts/maven.py -f work/spring-p3/pom.xml -Dtest=LearningContractTest#createsValidatedOwnedDocument test",
+        "note": "Tạo bản một lần, sau đó chỉ chạy Maven trên bản đó. Test theo bài; phải hoàn thiện bài tiên quyết trước. Hết phase chạy toàn bộ test. Không cấp tiến độ từ bản tham chiếu."
+      },
+      "playground": null
     },
     "P3.2": {
       "title": "Repository có phạm vi người dùng",
       "tags": [
         "owner"
       ],
-      "reading": "phases/03_Spring/EXERCISES.md"
+      "reading": "phases/03_Spring/EXERCISES.md",
+      "phase": "03_Spring",
+      "track": "practice",
+      "prerequisites": [
+        "P3.1"
+      ],
+      "solution": "phases/03_Spring/SOLUTIONS.md",
+      "check": {
+        "kind": "project",
+        "file": "work/spring-p3/pom.xml",
+        "command": "py scripts/new_spring_lab.py --phase 3 --destination work/spring-p3\npy scripts/maven.py -f work/spring-p3/pom.xml -Dtest=LearningContractTest#findsOnlyOwnedDocument test",
+        "note": "Tạo bản một lần, sau đó chỉ chạy Maven trên bản đó. Test theo bài; phải hoàn thiện bài tiên quyết trước. Hết phase chạy toàn bộ test. Không cấp tiến độ từ bản tham chiếu."
+      },
+      "playground": null
     },
     "P3.3": {
       "title": "Phân trang và lỗi rõ ràng",
@@ -96,21 +227,61 @@
         "off-by-one",
         "overflow"
       ],
-      "reading": "phases/03_Spring/EXERCISES.md"
+      "reading": "phases/03_Spring/EXERCISES.md",
+      "phase": "03_Spring",
+      "track": "practice",
+      "prerequisites": [
+        "P3.2"
+      ],
+      "solution": "phases/03_Spring/SOLUTIONS.md",
+      "check": {
+        "kind": "project",
+        "file": "work/spring-p3/pom.xml",
+        "command": "py scripts/new_spring_lab.py --phase 3 --destination work/spring-p3\npy scripts/maven.py -f work/spring-p3/pom.xml -Dtest=LearningContractTest#listsStableOwnedPages test",
+        "note": "Tạo bản một lần, sau đó chỉ chạy Maven trên bản đó. Test theo bài; phải hoàn thiện bài tiên quyết trước. Hết phase chạy toàn bộ test. Không cấp tiến độ từ bản tham chiếu."
+      },
+      "playground": null
     },
     "P3.4": {
       "title": "Giao dịch nghiệp vụ",
       "tags": [
         "transaction"
       ],
-      "reading": "phases/03_Spring/EXERCISES.md"
+      "reading": "phases/03_Spring/EXERCISES.md",
+      "phase": "03_Spring",
+      "track": "practice",
+      "prerequisites": [
+        "P3.2",
+        "P2.4"
+      ],
+      "solution": "phases/03_Spring/SOLUTIONS.md",
+      "check": {
+        "kind": "project",
+        "file": "work/spring-p3/pom.xml",
+        "command": "py scripts/new_spring_lab.py --phase 3 --destination work/spring-p3\npy scripts/maven.py -f work/spring-p3/pom.xml -Dtest=TransactionTest test",
+        "note": "Tạo bản một lần, sau đó chỉ chạy Maven trên bản đó. Test theo bài; phải hoàn thiện bài tiên quyết trước. Hết phase chạy toàn bộ test. Không cấp tiến độ từ bản tham chiếu."
+      },
+      "playground": null
     },
     "P4.1": {
       "title": "Hai người dùng",
       "tags": [
         "owner"
       ],
-      "reading": "phases/04_Quality/EXERCISES.md"
+      "reading": "phases/04_Quality/EXERCISES.md",
+      "phase": "04_Quality",
+      "track": "practice",
+      "prerequisites": [
+        "P3.2"
+      ],
+      "solution": "phases/04_Quality/SOLUTIONS.md",
+      "check": {
+        "kind": "project",
+        "file": "work/spring-p4/pom.xml",
+        "command": "py scripts/new_spring_lab.py --phase 4 --destination work/spring-p4\npy scripts/maven.py -f work/spring-p4/pom.xml -Dtest=ApiTest#anonymousCannotRead+wrongPasswordCannotRead test",
+        "note": "Tạo bản một lần, sau đó chỉ chạy Maven trên bản đó. Test theo bài; phải hoàn thiện bài tiên quyết trước. Hết phase chạy toàn bộ test. Không cấp tiến độ từ bản tham chiếu."
+      },
+      "playground": null
     },
     "P4.2": {
       "title": "Kiểm thử bắt được lỗi",
@@ -118,21 +289,61 @@
         "owner",
         "validation"
       ],
-      "reading": "phases/04_Quality/EXERCISES.md"
+      "reading": "phases/04_Quality/EXERCISES.md",
+      "phase": "04_Quality",
+      "track": "practice",
+      "prerequisites": [
+        "P4.1"
+      ],
+      "solution": "phases/04_Quality/SOLUTIONS.md",
+      "check": {
+        "kind": "project",
+        "file": "work/spring-p4/pom.xml",
+        "command": "py scripts/new_spring_lab.py --phase 4 --destination work/spring-p4\npy scripts/maven.py -f work/spring-p4/pom.xml -Dtest=OwnershipLearnerTest,ApiTest#ownerIsolationForReadWriteSummaryAndIndex test",
+        "note": "Tạo bản một lần, sau đó chỉ chạy Maven trên bản đó. Test theo bài; phải hoàn thiện bài tiên quyết trước. Hết phase chạy toàn bộ test. Không cấp tiến độ từ bản tham chiếu."
+      },
+      "playground": null
     },
     "P4.3": {
       "title": "Đóng gói và cấu hình",
       "tags": [
         "state"
       ],
-      "reading": "phases/04_Quality/EXERCISES.md"
+      "reading": "phases/04_Quality/EXERCISES.md",
+      "phase": "04_Quality",
+      "track": "practice",
+      "prerequisites": [
+        "P3.4"
+      ],
+      "solution": "phases/04_Quality/SOLUTIONS.md",
+      "check": {
+        "kind": "manual",
+        "file": "work/spring-p4/Dockerfile",
+        "command": "py scripts/new_spring_lab.py --phase 4 --destination work/spring-p4\ndocker build -t roadmap-learning-p4 work/spring-p4",
+        "note": "Tạo bản một lần. Build chưa chứng minh health/non-root/persistence; cần chạy image của bạn và lưu bằng chứng. Maven PASS không xác nhận Dockerfile."
+      },
+      "playground": null
     },
     "P4.4": {
       "title": "Quy trình CI có tiêu chí",
       "tags": [
         "state"
       ],
-      "reading": "phases/04_Quality/EXERCISES.md"
+      "reading": "phases/04_Quality/EXERCISES.md",
+      "phase": "04_Quality",
+      "track": "practice",
+      "prerequisites": [
+        "P4.2",
+        "P4.3"
+      ],
+      "solution": "phases/04_Quality/SOLUTIONS.md",
+      "check": {
+        "kind": "manual",
+        "file": "work/spring-p4/LEARNER_CI.yml",
+        "command": "py scripts/new_spring_lab.py --phase 4 --destination work/spring-p4\n# Hoàn thiện LEARNER_CI.yml, đặt tại .github/workflows trong repository học riêng.\n# Push branch học, lưu URL CI; thử một lỗi có chủ ý và kiểm CI thật sự thất bại.",
+        "note": "Tạo bản một lần. Chỉ khi workflow đã thực chạy đủ check và thất bại đúng với lỗi thử mới có bằng chứng CI. Test Maven của bản tham chiếu không xác nhận bài này."
+      },
+      "playground": null
     },
     "P5.1": {
       "title": "Tách chỉ dẫn và dữ liệu",
@@ -140,14 +351,40 @@
         "source",
         "validation"
       ],
-      "reading": "phases/05_AI/EXERCISES.md"
+      "reading": "phases/05_AI/EXERCISES.md",
+      "phase": "05_AI",
+      "track": "practice",
+      "prerequisites": [
+        "P3.1"
+      ],
+      "solution": "phases/05_AI/SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "practice/starter",
+        "command": "py scripts/check.py --track practice --id P5.1",
+        "note": "Chạy starter của bạn; kết quả tham chiếu không phải tiến độ người học."
+      },
+      "playground": "java"
     },
     "P5.2": {
       "title": "Ngân sách context",
       "tags": [
         "overflow"
       ],
-      "reading": "phases/05_AI/EXERCISES.md"
+      "reading": "phases/05_AI/EXERCISES.md",
+      "phase": "05_AI",
+      "track": "practice",
+      "prerequisites": [
+        "P5.1"
+      ],
+      "solution": "phases/05_AI/SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "practice/starter",
+        "command": "py scripts/check.py --track practice --id P5.2",
+        "note": "Chạy starter của bạn; kết quả tham chiếu không phải tiến độ người học."
+      },
+      "playground": "java"
     },
     "P5.3": {
       "title": "Kiểm tra đầu ra có cấu trúc",
@@ -155,7 +392,20 @@
         "validation",
         "source"
       ],
-      "reading": "phases/05_AI/EXERCISES.md"
+      "reading": "phases/05_AI/EXERCISES.md",
+      "phase": "05_AI",
+      "track": "practice",
+      "prerequisites": [
+        "P5.1"
+      ],
+      "solution": "phases/05_AI/SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "practice/starter",
+        "command": "py scripts/check.py --track practice --id P5.3",
+        "note": "Chạy starter của bạn; kết quả tham chiếu không phải tiến độ người học."
+      },
+      "playground": "java"
     },
     "P5.4": {
       "title": "Lỗi tạm thời và retry hữu hạn",
@@ -163,7 +413,20 @@
         "retry",
         "timeout"
       ],
-      "reading": "phases/05_AI/EXERCISES.md"
+      "reading": "phases/05_AI/EXERCISES.md",
+      "phase": "05_AI",
+      "track": "practice",
+      "prerequisites": [
+        "P5.3"
+      ],
+      "solution": "phases/05_AI/SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "practice/starter",
+        "command": "py scripts/check.py --track practice --id P5.4",
+        "note": "Chạy starter của bạn; kết quả tham chiếu không phải tiến độ người học."
+      },
+      "playground": "java"
     },
     "P6.1": {
       "title": "Chia đoạn có phần chồng lặp",
@@ -171,7 +434,20 @@
         "off-by-one",
         "invariant"
       ],
-      "reading": "phases/06_RAG/EXERCISES.md"
+      "reading": "phases/06_RAG/EXERCISES.md",
+      "phase": "06_RAG",
+      "track": "practice",
+      "prerequisites": [
+        "P5.2"
+      ],
+      "solution": "phases/06_RAG/SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "practice/starter",
+        "command": "py scripts/check.py --track practice --id P6.1",
+        "note": "Chạy starter của bạn; kết quả tham chiếu không phải tiến độ người học."
+      },
+      "playground": "java"
     },
     "P6.2": {
       "title": "Lọc quyền trước khi lấy top-k",
@@ -179,14 +455,42 @@
         "owner",
         "ordering"
       ],
-      "reading": "phases/06_RAG/EXERCISES.md"
+      "reading": "phases/06_RAG/EXERCISES.md",
+      "phase": "06_RAG",
+      "track": "practice",
+      "prerequisites": [
+        "P6.1",
+        "P4.1"
+      ],
+      "solution": "phases/06_RAG/SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "practice/starter",
+        "command": "py scripts/check.py --track practice --id P6.2",
+        "note": "Chạy starter của bạn; kết quả tham chiếu không phải tiến độ người học."
+      },
+      "playground": "java"
     },
     "P6.3": {
       "title": "Kiểm tra nguồn và thiếu dữ liệu",
       "tags": [
         "source"
       ],
-      "reading": "phases/06_RAG/EXERCISES.md"
+      "reading": "phases/06_RAG/EXERCISES.md",
+      "phase": "06_RAG",
+      "track": "practice",
+      "prerequisites": [
+        "P6.2",
+        "P5.3"
+      ],
+      "solution": "phases/06_RAG/SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "practice/starter",
+        "command": "py scripts/check.py --track practice --id P6.3",
+        "note": "Chạy starter của bạn; kết quả tham chiếu không phải tiến độ người học."
+      },
+      "playground": "java"
     },
     "P6.4": {
       "title": "Đo retrieval",
@@ -194,14 +498,40 @@
         "duplicates",
         "off-by-one"
       ],
-      "reading": "phases/06_RAG/EXERCISES.md"
+      "reading": "phases/06_RAG/EXERCISES.md",
+      "phase": "06_RAG",
+      "track": "practice",
+      "prerequisites": [
+        "P6.3"
+      ],
+      "solution": "phases/06_RAG/SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "practice/starter",
+        "command": "py scripts/check.py --track practice --id P6.4",
+        "note": "Chạy starter của bạn; kết quả tham chiếu không phải tiến độ người học."
+      },
+      "playground": "java"
     },
     "D01": {
       "title": "Đếm tần suất",
       "tags": [
         "duplicates"
       ],
-      "reading": "dsa/EXERCISES.md"
+      "reading": "dsa/EXERCISES.md",
+      "phase": "dsa",
+      "track": "practice",
+      "prerequisites": [
+        "P1.2"
+      ],
+      "solution": "dsa/SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "practice/starter",
+        "command": "py scripts/check.py --track practice --id D01",
+        "note": "Chạy starter của bạn; kết quả tham chiếu không phải tiến độ người học."
+      },
+      "playground": "java"
     },
     "D02": {
       "title": "Hai vị trí có tổng cho trước",
@@ -209,14 +539,40 @@
         "duplicates",
         "overflow"
       ],
-      "reading": "dsa/EXERCISES.md"
+      "reading": "dsa/EXERCISES.md",
+      "phase": "dsa",
+      "track": "practice",
+      "prerequisites": [
+        "P1.2"
+      ],
+      "solution": "dsa/SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "practice/starter",
+        "command": "py scripts/check.py --track practice --id D02",
+        "note": "Chạy starter của bạn; kết quả tham chiếu không phải tiến độ người học."
+      },
+      "playground": "java"
     },
     "D03": {
       "title": "Palindrome",
       "tags": [
         "off-by-one"
       ],
-      "reading": "dsa/EXERCISES.md"
+      "reading": "dsa/EXERCISES.md",
+      "phase": "dsa",
+      "track": "practice",
+      "prerequisites": [
+        "P1.2"
+      ],
+      "solution": "dsa/SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "practice/starter",
+        "command": "py scripts/check.py --track practice --id D03",
+        "note": "Chạy starter của bạn; kết quả tham chiếu không phải tiến độ người học."
+      },
+      "playground": "java"
     },
     "D04": {
       "title": "Đoạn không lặp",
@@ -224,7 +580,20 @@
         "invariant",
         "duplicates"
       ],
-      "reading": "dsa/EXERCISES.md"
+      "reading": "dsa/EXERCISES.md",
+      "phase": "dsa",
+      "track": "practice",
+      "prerequisites": [
+        "P1.2"
+      ],
+      "solution": "dsa/SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "practice/starter",
+        "command": "py scripts/check.py --track practice --id D04",
+        "note": "Chạy starter của bạn; kết quả tham chiếu không phải tiến độ người học."
+      },
+      "playground": "java"
     },
     "D05": {
       "title": "Tổng đoạn",
@@ -232,14 +601,40 @@
         "off-by-one",
         "overflow"
       ],
-      "reading": "dsa/EXERCISES.md"
+      "reading": "dsa/EXERCISES.md",
+      "phase": "dsa",
+      "track": "practice",
+      "prerequisites": [
+        "P1.2"
+      ],
+      "solution": "dsa/SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "practice/starter",
+        "command": "py scripts/check.py --track practice --id D05",
+        "note": "Chạy starter của bạn; kết quả tham chiếu không phải tiến độ người học."
+      },
+      "playground": "java"
     },
     "D06": {
       "title": "Ngoặc hợp lệ",
       "tags": [
         "invariant"
       ],
-      "reading": "dsa/EXERCISES.md"
+      "reading": "dsa/EXERCISES.md",
+      "phase": "dsa",
+      "track": "practice",
+      "prerequisites": [
+        "P1.2"
+      ],
+      "solution": "dsa/SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "practice/starter",
+        "command": "py scripts/check.py --track practice --id D06",
+        "note": "Chạy starter của bạn; kết quả tham chiếu không phải tiến độ người học."
+      },
+      "playground": "java"
     },
     "D07": {
       "title": "Vị trí đầu tiên đạt ngưỡng",
@@ -247,14 +642,40 @@
         "off-by-one",
         "invariant"
       ],
-      "reading": "dsa/EXERCISES.md"
+      "reading": "dsa/EXERCISES.md",
+      "phase": "dsa",
+      "track": "practice",
+      "prerequisites": [
+        "P1.2"
+      ],
+      "solution": "dsa/SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "practice/starter",
+        "command": "py scripts/check.py --track practice --id D07",
+        "note": "Chạy starter của bạn; kết quả tham chiếu không phải tiến độ người học."
+      },
+      "playground": "java"
     },
     "D08": {
       "title": "Gộp khoảng",
       "tags": [
         "ordering"
       ],
-      "reading": "dsa/EXERCISES.md"
+      "reading": "dsa/EXERCISES.md",
+      "phase": "dsa",
+      "track": "practice",
+      "prerequisites": [
+        "P1.2"
+      ],
+      "solution": "dsa/SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "practice/starter",
+        "command": "py scripts/check.py --track practice --id D08",
+        "note": "Chạy starter của bạn; kết quả tham chiếu không phải tiến độ người học."
+      },
+      "playground": "java"
     },
     "D09": {
       "title": "k giá trị lớn",
@@ -262,7 +683,20 @@
         "ordering",
         "complexity"
       ],
-      "reading": "dsa/EXERCISES.md"
+      "reading": "dsa/EXERCISES.md",
+      "phase": "dsa",
+      "track": "practice",
+      "prerequisites": [
+        "P1.2"
+      ],
+      "solution": "dsa/SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "practice/starter",
+        "command": "py scripts/check.py --track practice --id D09",
+        "note": "Chạy starter của bạn; kết quả tham chiếu không phải tiến độ người học."
+      },
+      "playground": "java"
     },
     "D10": {
       "title": "Khoảng cách trong đồ thị",
@@ -270,7 +704,20 @@
         "invariant",
         "state"
       ],
-      "reading": "dsa/EXERCISES.md"
+      "reading": "dsa/EXERCISES.md",
+      "phase": "dsa",
+      "track": "practice",
+      "prerequisites": [
+        "P1.2"
+      ],
+      "solution": "dsa/SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "practice/starter",
+        "command": "py scripts/check.py --track practice --id D10",
+        "note": "Chạy starter của bạn; kết quả tham chiếu không phải tiến độ người học."
+      },
+      "playground": "java"
     },
     "D11": {
       "title": "Số xu ít nhất",
@@ -278,28 +725,80 @@
         "invariant",
         "complexity"
       ],
-      "reading": "dsa/EXERCISES.md"
+      "reading": "dsa/EXERCISES.md",
+      "phase": "dsa",
+      "track": "practice",
+      "prerequisites": [
+        "P1.2"
+      ],
+      "solution": "dsa/SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "practice/starter",
+        "command": "py scripts/check.py --track practice --id D11",
+        "note": "Chạy starter của bạn; kết quả tham chiếu không phải tiến độ người học."
+      },
+      "playground": "java"
     },
     "D12": {
       "title": "Bộ nhớ LRU",
       "tags": [
         "state"
       ],
-      "reading": "dsa/EXERCISES.md"
+      "reading": "dsa/EXERCISES.md",
+      "phase": "dsa",
+      "track": "practice",
+      "prerequisites": [
+        "P1.2"
+      ],
+      "solution": "dsa/SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "practice/starter",
+        "command": "py scripts/check.py --track practice --id D12",
+        "note": "Chạy starter của bạn; kết quả tham chiếu không phải tiến độ người học."
+      },
+      "playground": "java"
     },
     "D13": {
       "title": "Đảo liên kết",
       "tags": [
         "state"
       ],
-      "reading": "dsa/VARIANTS.md"
+      "reading": "dsa/VARIANTS.md",
+      "phase": "dsa",
+      "track": "practice",
+      "prerequisites": [
+        "P1.2"
+      ],
+      "solution": "dsa/VARIANT_SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "practice/starter",
+        "command": "py scripts/check.py --track practice --id D13",
+        "note": "Chạy starter của bạn; kết quả tham chiếu không phải tiến độ người học."
+      },
+      "playground": "java"
     },
     "D14": {
       "title": "Độ sâu cây",
       "tags": [
         "state"
       ],
-      "reading": "dsa/VARIANTS.md"
+      "reading": "dsa/VARIANTS.md",
+      "phase": "dsa",
+      "track": "practice",
+      "prerequisites": [
+        "P1.2"
+      ],
+      "solution": "dsa/VARIANT_SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "practice/starter",
+        "command": "py scripts/check.py --track practice --id D14",
+        "note": "Chạy starter của bạn; kết quả tham chiếu không phải tiến độ người học."
+      },
+      "playground": "java"
     },
     "D15": {
       "title": "Chu trình có hướng",
@@ -307,7 +806,20 @@
         "invariant",
         "state"
       ],
-      "reading": "dsa/VARIANTS.md"
+      "reading": "dsa/VARIANTS.md",
+      "phase": "dsa",
+      "track": "practice",
+      "prerequisites": [
+        "P1.2"
+      ],
+      "solution": "dsa/VARIANT_SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "practice/starter",
+        "command": "py scripts/check.py --track practice --id D15",
+        "note": "Chạy starter của bạn; kết quả tham chiếu không phải tiến độ người học."
+      },
+      "playground": "java"
     },
     "V01": {
       "title": "Phần tử duy nhất đầu tiên",
@@ -315,7 +827,20 @@
         "duplicates",
         "ordering"
       ],
-      "reading": "dsa/VARIANTS.md"
+      "reading": "dsa/VARIANTS.md",
+      "phase": "variants",
+      "track": "practice",
+      "prerequisites": [
+        "P1.2"
+      ],
+      "solution": "dsa/VARIANT_SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "practice/starter",
+        "command": "py scripts/check.py --track practice --id V01",
+        "note": "Chạy starter của bạn; kết quả tham chiếu không phải tiến độ người học."
+      },
+      "playground": "java"
     },
     "V02": {
       "title": "Đếm cặp vị trí",
@@ -323,14 +848,40 @@
         "duplicates",
         "overflow"
       ],
-      "reading": "dsa/VARIANTS.md"
+      "reading": "dsa/VARIANTS.md",
+      "phase": "variants",
+      "track": "practice",
+      "prerequisites": [
+        "P1.2"
+      ],
+      "solution": "dsa/VARIANT_SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "practice/starter",
+        "command": "py scripts/check.py --track practice --id V02",
+        "note": "Chạy starter của bạn; kết quả tham chiếu không phải tiến độ người học."
+      },
+      "playground": "java"
     },
     "V03": {
       "title": "Palindrome đã chuẩn hóa",
       "tags": [
         "validation"
       ],
-      "reading": "dsa/VARIANTS.md"
+      "reading": "dsa/VARIANTS.md",
+      "phase": "variants",
+      "track": "practice",
+      "prerequisites": [
+        "P1.2"
+      ],
+      "solution": "dsa/VARIANT_SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "practice/starter",
+        "command": "py scripts/check.py --track practice --id V03",
+        "note": "Chạy starter của bạn; kết quả tham chiếu không phải tiến độ người học."
+      },
+      "playground": "java"
     },
     "V04": {
       "title": "Đoạn tối đa k loại",
@@ -338,7 +889,20 @@
         "invariant",
         "duplicates"
       ],
-      "reading": "dsa/VARIANTS.md"
+      "reading": "dsa/VARIANTS.md",
+      "phase": "variants",
+      "track": "practice",
+      "prerequisites": [
+        "P1.2"
+      ],
+      "solution": "dsa/VARIANT_SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "practice/starter",
+        "command": "py scripts/check.py --track practice --id V04",
+        "note": "Chạy starter của bạn; kết quả tham chiếu không phải tiến độ người học."
+      },
+      "playground": "java"
     },
     "V05": {
       "title": "Đếm đoạn có tổng",
@@ -346,14 +910,40 @@
         "overflow",
         "duplicates"
       ],
-      "reading": "dsa/VARIANTS.md"
+      "reading": "dsa/VARIANTS.md",
+      "phase": "variants",
+      "track": "practice",
+      "prerequisites": [
+        "P1.2"
+      ],
+      "solution": "dsa/VARIANT_SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "practice/starter",
+        "command": "py scripts/check.py --track practice --id V05",
+        "note": "Chạy starter của bạn; kết quả tham chiếu không phải tiến độ người học."
+      },
+      "playground": "java"
     },
     "V06": {
       "title": "Bổ sung ngoặc",
       "tags": [
         "invariant"
       ],
-      "reading": "dsa/VARIANTS.md"
+      "reading": "dsa/VARIANTS.md",
+      "phase": "variants",
+      "track": "practice",
+      "prerequisites": [
+        "P1.2"
+      ],
+      "solution": "dsa/VARIANT_SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "practice/starter",
+        "command": "py scripts/check.py --track practice --id V06",
+        "note": "Chạy starter của bạn; kết quả tham chiếu không phải tiến độ người học."
+      },
+      "playground": "java"
     },
     "V07": {
       "title": "Vị trí vượt ngưỡng",
@@ -361,7 +951,20 @@
         "off-by-one",
         "invariant"
       ],
-      "reading": "dsa/VARIANTS.md"
+      "reading": "dsa/VARIANTS.md",
+      "phase": "variants",
+      "track": "practice",
+      "prerequisites": [
+        "P1.2"
+      ],
+      "solution": "dsa/VARIANT_SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "practice/starter",
+        "command": "py scripts/check.py --track practice --id V07",
+        "note": "Chạy starter của bạn; kết quả tham chiếu không phải tiến độ người học."
+      },
+      "playground": "java"
     },
     "V08": {
       "title": "Số phòng họp",
@@ -369,21 +972,60 @@
         "off-by-one",
         "ordering"
       ],
-      "reading": "dsa/VARIANTS.md"
+      "reading": "dsa/VARIANTS.md",
+      "phase": "variants",
+      "track": "practice",
+      "prerequisites": [
+        "P1.2"
+      ],
+      "solution": "dsa/VARIANT_SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "practice/starter",
+        "command": "py scripts/check.py --track practice --id V08",
+        "note": "Chạy starter của bạn; kết quả tham chiếu không phải tiến độ người học."
+      },
+      "playground": "java"
     },
     "V09": {
       "title": "k phần tử thường gặp",
       "tags": [
         "ordering"
       ],
-      "reading": "dsa/VARIANTS.md"
+      "reading": "dsa/VARIANTS.md",
+      "phase": "variants",
+      "track": "practice",
+      "prerequisites": [
+        "P1.2"
+      ],
+      "solution": "dsa/VARIANT_SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "practice/starter",
+        "command": "py scripts/check.py --track practice --id V09",
+        "note": "Chạy starter của bạn; kết quả tham chiếu không phải tiến độ người học."
+      },
+      "playground": "java"
     },
     "V10": {
       "title": "Truy vết đường ngắn nhất",
       "tags": [
         "state"
       ],
-      "reading": "dsa/VARIANTS.md"
+      "reading": "dsa/VARIANTS.md",
+      "phase": "variants",
+      "track": "practice",
+      "prerequisites": [
+        "P1.2"
+      ],
+      "solution": "dsa/VARIANT_SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "practice/starter",
+        "command": "py scripts/check.py --track practice --id V10",
+        "note": "Chạy starter của bạn; kết quả tham chiếu không phải tiến độ người học."
+      },
+      "playground": "java"
     },
     "V11": {
       "title": "Số tổ hợp xu",
@@ -391,63 +1033,180 @@
         "duplicates",
         "overflow"
       ],
-      "reading": "dsa/VARIANTS.md"
+      "reading": "dsa/VARIANTS.md",
+      "phase": "variants",
+      "track": "practice",
+      "prerequisites": [
+        "P1.2"
+      ],
+      "solution": "dsa/VARIANT_SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "practice/starter",
+        "command": "py scripts/check.py --track practice --id V11",
+        "note": "Chạy starter của bạn; kết quả tham chiếu không phải tiến độ người học."
+      },
+      "playground": "java"
     },
     "V12": {
       "title": "Số lần cache miss",
       "tags": [
         "state"
       ],
-      "reading": "dsa/VARIANTS.md"
+      "reading": "dsa/VARIANTS.md",
+      "phase": "variants",
+      "track": "practice",
+      "prerequisites": [
+        "P1.2"
+      ],
+      "solution": "dsa/VARIANT_SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "practice/starter",
+        "command": "py scripts/check.py --track practice --id V12",
+        "note": "Chạy starter của bạn; kết quả tham chiếu không phải tiến độ người học."
+      },
+      "playground": "java"
     },
     "B01": {
       "title": "Ghi đè ID",
       "tags": [
         "duplicates"
       ],
-      "reading": "debug/README.md"
+      "reading": "debug/README.md",
+      "phase": "debug",
+      "track": "debug",
+      "prerequisites": [
+        "P1.2"
+      ],
+      "solution": "debug/SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "debug/starter",
+        "command": "py scripts/check.py --track debug --id B01",
+        "note": "Chạy starter của bạn; kết quả tham chiếu không phải tiến độ người học."
+      },
+      "playground": "java"
     },
     "B02": {
       "title": "Tràn phân trang",
       "tags": [
         "overflow"
       ],
-      "reading": "debug/README.md"
+      "reading": "debug/README.md",
+      "phase": "debug",
+      "track": "debug",
+      "prerequisites": [
+        "P1.2"
+      ],
+      "solution": "debug/SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "debug/starter",
+        "command": "py scripts/check.py --track debug --id B02",
+        "note": "Chạy starter của bạn; kết quả tham chiếu không phải tiến độ người học."
+      },
+      "playground": "java"
     },
     "B03": {
       "title": "Lọc chủ sở hữu",
       "tags": [
         "owner"
       ],
-      "reading": "debug/README.md"
+      "reading": "debug/README.md",
+      "phase": "debug",
+      "track": "debug",
+      "prerequisites": [
+        "P1.2"
+      ],
+      "solution": "debug/SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "debug/starter",
+        "command": "py scripts/check.py --track debug --id B03",
+        "note": "Chạy starter của bạn; kết quả tham chiếu không phải tiến độ người học."
+      },
+      "playground": "java"
     },
     "B04": {
       "title": "Retry HTTP 400",
       "tags": [
         "retry"
       ],
-      "reading": "debug/README.md"
+      "reading": "debug/README.md",
+      "phase": "debug",
+      "track": "debug",
+      "prerequisites": [
+        "P1.2"
+      ],
+      "solution": "debug/SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "debug/starter",
+        "command": "py scripts/check.py --track debug --id B04",
+        "note": "Chạy starter của bạn; kết quả tham chiếu không phải tiến độ người học."
+      },
+      "playground": "java"
     },
     "B05": {
       "title": "Cửa sổ đi lùi",
       "tags": [
         "invariant"
       ],
-      "reading": "debug/README.md"
+      "reading": "debug/README.md",
+      "phase": "debug",
+      "track": "debug",
+      "prerequisites": [
+        "P1.2"
+      ],
+      "solution": "debug/SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "debug/starter",
+        "command": "py scripts/check.py --track debug --id B05",
+        "note": "Chạy starter của bạn; kết quả tham chiếu không phải tiến độ người học."
+      },
+      "playground": "java"
     },
     "B06": {
       "title": "Lọc quyền sau top-k",
       "tags": [
         "owner"
       ],
-      "reading": "debug/README.md"
+      "reading": "debug/README.md",
+      "phase": "debug",
+      "track": "debug",
+      "prerequisites": [
+        "P1.2"
+      ],
+      "solution": "debug/SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "debug/starter",
+        "command": "py scripts/check.py --track debug --id B06",
+        "note": "Chạy starter của bạn; kết quả tham chiếu không phải tiến độ người học."
+      },
+      "playground": "java"
     },
     "B07": {
       "title": "Tràn token budget",
       "tags": [
         "overflow"
       ],
-      "reading": "debug/README.md"
+      "reading": "debug/README.md",
+      "phase": "debug",
+      "track": "debug",
+      "prerequisites": [
+        "P1.2"
+      ],
+      "solution": "debug/SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "debug/starter",
+        "command": "py scripts/check.py --track debug --id B07",
+        "note": "Chạy starter của bạn; kết quả tham chiếu không phải tiến độ người học."
+      },
+      "playground": "java"
     },
     "B08": {
       "title": "Retry vô hạn",
@@ -455,35 +1214,98 @@
         "retry",
         "timeout"
       ],
-      "reading": "debug/README.md"
+      "reading": "debug/README.md",
+      "phase": "debug",
+      "track": "debug",
+      "prerequisites": [
+        "P1.2"
+      ],
+      "solution": "debug/SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "debug/starter",
+        "command": "py scripts/check.py --track debug --id B08",
+        "note": "Chạy starter của bạn; kết quả tham chiếu không phải tiến độ người học."
+      },
+      "playground": "java"
     },
     "P0.1": {
       "title": "Công cụ",
       "tags": [
         "state"
       ],
-      "reading": "phases/00_setup/README.md"
+      "reading": "phases/00_setup/README.md",
+      "phase": "00_setup",
+      "track": "practice",
+      "prerequisites": [],
+      "solution": null,
+      "check": {
+        "kind": "manual",
+        "file": "phases/00_setup/README.md",
+        "command": "",
+        "note": "Đối chiếu tiêu chí và lưu bằng chứng. Chưa có bộ chấm tự động cho toàn bộ bài."
+      },
+      "playground": null
     },
     "P0.2": {
       "title": "Chạy chương trình",
       "tags": [
         "state"
       ],
-      "reading": "phases/00_setup/README.md"
+      "reading": "phases/00_setup/README.md",
+      "phase": "00_setup",
+      "track": "practice",
+      "prerequisites": [
+        "P0.1"
+      ],
+      "solution": null,
+      "check": {
+        "kind": "manual",
+        "file": "phases/00_setup/README.md",
+        "command": "",
+        "note": "Đối chiếu tiêu chí và lưu bằng chứng. Chưa có bộ chấm tự động cho toàn bộ bài."
+      },
+      "playground": "java"
     },
     "P0.3": {
       "title": "Debug",
       "tags": [
         "state"
       ],
-      "reading": "phases/00_setup/README.md"
+      "reading": "phases/00_setup/README.md",
+      "phase": "00_setup",
+      "track": "practice",
+      "prerequisites": [
+        "P0.2"
+      ],
+      "solution": null,
+      "check": {
+        "kind": "manual",
+        "file": "phases/00_setup/README.md",
+        "command": "",
+        "note": "Đối chiếu tiêu chí và lưu bằng chứng. Chưa có bộ chấm tự động cho toàn bộ bài."
+      },
+      "playground": null
     },
     "P0.4": {
       "title": "Commit",
       "tags": [
         "state"
       ],
-      "reading": "phases/00_setup/README.md"
+      "reading": "phases/00_setup/README.md",
+      "phase": "00_setup",
+      "track": "practice",
+      "prerequisites": [
+        "P0.3"
+      ],
+      "solution": null,
+      "check": {
+        "kind": "manual",
+        "file": "phases/00_setup/README.md",
+        "command": "",
+        "note": "Đối chiếu tiêu chí và lưu bằng chứng. Chưa có bộ chấm tự động cho toàn bộ bài."
+      },
+      "playground": null
     },
     "C01": {
       "title": "Hai bản chỉnh sửa",
@@ -491,7 +1313,20 @@
         "stale-write",
         "transaction"
       ],
-      "reading": "concurrency/README.md"
+      "reading": "concurrency/README.md",
+      "phase": "concurrency",
+      "track": "concurrency",
+      "prerequisites": [
+        "P3.4"
+      ],
+      "solution": "concurrency/README.md",
+      "check": {
+        "kind": "java",
+        "file": "concurrency/starter",
+        "command": "py scripts/check.py --track concurrency --id C01",
+        "note": "Chạy starter của bạn; kết quả tham chiếu không phải tiến độ người học."
+      },
+      "playground": "java"
     },
     "C02": {
       "title": "Yêu cầu lặp",
@@ -500,7 +1335,20 @@
         "state",
         "owner"
       ],
-      "reading": "concurrency/README.md"
+      "reading": "concurrency/README.md",
+      "phase": "concurrency",
+      "track": "concurrency",
+      "prerequisites": [
+        "C01"
+      ],
+      "solution": "concurrency/README.md",
+      "check": {
+        "kind": "java",
+        "file": "concurrency/starter",
+        "command": "py scripts/check.py --track concurrency --id C02",
+        "note": "Chạy starter của bạn; kết quả tham chiếu không phải tiến độ người học."
+      },
+      "playground": "java"
     },
     "C03": {
       "title": "Giới hạn thời gian",
@@ -508,7 +1356,20 @@
         "timeout",
         "retry"
       ],
-      "reading": "concurrency/README.md"
+      "reading": "concurrency/README.md",
+      "phase": "concurrency",
+      "track": "concurrency",
+      "prerequisites": [
+        "C01"
+      ],
+      "solution": "concurrency/README.md",
+      "check": {
+        "kind": "java",
+        "file": "concurrency/starter",
+        "command": "py scripts/check.py --track concurrency --id C03",
+        "note": "Chạy starter của bạn; kết quả tham chiếu không phải tiến độ người học."
+      },
+      "playground": "java"
     },
     "M01": {
       "title": "Đợt hoạt động",
@@ -516,7 +1377,20 @@
         "duplicates",
         "invariant"
       ],
-      "reading": "mixed/EXERCISES.md"
+      "reading": "mixed/EXERCISES.md",
+      "phase": "mixed",
+      "track": "mixed",
+      "prerequisites": [
+        "P1.2"
+      ],
+      "solution": "mixed/SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "mixed/starter",
+        "command": "py scripts/check.py --track mixed --id M01",
+        "note": "Chạy starter của bạn; kết quả tham chiếu không phải tiến độ người học."
+      },
+      "playground": "java"
     },
     "M02": {
       "title": "Cân đối dòng tiền",
@@ -524,7 +1398,20 @@
         "overflow",
         "duplicates"
       ],
-      "reading": "mixed/EXERCISES.md"
+      "reading": "mixed/EXERCISES.md",
+      "phase": "mixed",
+      "track": "mixed",
+      "prerequisites": [
+        "P1.2"
+      ],
+      "solution": "mixed/SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "mixed/starter",
+        "command": "py scripts/check.py --track mixed --id M02",
+        "note": "Chạy starter của bạn; kết quả tham chiếu không phải tiến độ người học."
+      },
+      "playground": "java"
     },
     "M03": {
       "title": "Quầy phục vụ",
@@ -532,35 +1419,100 @@
         "off-by-one",
         "ordering"
       ],
-      "reading": "mixed/EXERCISES.md"
+      "reading": "mixed/EXERCISES.md",
+      "phase": "mixed",
+      "track": "mixed",
+      "prerequisites": [
+        "P1.2"
+      ],
+      "solution": "mixed/SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "mixed/starter",
+        "command": "py scripts/check.py --track mixed --id M03",
+        "note": "Chạy starter của bạn; kết quả tham chiếu không phải tiến độ người học."
+      },
+      "playground": "java"
     },
     "M04": {
       "title": "Vị trí tiếp nhận",
       "tags": [
         "off-by-one"
       ],
-      "reading": "mixed/EXERCISES.md"
+      "reading": "mixed/EXERCISES.md",
+      "phase": "mixed",
+      "track": "mixed",
+      "prerequisites": [
+        "P1.2"
+      ],
+      "solution": "mixed/SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "mixed/starter",
+        "command": "py scripts/check.py --track mixed --id M04",
+        "note": "Chạy starter của bạn; kết quả tham chiếu không phải tiến độ người học."
+      },
+      "playground": "java"
     },
     "M05": {
       "title": "Tuyến vận chuyển",
       "tags": [
         "state"
       ],
-      "reading": "mixed/EXERCISES.md"
+      "reading": "mixed/EXERCISES.md",
+      "phase": "mixed",
+      "track": "mixed",
+      "prerequisites": [
+        "P1.2"
+      ],
+      "solution": "mixed/SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "mixed/starter",
+        "command": "py scripts/check.py --track mixed --id M05",
+        "note": "Chạy starter của bạn; kết quả tham chiếu không phải tiến độ người học."
+      },
+      "playground": "java"
     },
     "M06": {
       "title": "Ngân sách gói",
       "tags": [
         "complexity"
       ],
-      "reading": "mixed/EXERCISES.md"
+      "reading": "mixed/EXERCISES.md",
+      "phase": "mixed",
+      "track": "mixed",
+      "prerequisites": [
+        "P1.2"
+      ],
+      "solution": "mixed/SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "mixed/starter",
+        "command": "py scripts/check.py --track mixed --id M06",
+        "note": "Chạy starter của bạn; kết quả tham chiếu không phải tiến độ người học."
+      },
+      "playground": "java"
     },
     "M07": {
       "title": "Mã truy cập",
       "tags": [
         "state"
       ],
-      "reading": "mixed/EXERCISES.md"
+      "reading": "mixed/EXERCISES.md",
+      "phase": "mixed",
+      "track": "mixed",
+      "prerequisites": [
+        "P1.2"
+      ],
+      "solution": "mixed/SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "mixed/starter",
+        "command": "py scripts/check.py --track mixed --id M07",
+        "note": "Chạy starter của bạn; kết quả tham chiếu không phải tiến độ người học."
+      },
+      "playground": "java"
     },
     "M08": {
       "title": "Báo cáo ưu tiên",
@@ -568,7 +1520,353 @@
         "ordering",
         "duplicates"
       ],
-      "reading": "mixed/EXERCISES.md"
+      "reading": "mixed/EXERCISES.md",
+      "phase": "mixed",
+      "track": "mixed",
+      "prerequisites": [
+        "P1.2"
+      ],
+      "solution": "mixed/SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "mixed/starter",
+        "command": "py scripts/check.py --track mixed --id M08",
+        "note": "Chạy starter của bạn; kết quả tham chiếu không phải tiến độ người học."
+      },
+      "playground": "java"
+    },
+    "J01": {
+      "title": "Biến, vòng lặp, mảng và phương thức",
+      "tags": [
+        "overflow",
+        "invariant"
+      ],
+      "phase": "foundations",
+      "track": "foundations",
+      "prerequisites": [
+        "P0.2"
+      ],
+      "reading": "foundations/EXERCISES.md",
+      "solution": "foundations/SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "foundations/starter/FoundationsLab.java",
+        "command": "py scripts/check.py --track foundations --id J01",
+        "note": "Chạy đúng starter của bạn. Solution chỉ là tham chiếu."
+      },
+      "playground": "java"
+    },
+    "J02": {
+      "title": "OOP, generics, equals/hashCode và collections",
+      "tags": [
+        "owner",
+        "duplicates"
+      ],
+      "phase": "foundations",
+      "track": "foundations",
+      "prerequisites": [
+        "J01"
+      ],
+      "reading": "foundations/EXERCISES.md",
+      "solution": "foundations/SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "foundations/starter/FoundationsLab.java",
+        "command": "py scripts/check.py --track foundations --id J02",
+        "note": "Chạy đúng starter của bạn. Solution chỉ là tham chiếu."
+      },
+      "playground": "java"
+    },
+    "J03": {
+      "title": "Exception và File I/O UTF-8",
+      "tags": [
+        "state",
+        "validation"
+      ],
+      "phase": "foundations",
+      "track": "foundations",
+      "prerequisites": [
+        "J02"
+      ],
+      "reading": "foundations/EXERCISES.md",
+      "solution": "foundations/SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "foundations/starter/FoundationsLab.java",
+        "command": "py scripts/check.py --track foundations --id J03",
+        "note": "Chạy đúng starter của bạn. Solution chỉ là tham chiếu."
+      },
+      "playground": "java"
+    },
+    "A01": {
+      "title": "Token budget theo cấu hình model",
+      "tags": [
+        "overflow",
+        "validation"
+      ],
+      "phase": "advanced",
+      "track": "advanced",
+      "prerequisites": [
+        "P5.2",
+        "J01"
+      ],
+      "reading": "advanced/EXERCISES.md",
+      "solution": "advanced/SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "advanced/starter/RagSafetyLab.java",
+        "command": "py scripts/check.py --track advanced --id A01",
+        "note": "Test quy tắc offline; không đánh giá model thật."
+      },
+      "playground": "java"
+    },
+    "A02": {
+      "title": "Nguồn mâu thuẫn, phiên bản và prompt injection",
+      "tags": [
+        "owner",
+        "source"
+      ],
+      "phase": "advanced",
+      "track": "advanced",
+      "prerequisites": [
+        "P6.2",
+        "P6.3"
+      ],
+      "reading": "advanced/EXERCISES.md",
+      "solution": "advanced/SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "advanced/starter/RagSafetyLab.java",
+        "command": "py scripts/check.py --track advanced --id A02",
+        "note": "Test quy tắc offline; không đánh giá model thật."
+      },
+      "playground": "java"
+    },
+    "A03": {
+      "title": "Indexing bất đồng bộ và kết quả đến muộn",
+      "tags": [
+        "stale-write",
+        "state"
+      ],
+      "phase": "advanced",
+      "track": "advanced",
+      "prerequisites": [
+        "C01",
+        "C03",
+        "A02"
+      ],
+      "reading": "advanced/EXERCISES.md",
+      "solution": "advanced/SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "advanced/starter/RagSafetyLab.java",
+        "command": "py scripts/check.py --track advanced --id A03",
+        "note": "Test quy tắc offline; không đánh giá model thật."
+      },
+      "playground": "java"
+    },
+    "Q01": {
+      "title": "JOIN nhiều bảng, CTE và window",
+      "phase": "02_Http-Sql",
+      "track": "project",
+      "reading": "practice/sql/advanced/README.md",
+      "solution": "practice/sql/advanced/README.md",
+      "prerequisites": [
+        "P2.2",
+        "P2.4"
+      ],
+      "tags": [
+        "transaction",
+        "complexity"
+      ],
+      "check": {
+        "kind": "project",
+        "file": "practice/sql/advanced/README.md",
+        "command": "psql -v ON_ERROR_STOP=1 -f practice/sql/advanced/fixture.sql -f practice/sql/advanced/starter.sql -f practice/sql/advanced/tests.sql",
+        "note": "Chạy bản tự làm và lưu log; thiếu môi trường ghi BLOCKED."
+      },
+      "playground": "postgresql"
+    },
+    "F01": {
+      "title": "N+1, fetch strategy và transaction",
+      "phase": "03_Spring",
+      "track": "project",
+      "reading": "docs/SPRING_JPA_LAB.md",
+      "solution": "docs/SPRING_JPA_LAB.md",
+      "prerequisites": [
+        "P3.1",
+        "P3.4"
+      ],
+      "tags": [
+        "transaction",
+        "complexity"
+      ],
+      "check": {
+        "kind": "project",
+        "file": "docs/SPRING_JPA_LAB.md",
+        "command": "py scripts/new_spring_lab.py --phase 3 --destination work/spring-p3\npy scripts/maven.py -f work/spring-p3/pom.xml -Dtest=FetchLabTest test",
+        "note": "Chạy bản tự làm và lưu log; thiếu môi trường ghi BLOCKED."
+      },
+      "playground": null
+    },
+    "O01": {
+      "title": "Request ID, metrics, tải và phục hồi",
+      "phase": "04_Quality",
+      "track": "project",
+      "reading": "docs/OPERATIONS_LAB.md",
+      "solution": "docs/OPERATIONS_LAB.md",
+      "prerequisites": [
+        "P3.1",
+        "P4.3",
+        "C03"
+      ],
+      "tags": [
+        "timeout",
+        "state"
+      ],
+      "check": {
+        "kind": "project",
+        "file": "work/spring-p4/pom.xml",
+        "command": "py scripts/new_spring_lab.py --phase 4 --destination work/spring-p4\npy scripts/maven.py -f work/spring-p4/pom.xml -Dtest=RequestMetricsTest test",
+        "note": "Test filter riêng, không chứng minh tải hoặc restore đã đạt."
+      },
+      "playground": null
+    },
+    "U01": {
+      "title": "Tài khoản, quyền quản trị và RLS",
+      "phase": "04_Quality",
+      "track": "project",
+      "reading": "docs/AUTH_LAB.md",
+      "solution": "docs/AUTH_LAB.md",
+      "prerequisites": [
+        "P4.1",
+        "P2.4"
+      ],
+      "tags": [
+        "owner",
+        "state"
+      ],
+      "check": {
+        "kind": "project",
+        "file": "database/tests/rls.sql",
+        "command": "py scripts/check_database.py",
+        "note": "Kiểm database fixture riêng; không cấp tiến độ cá nhân từ bản tham chiếu."
+      },
+      "playground": null
     }
-  }
+  },
+  "phases": [
+    {
+      "slug": "00_setup",
+      "number": "0",
+      "title": "Cài đặt và debug",
+      "icon": "🛠️",
+      "color": "#64748b",
+      "domain": "java"
+    },
+    {
+      "slug": "01_Java",
+      "number": "1",
+      "title": "Java nền tảng",
+      "icon": "☕",
+      "color": "#f59e0b",
+      "domain": "java"
+    },
+    {
+      "slug": "02_Http-Sql",
+      "number": "2",
+      "title": "HTTP & SQL",
+      "icon": "🗄️",
+      "color": "#3b82f6",
+      "domain": "database"
+    },
+    {
+      "slug": "03_Spring",
+      "number": "3",
+      "title": "Spring Boot & REST",
+      "icon": "🍃",
+      "color": "#22c55e",
+      "domain": "spring"
+    },
+    {
+      "slug": "04_Quality",
+      "number": "4",
+      "title": "Kiểm thử & vận hành",
+      "icon": "🧪",
+      "color": "#8b5cf6",
+      "domain": "spring"
+    },
+    {
+      "slug": "05_AI",
+      "number": "5",
+      "title": "Tích hợp AI",
+      "icon": "🤖",
+      "color": "#ec4899",
+      "domain": "ai"
+    },
+    {
+      "slug": "06_RAG",
+      "number": "6",
+      "title": "RAG & đánh giá",
+      "icon": "🔍",
+      "color": "#06b6d4",
+      "domain": "ai"
+    },
+    {
+      "slug": "dsa",
+      "number": "7",
+      "title": "DSA",
+      "icon": "🧩",
+      "color": "#64748b",
+      "domain": "java"
+    },
+    {
+      "slug": "variants",
+      "number": "8",
+      "title": "Biến thể DSA",
+      "icon": "🔀",
+      "color": "#f59e0b",
+      "domain": "java"
+    },
+    {
+      "slug": "debug",
+      "number": "9",
+      "title": "Phòng khám lỗi",
+      "icon": "🐛",
+      "color": "#3b82f6",
+      "domain": "java"
+    },
+    {
+      "slug": "mixed",
+      "number": "10",
+      "title": "Bài tập trộn",
+      "icon": "🧠",
+      "color": "#22c55e",
+      "domain": "java"
+    },
+    {
+      "slug": "concurrency",
+      "number": "11",
+      "title": "Đồng thời",
+      "icon": "⚡",
+      "color": "#8b5cf6",
+      "domain": "java"
+    },
+    {
+      "slug": "foundations",
+      "number": "J",
+      "title": "Java từng bước",
+      "icon": "📘",
+      "color": "#f59e0b",
+      "domain": "java"
+    },
+    {
+      "slug": "advanced",
+      "number": "A",
+      "title": "RAG an toàn và bất đồng bộ",
+      "icon": "🔬",
+      "color": "#06b6d4",
+      "domain": "ai"
+    }
+  ]
 }

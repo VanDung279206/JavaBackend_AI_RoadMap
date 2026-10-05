@@ -2,15 +2,8 @@ import type { CSSProperties } from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
-const phases = [
-  { num: "00", title: "Setup & công cụ", color: "#68736c", slug: null },
-  { num: "01", title: "Java nền tảng", color: "#b66b2e", slug: "01_Java" },
-  { num: "02", title: "HTTP & SQL", color: "#3977a0", slug: "02_Http-Sql" },
-  { num: "03", title: "Spring Boot", color: "#397a5d", slug: "03_Spring" },
-  { num: "04", title: "Kiểm thử & deploy", color: "#786190", slug: "04_Quality" },
-  { num: "05", title: "Tích hợp AI", color: "#a45f80", slug: "05_AI" },
-  { num: "06", title: "RAG & đánh giá", color: "#397d7c", slug: "06_RAG" },
-];
+import {PHASES} from "@/lib/phases";
+const phases=PHASES.filter(p=>/^0[0-6]_/.test(p.slug)).map(p=>({...p,num:p.number.padStart(2,"0")}));
 
 export default function InteractiveRoadmap() {
   return (

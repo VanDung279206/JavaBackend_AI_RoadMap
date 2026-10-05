@@ -39,7 +39,7 @@ class ReviewTests(unittest.TestCase):
 class LearningTests(unittest.TestCase):
  def test_curriculum_coverage_and_paths(self):
   sessions=review.read_json(ROOT/'learning/sessions.json',[]);hints=review.read_json(ROOT/'learning/hints.json',{});catalogue=review.read_json(ROOT/'learning/catalogue.json',{})
-  self.assertEqual(len(sessions),32);self.assertEqual(len({s['id'] for s in sessions}),32);self.assertEqual(len(hints),51)
+  self.assertEqual(len(sessions),32);self.assertEqual(len({s['id'] for s in sessions}),32);self.assertEqual(set(hints),set(catalogue['exercises']))
   for id,levels in hints.items():self.assertIn(id,catalogue['exercises']);self.assertEqual(len(levels),3);self.assertTrue(all(x.strip() for x in levels))
   for s in sessions:self.assertTrue((ROOT/s['reading']).is_file())
   for item in catalogue['exercises'].values():self.assertTrue((ROOT/item['reading']).is_file());self.assertTrue(set(item['tags'])<=catalogue['tags'].keys())

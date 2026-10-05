@@ -6,7 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint src"
+    "lint": "eslint src",
+    "prebuild": "node ../scripts/build_catalogue.mjs",
+    "postbuild": "node tests/check-export.mjs",
+    "predev": "node ../scripts/build_catalogue.mjs",
+    "test": "node tests/run.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",

@@ -18,6 +18,10 @@ jobs:
           python-version: '3.12'
       - name: Offline references and tooling
         run: python3 scripts/verify.py --suite offline
+      - name: Probe job access as UID 65534
+        run: sudo -n python3 runner/check_job_access.py
+      - name: Probe compiler bytecode and Linux file limit
+        run: sudo -n --preserve-env=JAVA_HOME,PATH python3 runner/check_compile_limits.py
       - name: Ensure Docker daemon is running
         run: |
           if sudo systemctl start docker && docker info; then
@@ -27,6 +31,12 @@ jobs:
           fi
       - name: Spring, PostgreSQL, SQL and Docker HTTP
         run: python3 scripts/verify.py --suite integration
+      - name: Website catalogue, permissions and cross-account regression
+        shell: bash
+        run: |
+          set -o pipefail
+          mkdir -p checks/runs/database
+          python3 -u scripts/check_database.py 2>&1 | tee checks/runs/database/output.log
       - name: Keep verification reports
         if: always()
         uses: actions/upload-artifact@v4

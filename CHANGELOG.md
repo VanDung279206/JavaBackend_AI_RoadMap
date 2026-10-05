@@ -1,3 +1,13 @@
+# RoadMap_v3 — 03/10/2026
+
+- Sinh catalogue cho website, seed database, lịch học, gợi ý và lệnh kiểm tra từ cùng nguồn.
+- Thêm Java nền tảng, SQL JOIN/CTE/window có seed, JPA N+1, request ID/metrics và lab RAG budget/version/async.
+- V4–V6 bảo toàn dữ liệu, khóa ID/phase, chặn tự cấp grade/admin, tách bảng điểm và kiểm tra revision/tài khoản dự kiến.
+- Bổ sung trang hôm nay, nhập lịch ôn, offline progress/conflict, phòng khám lỗi, lưu lần chạy/nộp, tài liệu phân trang, note/bookmark, reset password.
+- Thêm kiểm tra đầu vào/bản đồ tiên quyết và mô phỏng RAG/request; ghi rõ giới hạn mô phỏng.
+- Kiểm chứng offline, website, Maven, PostgreSQL/RLS, backup/restore và Docker HTTP. Chấm web bằng worker và đánh giá model thật còn BLOCKED; xem [VALIDATION](VALIDATION.md).
+- Không nâng dependency, không thay migration cũ, không triển khai production.
+
 # Thay đổi bản cải tiến — 24/09/2026
 
 - Thêm Phase 0 với chương trình mẫu và bài debug.

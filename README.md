@@ -2,14 +2,26 @@
 
 Repo tự học theo dự án quản lý tài liệu: **Java → HTTP/SQL → Spring Boot → kiểm thử và phân quyền → AI → RAG**. Mỗi phần gắn với bài tự làm, bằng chứng chạy và câu hỏi giải thích.
 
-## Bản cập nhật v1
+## RoadMap_v3
+
+Catalogue chung nối bài tập, website, lịch học, gợi ý và lệnh kiểm tra. Website có Phase 0, DSA, biến thể, debug, mixed, concurrency, Java nền tảng và lab nâng cao. Xem [kết quả thực chạy và phần BLOCKED](VALIDATION.md) trước khi coi một tính năng đã được kiểm chứng.
+
+- `/today`: chọn bài đang sai, đến hạn ôn, đang làm hoặc đủ tiên quyết; nhập lịch ôn CLI có xem trước.
+- Tiến độ khách/tài khoản tách riêng, lưu dự phòng và xử lý xung đột bằng revision. Tự hoàn thành khác với đạt test; hai bảng xếp hạng tách riêng.
+- Tìm kiếm nội dung/tag lỗi, tài liệu phân trang, bookmark/ghi chú cá nhân, quên mật khẩu.
+- `/skills`: kiểm tra đầu vào và bản đồ tiên quyết; `/lab`: mô phỏng thuật toán, luồng request và so retrieval theo cùng bộ câu hỏi.
+- Lưu lịch sử chạy thử/nộp bài qua RPC. **Chấm Java/Maven trên web vẫn BLOCKED**: chưa có worker kiểm thử cô lập được triển khai; không tạo PASS giả.
+
+Áp dụng [migration và cấu hình v3](docs/UPGRADE_V3.md) trên môi trường thử nghiệm trước khi dùng frontend mới. Không có thao tác triển khai production trong bản thay đổi này.
+
+## Nền tảng đã có và được giữ lại
 
 | Phần cải tiến | Đã bổ sung |
 | --- | --- |
 | Kiểm chứng | [verify + báo cáo PASS/FAIL/BLOCKED](docs/RUNNING.md), HTTP/SQL/Docker và luồng live có fixture; [phạm vi thực chạy](VALIDATION.md) |
 | Công cụ môi trường | doctor, launcher Maven Wrapper cố định phiên bản, lệnh cho Windows/Linux |
 | Học từng buổi | [32 buổi với phần bắt buộc và mở rộng](learning/README.md), CLI chọn buổi tiếp theo |
-| Gợi ý | 51 bộ ba cấp: câu hỏi → trace → giả mã; hiện riêng từng cấp |
+| Gợi ý | Mọi ID trong catalogue có bộ ba cấp: câu hỏi → trace → giả mã; hiện riêng từng cấp |
 | Ôn theo lỗi | 14 tag lỗi, giữ lịch sử, gợi ý bài liên quan, phân biệt dùng gợi ý và tự làm |
 | DSA trộn | [8 đề không nêu pattern](mixed/EXERCISES.md), starter, oracle tests, rubric và lời giải |
 | Backend đồng thời | [3 lab có test](concurrency/README.md); API PUT kiểm tra expectedVersion; PostgreSQL ConcurrentIT |
@@ -25,7 +37,7 @@ python3 scripts/verify.py --suite offline
 
 ## Bắt đầu trong repo
 
-1. Chưa quen công cụ: mở [Phase 0](phases/00-setup/README.md).
+1. Chưa quen công cụ: mở [Phase 0](phases/00_setup/README.md).
 2. Có JDK: đọc [practice](practice/README.md), sửa `practice/starter/JavaCoreLab.java` rồi chạy:
 
 ```bash
@@ -76,10 +88,10 @@ Java practice chạy không cần dependency ngoài. App có demo H2+trích đo�
 
 ```bash
 python3 scripts/new_spring_lab.py --phase 3 --destination work/spring-p3
-./mvnw -f work/spring-p3/pom.xml test
+./mvnw -f work/spring-p3/pom.xml -Dtest=LearningContractTest#createsValidatedOwnedDocument test
 ```
 
-Bản copy chứa TODO; test bắt đầu đỏ. Script từ chối ghi đè thư mục cũ. Mã hoàn chỉnh để đối chiếu vẫn ở `projects/knowledge-assistant/`.
+Bản copy chứa TODO; test bắt đầu đỏ. Tạo bản một lần, sau đó chạy test theo bài trong [bản đồ kiểm tra](docs/EXERCISE_MAP.md); hết phase chạy toàn bộ `test`. Script từ chối ghi đè thư mục cũ. Mã hoàn chỉnh để đối chiếu vẫn ở `projects/knowledge-assistant/`.
 
 ## Tiêu chí hoàn thành một bài
 

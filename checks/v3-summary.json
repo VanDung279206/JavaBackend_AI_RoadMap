@@ -1,0 +1,1232 @@
+{
+  "recorded_at": "2026-10-04T15:01:20.553819+00:00",
+  "branch": "RoadMap_v3",
+  "base": "e50b9fd",
+  "scope": "Reference/fixtures only; never learner completion",
+  "offline": {
+    "created_at": "2026-10-03T14:57:49.430927+00:00",
+    "scope": "reference verification; not learner completion",
+    "status": "PASS",
+    "checks": [
+      {
+        "name": "environment-offline",
+        "status": "PASS",
+        "detail": "Required probes passed"
+      },
+      {
+        "name": "legacy-labs",
+        "status": "PASS",
+        "detail": "exit=0",
+        "log": "legacy-labs.log",
+        "elapsed_seconds": 1.81
+      },
+      {
+        "name": "practice-reference",
+        "status": "PASS",
+        "detail": "exit=0",
+        "log": "practice-reference.log",
+        "elapsed_seconds": 1.83
+      },
+      {
+        "name": "debug-reference",
+        "status": "PASS",
+        "detail": "exit=0",
+        "log": "debug-reference.log",
+        "elapsed_seconds": 1.27
+      },
+      {
+        "name": "mixed-reference",
+        "status": "PASS",
+        "detail": "exit=0",
+        "log": "mixed-reference.log",
+        "elapsed_seconds": 1.23
+      },
+      {
+        "name": "concurrency-reference",
+        "status": "PASS",
+        "detail": "exit=0",
+        "log": "concurrency-reference.log",
+        "elapsed_seconds": 2.36
+      },
+      {
+        "name": "app-core",
+        "status": "PASS",
+        "detail": "exit=0",
+        "log": "app-core.log",
+        "elapsed_seconds": 1.09
+      },
+      {
+        "name": "learning-tools",
+        "status": "PASS",
+        "detail": "exit=0",
+        "log": "learning-tools.log",
+        "elapsed_seconds": 3.64
+      },
+      {
+        "name": "english-diagnostics",
+        "status": "PASS",
+        "detail": "exit=0",
+        "log": "english-diagnostics.log",
+        "elapsed_seconds": 2.66
+      },
+      {
+        "name": "foundations-reference",
+        "status": "PASS",
+        "detail": "exit=0",
+        "log": "foundations-reference.log",
+        "elapsed_seconds": 9.27
+      },
+      {
+        "name": "rag-safety-reference",
+        "status": "PASS",
+        "detail": "exit=0",
+        "log": "rag-safety-reference.log",
+        "elapsed_seconds": 1.16
+      },
+      {
+        "name": "markdown-links",
+        "status": "PASS",
+        "detail": "exit=0",
+        "log": "markdown-links.log",
+        "elapsed_seconds": 0.3
+      },
+      {
+        "name": "practice-rejects-unfinished-starter",
+        "status": "PASS",
+        "detail": "exit=1",
+        "log": "practice-rejects-unfinished-starter.log",
+        "elapsed_seconds": 1.66
+      },
+      {
+        "name": "debug-rejects-unfinished-starter",
+        "status": "PASS",
+        "detail": "exit=1",
+        "log": "debug-rejects-unfinished-starter.log",
+        "elapsed_seconds": 1.14
+      },
+      {
+        "name": "mixed-rejects-unfinished-starter",
+        "status": "PASS",
+        "detail": "exit=1",
+        "log": "mixed-rejects-unfinished-starter.log",
+        "elapsed_seconds": 1.2
+      },
+      {
+        "name": "concurrency-rejects-unfinished-starter",
+        "status": "PASS",
+        "detail": "exit=1",
+        "log": "concurrency-rejects-unfinished-starter.log",
+        "elapsed_seconds": 1.27
+      },
+      {
+        "name": "foundations-rejects-unfinished-starter",
+        "status": "PASS",
+        "detail": "exit=1",
+        "log": "foundations-rejects-unfinished-starter.log",
+        "elapsed_seconds": 1.19
+      },
+      {
+        "name": "advanced-rejects-unfinished-starter",
+        "status": "PASS",
+        "detail": "exit=1",
+        "log": "advanced-rejects-unfinished-starter.log",
+        "elapsed_seconds": 1.2
+      }
+    ]
+  },
+  "integration": {
+    "created_at": "2026-10-03T15:05:09.127395+00:00",
+    "scope": "reference verification; not learner completion",
+    "status": "PASS",
+    "checks": [
+      {
+        "name": "environment-integration",
+        "status": "PASS",
+        "detail": "Required probes passed"
+      },
+      {
+        "name": "maven-wrapper-bootstrap",
+        "status": "PASS",
+        "detail": "exit=0",
+        "log": "maven-wrapper-bootstrap.log",
+        "elapsed_seconds": 0.52
+      },
+      {
+        "name": "maven-junit",
+        "status": "PASS",
+        "detail": "exit=0",
+        "log": "maven-junit.log",
+        "elapsed_seconds": 4.72
+      },
+      {
+        "name": "real-ai-adapter-build",
+        "status": "PASS",
+        "detail": "exit=0",
+        "log": "real-ai-adapter-build.log",
+        "elapsed_seconds": 54.49
+      },
+      {
+        "name": "spring-postgres-tests",
+        "status": "PASS",
+        "detail": "exit=0",
+        "log": "spring-postgres-tests.log",
+        "elapsed_seconds": 53.84
+      },
+      {
+        "name": "sql-postgres-fixture",
+        "status": "PASS",
+        "detail": "exit=0",
+        "log": "sql-postgres-fixture.log",
+        "elapsed_seconds": 0.28
+      },
+      {
+        "name": "docker-build",
+        "status": "PASS",
+        "detail": "exit=0",
+        "log": "docker-build.log",
+        "elapsed_seconds": 172.84
+      },
+      {
+        "name": "docker-http-postgres",
+        "status": "PASS",
+        "detail": "CRUD, owner, stale write, app restart persistence and fixture cleanup"
+      }
+    ]
+  },
+  "live": {
+    "created_at": "2026-10-03T15:05:46.334222+00:00",
+    "scope": "reference verification; not learner completion",
+    "status": "BLOCKED",
+    "checks": [
+      {
+        "name": "environment-live",
+        "status": "BLOCKED",
+        "detail": "Environment DB_PASSWORD, Environment APP_AN_PASSWORD, Environment APP_BINH_PASSWORD, Environment OLLAMA_CHAT_MODEL, Environment OLLAMA_EMBED_MODEL, Environment EMBEDDING_DIMENSIONS, Embedding dimensions, Ollama"
+      },
+      {
+        "name": "live-http-ai",
+        "status": "BLOCKED",
+        "detail": "Live provider configuration incomplete; no model evaluation was run"
+      }
+    ]
+  },
+  "load_probe": {
+    "requests": 40,
+    "failed": 0,
+    "p50_ms": 0.0,
+    "p95_ms": 187.9999999946449,
+    "matching_request_ids": 40
+  },
+  "database": {
+    "status": "PASS",
+    "log": "checks/database-v3-account-guard.log",
+    "scope": "V1-V6, legacy preservation, owner/revision/RLS, fake grade, SQL Q01, seeded backup/restore",
+    "latest_windows_attempt": {
+      "status": "BLOCKED",
+      "date": "2026-10-04",
+      "reason": "Docker Desktop LinuxEngine pipe unavailable; start did not establish daemon readiness"
+    },
+    "linux_ci": {
+      "status": "PASS",
+      "commit": "533f6d6688b667413a85f390a3e344919119b66f",
+      "url": "https://github.com/VanDung279206/JavaBackend_AI_RoadMap/actions/runs/37167868679"
+    }
+  },
+  "python_tests": {
+    "status": "PASS",
+    "tests": 22,
+    "log": "checks/python-v3-contract.log"
+  },
+  "website_domain_tests": {
+    "status": "PASS",
+    "tests": 10
+  },
+  "spring_reference": {
+    "status": "PASS",
+    "tests": 19,
+    "log": "checks/spring-contract-v3.log"
+  },
+  "learner_negative_tests": {
+    "F01": "Expected assertion: 1 query vs 4",
+    "O01": "Expected two failures: missing propagated/generated request ID",
+    "P3.1-P3.2": {
+      "status": "PASS regression",
+      "starter_p31": "FAIL TODO P3.1",
+      "repaired_p31": "PASS 1 test",
+      "unfinished_p32": "FAIL TODO P3.2",
+      "scope": "Own fixture; never learner completion",
+      "logs": [
+        "checks/spring-p31-starter.log",
+        "checks/spring-p31-repaired.log",
+        "checks/spring-p32-unfinished.log"
+      ]
+    }
+  },
+  "blocked": [
+    "Trusted Java/Maven web grading worker implementation/deployment",
+    "Live model retrieval/answer/citation evaluation",
+    "Supabase Auth/email/Storage gateway E2E",
+    "Final desktop/mobile browser inspection blocked by browser policy",
+    "Commit evidence integration and model tutor"
+  ],
+  "markdown_links": {
+    "local_count": 317,
+    "local_errors": [],
+    "external": [
+      {
+        "url": "https://VanDung279206.github.io/JavaBackend_AI_RoadMap",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://dev.java/learn/",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://dev.java/learn/api/collections-framework/",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://dev.java/learn/first-steps/first-java-code/getting-started/",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://docs.docker.com/get-started/",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://docs.docker.com/reference/dockerfile/",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://docs.jboss.org/hibernate/orm/6.6/userguide/html_single/Hibernate_User_Guide.html#fetching",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://docs.junit.org/5.13.1/user-guide/index.html",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/nio/file/Files.html",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/HashMap.html",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/LinkedHashMap.html",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/PriorityQueue.html",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/Future.html",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://docs.spring.io/spring-boot/3.5/appendix/dependency-versions/coordinates.html",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://docs.spring.io/spring-boot/3.5/index.html",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://docs.spring.io/spring-boot/3.5/reference/testing/index.html",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://docs.spring.io/spring-boot/3.5/system-requirements.html",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://docs.spring.io/spring-data/jpa/reference/3.5/jpa/locking.html",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://docs.spring.io/spring-data/jpa/reference/3.5/repositories/query-methods-details.html",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://docs.spring.io/spring-framework/reference/6.2/data-access/transaction/declarative/rolling-back.html",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://docs.spring.io/spring-framework/reference/6.2/web/webmvc/mvc-controller/ann-validation.html",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://docs.spring.io/spring-security/reference/6.5/index.html",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://git-scm.com/book/en/v2",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://git-scm.com/book/en/v2/Getting-Started-First-Time-Git-Setup",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://github.com/VanDung279206/JavaBackend_AI_RoadMap/actions/runs/37167868726",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://github.com/VanDung279206/JavaBackend_AI_RoadMap/actions/runs/37167868679",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://github.com/VanDung279206/JavaBackend_AI_RoadMap/blob/RoadMap_v3/VALIDATION.md",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://github.com/VanDung279206/JavaBackend_AI_RoadMap/blob/RoadMap_v3/dsa/EXERCISES.md",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://github.com/VanDung279206/JavaBackend_AI_RoadMap/blob/RoadMap_v3/english/GLOSSARY.md",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://github.com/VanDung279206/JavaBackend_AI_RoadMap/blob/RoadMap_v3/labs/README.md",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://github.com/VanDung279206/JavaBackend_AI_RoadMap/blob/RoadMap_v3/labs/src/AiLab.java",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://github.com/VanDung279206/JavaBackend_AI_RoadMap/blob/RoadMap_v3/labs/src/BackendLab.java",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://github.com/VanDung279206/JavaBackend_AI_RoadMap/blob/RoadMap_v3/labs/src/JavaCoreLab.java",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://github.com/VanDung279206/JavaBackend_AI_RoadMap/blob/RoadMap_v3/labs/src/LabChecks.java",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://github.com/VanDung279206/JavaBackend_AI_RoadMap/blob/RoadMap_v3/labs/src/RagLab.java",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://github.com/VanDung279206/JavaBackend_AI_RoadMap/blob/RoadMap_v3/phases/01_Java/SOLUTIONS.md",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://github.com/VanDung279206/JavaBackend_AI_RoadMap/blob/RoadMap_v3/phases/02_Http-Sql/SOLUTIONS.md",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://github.com/VanDung279206/JavaBackend_AI_RoadMap/blob/RoadMap_v3/phases/02_Http-Sql/solution.sql",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://github.com/VanDung279206/JavaBackend_AI_RoadMap/blob/RoadMap_v3/phases/03_Spring/SOLUTIONS.md",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://github.com/VanDung279206/JavaBackend_AI_RoadMap/blob/RoadMap_v3/phases/04_Quality/SOLUTIONS.md",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://github.com/VanDung279206/JavaBackend_AI_RoadMap/blob/RoadMap_v3/phases/05_AI/SOLUTIONS.md",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://github.com/VanDung279206/JavaBackend_AI_RoadMap/blob/RoadMap_v3/phases/06_RAG/EVALUATION_SET.md",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://github.com/VanDung279206/JavaBackend_AI_RoadMap/blob/RoadMap_v3/phases/06_RAG/SOLUTIONS.md",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://github.com/apache/maven-wrapper/releases/tag/maven-wrapper-3.3.4",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://github.com/pgvector/pgvector",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://github.com/spring-projects/spring-ai",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://github.com/spring-projects/spring-ai/blob/v1.1.8/spring-ai-docs/src/main/antora/modules/ROOT/pages/api/chat/ollama-chat.adoc",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://github.com/spring-projects/spring-ai/blob/v1.1.8/spring-ai-docs/src/main/antora/modules/ROOT/pages/api/chatclient.adoc",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://github.com/spring-projects/spring-ai/blob/v1.1.8/spring-ai-docs/src/main/antora/modules/ROOT/pages/api/embeddings/ollama-embeddings.adoc",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://github.com/spring-projects/spring-ai/blob/v1.1.8/spring-ai-docs/src/main/antora/modules/ROOT/pages/api/retrieval-augmented-generation.adoc",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://github.com/spring-projects/spring-ai/blob/v1.1.8/spring-ai-docs/src/main/antora/modules/ROOT/pages/api/structured-output-converter.adoc",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://github.com/spring-projects/spring-ai/blob/v1.1.8/spring-ai-docs/src/main/antora/modules/ROOT/pages/api/testing.adoc",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://github.com/spring-projects/spring-ai/blob/v1.1.8/spring-ai-docs/src/main/antora/modules/ROOT/pages/api/tools.adoc",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://github.com/spring-projects/spring-ai/blob/v1.1.8/spring-ai-docs/src/main/antora/modules/ROOT/pages/api/vectordbs/pgvector.adoc",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://github.com/spring-projects/spring-ai/blob/v1.1.8/spring-ai-docs/src/main/antora/modules/ROOT/pages/getting-started.adoc",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://github.com/spring-projects/spring-ai/blob/v1.1.8/spring-ai-docs/src/main/antora/modules/ROOT/pages/index.adoc",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://java.testcontainers.org/test_framework_integration/junit_5/",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://maven.apache.org/docs/3.9.11/release-notes.html",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://maven.apache.org/guides/getting-started/",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://maven.apache.org/install.html",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://maven.apache.org/tools/wrapper/",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://pubmed.ncbi.nlm.nih.gov/18276894/",
+        "status": "PASS",
+        "http": 203
+      },
+      {
+        "url": "https://pubmed.ncbi.nlm.nih.gov/19076480/",
+        "status": "PASS",
+        "http": 203
+      },
+      {
+        "url": "https://spring.io/blog/2026/06/12/spring-ai-1-1-8-1-0-9-avaialble-now/",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://spring.io/guides/gs/rest-service/",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://supabase.com/docs/guides/auth/passwords",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://supabase.com/docs/guides/database/postgres/row-level-security",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://www.postgresql.org/docs/17/transaction-iso.html",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://www.postgresql.org/docs/17/tutorial-transactions.html",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://www.postgresql.org/docs/17/tutorial-window.html",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://www.postgresql.org/docs/17/tutorial.html",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://www.postgresql.org/docs/17/using-explain.html",
+        "status": "PASS",
+        "http": 200
+      },
+      {
+        "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+        "status": "PASS",
+        "http": 200
+      }
+    ],
+    "checked_on": "2026-10-04",
+    "scope": "HTTP reachability; external fragments/content not verified"
+  },
+  "ci_followup": {
+    "initial_run": "https://github.com/VanDung279206/JavaBackend_AI_RoadMap/actions/runs/37132699991",
+    "initial_status": "FAIL database step; offline/integration PASS",
+    "fix": "TCP readiness instead of temporary Unix-socket server; retain database log",
+    "rerun_status": "PASS",
+    "validated_commit": "533f6d6688b667413a85f390a3e344919119b66f",
+    "reference_url": "https://github.com/VanDung279206/JavaBackend_AI_RoadMap/actions/runs/37167868679",
+    "website_url": "https://github.com/VanDung279206/JavaBackend_AI_RoadMap/actions/runs/37167868726"
+  },
+  "website_lint": {
+    "status": "PASS",
+    "log": "checks/website-lint-v3-contract.log"
+  },
+  "website_build": {
+    "status": "PASS",
+    "pages": 29,
+    "log": "checks/website-build-v3-contract.log"
+  },
+  "review_fix": {
+    "pr": 8,
+    "reviewer": "Dung06-tech",
+    "reviewed_commit": "d6b11ff258c3232a35c86807d3e03382d6908702",
+    "comments": [
+      4178091896,
+      4178091902,
+      4178091907,
+      4178091909,
+      4178091912,
+      4178091916,
+      4178091918
+    ],
+    "local_offline": {
+      "created_at": "2026-10-04T14:49:16.965526+00:00",
+      "scope": "reference verification; not learner completion",
+      "status": "PASS",
+      "checks": [
+        {
+          "name": "merge-markers",
+          "status": "PASS",
+          "detail": "exit=0",
+          "log": "merge-markers.log",
+          "elapsed_seconds": 2.36
+        },
+        {
+          "name": "environment-offline",
+          "status": "PASS",
+          "detail": "Required probes passed"
+        },
+        {
+          "name": "legacy-labs",
+          "status": "PASS",
+          "detail": "exit=0",
+          "log": "legacy-labs.log",
+          "elapsed_seconds": 1.78
+        },
+        {
+          "name": "practice-reference",
+          "status": "PASS",
+          "detail": "exit=0",
+          "log": "practice-reference.log",
+          "elapsed_seconds": 1.69
+        },
+        {
+          "name": "debug-reference",
+          "status": "PASS",
+          "detail": "exit=0",
+          "log": "debug-reference.log",
+          "elapsed_seconds": 1.23
+        },
+        {
+          "name": "mixed-reference",
+          "status": "PASS",
+          "detail": "exit=0",
+          "log": "mixed-reference.log",
+          "elapsed_seconds": 1.3
+        },
+        {
+          "name": "concurrency-reference",
+          "status": "PASS",
+          "detail": "exit=0",
+          "log": "concurrency-reference.log",
+          "elapsed_seconds": 2.39
+        },
+        {
+          "name": "app-core",
+          "status": "PASS",
+          "detail": "exit=0",
+          "log": "app-core.log",
+          "elapsed_seconds": 1.06
+        },
+        {
+          "name": "learning-tools",
+          "status": "PASS",
+          "detail": "exit=0",
+          "log": "learning-tools.log",
+          "elapsed_seconds": 4.31
+        },
+        {
+          "name": "english-diagnostics",
+          "status": "PASS",
+          "detail": "exit=0",
+          "log": "english-diagnostics.log",
+          "elapsed_seconds": 2.67
+        },
+        {
+          "name": "foundations-reference",
+          "status": "PASS",
+          "detail": "exit=0",
+          "log": "foundations-reference.log",
+          "elapsed_seconds": 9.2
+        },
+        {
+          "name": "rag-safety-reference",
+          "status": "PASS",
+          "detail": "exit=0",
+          "log": "rag-safety-reference.log",
+          "elapsed_seconds": 1.33
+        },
+        {
+          "name": "markdown-links",
+          "status": "PASS",
+          "detail": "exit=0",
+          "log": "markdown-links.log",
+          "elapsed_seconds": 0.28
+        },
+        {
+          "name": "practice-rejects-unfinished-starter",
+          "status": "PASS",
+          "detail": "exit=1",
+          "log": "practice-rejects-unfinished-starter.log",
+          "elapsed_seconds": 1.59
+        },
+        {
+          "name": "debug-rejects-unfinished-starter",
+          "status": "PASS",
+          "detail": "exit=1",
+          "log": "debug-rejects-unfinished-starter.log",
+          "elapsed_seconds": 1.16
+        },
+        {
+          "name": "mixed-rejects-unfinished-starter",
+          "status": "PASS",
+          "detail": "exit=1",
+          "log": "mixed-rejects-unfinished-starter.log",
+          "elapsed_seconds": 1.2
+        },
+        {
+          "name": "concurrency-rejects-unfinished-starter",
+          "status": "PASS",
+          "detail": "exit=1",
+          "log": "concurrency-rejects-unfinished-starter.log",
+          "elapsed_seconds": 1.34
+        },
+        {
+          "name": "foundations-rejects-unfinished-starter",
+          "status": "PASS",
+          "detail": "exit=1",
+          "log": "foundations-rejects-unfinished-starter.log",
+          "elapsed_seconds": 1.19
+        },
+        {
+          "name": "advanced-rejects-unfinished-starter",
+          "status": "PASS",
+          "detail": "exit=1",
+          "log": "advanced-rejects-unfinished-starter.log",
+          "elapsed_seconds": 1.14
+        }
+      ]
+    },
+    "python_tests": 25,
+    "website_tests": 12,
+    "website_lint": "PASS",
+    "website_build": {
+      "status": "PASS",
+      "pages": 29,
+      "tracks": 14,
+      "exercises": 84,
+      "log": "checks/website-build-pr8-review.log"
+    },
+    "spring_tests": {
+      "status": "PASS",
+      "tests": 19,
+      "log": "checks/spring-pr8-review.log"
+    },
+    "database_local": {
+      "status": "BLOCKED",
+      "reason": "Docker Desktop LinuxEngine pipe unavailable"
+    },
+    "ci": {
+      "status": "PASS",
+      "validated_commit": "99c2ba88910c3a6ec51f182b46a23d4b3bcfdbad",
+      "website_url": "https://github.com/VanDung279206/JavaBackend_AI_RoadMap/actions/runs/37211092695",
+      "reference_url": "https://github.com/VanDung279206/JavaBackend_AI_RoadMap/actions/runs/37211092706",
+      "database_log_verified": true,
+      "database_scope": "V1-V6, catalogue seed, legacy preservation, RLS/account/admin/fake-grade assertions, Q01/starter rejection, custom dump/restore",
+      "subsequent_changes": "Two documentation/result commits only"
+    },
+    "historical_scope": "Earlier top-level evidence does not validate d6b11ff; review_fix records new runs only"
+  },
+  "review_followup": {
+    "review_id": 5407110865,
+    "reviewed_commit": "2c34a5c79b88f8e97b8cc1b42b8ddf59715585d1",
+    "comments": [
+      4178395501,
+      4178395506
+    ],
+    "before_store_fix": {
+      "status": "FAIL",
+      "tests": 18,
+      "pass": 15,
+      "fail": 3,
+      "log": "checks/review-sync-before.log"
+    },
+    "website_tests": {
+      "status": "PASS",
+      "tests": 18,
+      "skipped": 0,
+      "log": "checks/review-sync-after.log"
+    },
+    "python_tests": {
+      "status": "PASS",
+      "tests": 27,
+      "skipped": 0,
+      "log": "checks/review-p2-python.log"
+    },
+    "offline": {
+      "created_at": "2026-10-04T17:02:56.222338+00:00",
+      "scope": "reference verification; not learner completion",
+      "status": "PASS",
+      "checks": [
+        {
+          "name": "merge-markers",
+          "status": "PASS",
+          "detail": "exit=0",
+          "log": "merge-markers.log",
+          "elapsed_seconds": 0.31
+        },
+        {
+          "name": "environment-offline",
+          "status": "PASS",
+          "detail": "Required probes passed"
+        },
+        {
+          "name": "legacy-labs",
+          "status": "PASS",
+          "detail": "exit=0",
+          "log": "legacy-labs.log",
+          "elapsed_seconds": 1.49
+        },
+        {
+          "name": "practice-reference",
+          "status": "PASS",
+          "detail": "exit=0",
+          "log": "practice-reference.log",
+          "elapsed_seconds": 1.47
+        },
+        {
+          "name": "debug-reference",
+          "status": "PASS",
+          "detail": "exit=0",
+          "log": "debug-reference.log",
+          "elapsed_seconds": 1.03
+        },
+        {
+          "name": "mixed-reference",
+          "status": "PASS",
+          "detail": "exit=0",
+          "log": "mixed-reference.log",
+          "elapsed_seconds": 1.14
+        },
+        {
+          "name": "concurrency-reference",
+          "status": "PASS",
+          "detail": "exit=0",
+          "log": "concurrency-reference.log",
+          "elapsed_seconds": 2.14
+        },
+        {
+          "name": "app-core",
+          "status": "PASS",
+          "detail": "exit=0",
+          "log": "app-core.log",
+          "elapsed_seconds": 0.97
+        },
+        {
+          "name": "learning-tools",
+          "status": "PASS",
+          "detail": "exit=0",
+          "log": "learning-tools.log",
+          "elapsed_seconds": 3.5
+        },
+        {
+          "name": "english-diagnostics",
+          "status": "PASS",
+          "detail": "exit=0",
+          "log": "english-diagnostics.log",
+          "elapsed_seconds": 2.26
+        },
+        {
+          "name": "foundations-reference",
+          "status": "PASS",
+          "detail": "exit=0",
+          "log": "foundations-reference.log",
+          "elapsed_seconds": 9.05
+        },
+        {
+          "name": "rag-safety-reference",
+          "status": "PASS",
+          "detail": "exit=0",
+          "log": "rag-safety-reference.log",
+          "elapsed_seconds": 1.17
+        },
+        {
+          "name": "markdown-links",
+          "status": "PASS",
+          "detail": "exit=0",
+          "log": "markdown-links.log",
+          "elapsed_seconds": 0.28
+        },
+        {
+          "name": "practice-rejects-unfinished-starter",
+          "status": "PASS",
+          "detail": "exit=1",
+          "log": "practice-rejects-unfinished-starter.log",
+          "elapsed_seconds": 1.39
+        },
+        {
+          "name": "debug-rejects-unfinished-starter",
+          "status": "PASS",
+          "detail": "exit=1",
+          "log": "debug-rejects-unfinished-starter.log",
+          "elapsed_seconds": 1.06
+        },
+        {
+          "name": "mixed-rejects-unfinished-starter",
+          "status": "PASS",
+          "detail": "exit=1",
+          "log": "mixed-rejects-unfinished-starter.log",
+          "elapsed_seconds": 1.0
+        },
+        {
+          "name": "concurrency-rejects-unfinished-starter",
+          "status": "PASS",
+          "detail": "exit=1",
+          "log": "concurrency-rejects-unfinished-starter.log",
+          "elapsed_seconds": 1.03
+        },
+        {
+          "name": "foundations-rejects-unfinished-starter",
+          "status": "PASS",
+          "detail": "exit=1",
+          "log": "foundations-rejects-unfinished-starter.log",
+          "elapsed_seconds": 1.03
+        },
+        {
+          "name": "advanced-rejects-unfinished-starter",
+          "status": "PASS",
+          "detail": "exit=1",
+          "log": "advanced-rejects-unfinished-starter.log",
+          "elapsed_seconds": 0.97
+        }
+      ]
+    },
+    "website_lint": "PASS",
+    "website_build": {
+      "status": "PASS",
+      "pages": 29,
+      "tracks": 14,
+      "exercises": 84,
+      "log": "checks/review-p2-build.log"
+    },
+    "uid_access": {
+      "status": "PASS",
+      "command": "sudo -n python3 runner/check_job_access.py",
+      "scope": "Linux trusted fixture under UID/GID 65534; not Docker compilation or learner grading",
+      "evidence": "PASS UID/GID 65534: traverse/read job and source; no write permission"
+    },
+    "migration": "None",
+    "trusted_web_grader": "BLOCKED: trusted test worker/image/runtime not deployed",
+    "ci": {
+      "status": "PASS",
+      "validated_commit": "24a0b6bc44bf389cb192d2f36584e56f8e56cd3c",
+      "website_url": "https://github.com/VanDung279206/JavaBackend_AI_RoadMap/actions/runs/37219151893",
+      "reference_url": "https://github.com/VanDung279206/JavaBackend_AI_RoadMap/actions/runs/37219151892",
+      "uid_access_log_verified": true,
+      "database_log_verified": true,
+      "subsequent_changes": "Two documentation/result commits only"
+    }
+  },
+  "review_compile_limit": {
+    "review_id": 5407387608,
+    "reviewed_commit": "dab8d2c654d971b7defa2f136c34700e34de6221",
+    "comments": [
+      4178662387
+    ],
+    "before_fix": {
+      "status": "FAIL",
+      "tests": 3,
+      "pass": 2,
+      "fail": 1,
+      "class_bytes": 8724,
+      "file_limit_bytes": 4096,
+      "log": "checks/review-fsize-before.log"
+    },
+    "python_tests": {
+      "status": "PASS",
+      "tests": 31,
+      "skipped": 0,
+      "log": "checks/review-fsize-after.log"
+    },
+    "website_tests": {
+      "status": "PASS",
+      "tests": 18
+    },
+    "catalogue_check": "PASS",
+    "diff_check": "PASS",
+    "offline": {
+      "created_at": "2026-10-04T18:01:43.397216+00:00",
+      "scope": "reference verification; not learner completion",
+      "status": "PASS",
+      "checks": [
+        {
+          "name": "merge-markers",
+          "status": "PASS",
+          "detail": "exit=0",
+          "log": "merge-markers.log",
+          "elapsed_seconds": 0.24
+        },
+        {
+          "name": "environment-offline",
+          "status": "PASS",
+          "detail": "Required probes passed"
+        },
+        {
+          "name": "legacy-labs",
+          "status": "PASS",
+          "detail": "exit=0",
+          "log": "legacy-labs.log",
+          "elapsed_seconds": 1.5
+        },
+        {
+          "name": "practice-reference",
+          "status": "PASS",
+          "detail": "exit=0",
+          "log": "practice-reference.log",
+          "elapsed_seconds": 1.61
+        },
+        {
+          "name": "debug-reference",
+          "status": "PASS",
+          "detail": "exit=0",
+          "log": "debug-reference.log",
+          "elapsed_seconds": 1.11
+        },
+        {
+          "name": "mixed-reference",
+          "status": "PASS",
+          "detail": "exit=0",
+          "log": "mixed-reference.log",
+          "elapsed_seconds": 1.19
+        },
+        {
+          "name": "concurrency-reference",
+          "status": "PASS",
+          "detail": "exit=0",
+          "log": "concurrency-reference.log",
+          "elapsed_seconds": 2.22
+        },
+        {
+          "name": "app-core",
+          "status": "PASS",
+          "detail": "exit=0",
+          "log": "app-core.log",
+          "elapsed_seconds": 0.98
+        },
+        {
+          "name": "learning-tools",
+          "status": "PASS",
+          "detail": "exit=0",
+          "log": "learning-tools.log",
+          "elapsed_seconds": 6.88
+        },
+        {
+          "name": "english-diagnostics",
+          "status": "PASS",
+          "detail": "exit=0",
+          "log": "english-diagnostics.log",
+          "elapsed_seconds": 2.59
+        },
+        {
+          "name": "foundations-reference",
+          "status": "PASS",
+          "detail": "exit=0",
+          "log": "foundations-reference.log",
+          "elapsed_seconds": 9.14
+        },
+        {
+          "name": "rag-safety-reference",
+          "status": "PASS",
+          "detail": "exit=0",
+          "log": "rag-safety-reference.log",
+          "elapsed_seconds": 1.16
+        },
+        {
+          "name": "markdown-links",
+          "status": "PASS",
+          "detail": "exit=0",
+          "log": "markdown-links.log",
+          "elapsed_seconds": 0.28
+        },
+        {
+          "name": "practice-rejects-unfinished-starter",
+          "status": "PASS",
+          "detail": "exit=1",
+          "log": "practice-rejects-unfinished-starter.log",
+          "elapsed_seconds": 1.42
+        },
+        {
+          "name": "debug-rejects-unfinished-starter",
+          "status": "PASS",
+          "detail": "exit=1",
+          "log": "debug-rejects-unfinished-starter.log",
+          "elapsed_seconds": 1.08
+        },
+        {
+          "name": "mixed-rejects-unfinished-starter",
+          "status": "PASS",
+          "detail": "exit=1",
+          "log": "mixed-rejects-unfinished-starter.log",
+          "elapsed_seconds": 1.09
+        },
+        {
+          "name": "concurrency-rejects-unfinished-starter",
+          "status": "PASS",
+          "detail": "exit=1",
+          "log": "concurrency-rejects-unfinished-starter.log",
+          "elapsed_seconds": 1.08
+        },
+        {
+          "name": "foundations-rejects-unfinished-starter",
+          "status": "PASS",
+          "detail": "exit=1",
+          "log": "foundations-rejects-unfinished-starter.log",
+          "elapsed_seconds": 1.03
+        },
+        {
+          "name": "advanced-rejects-unfinished-starter",
+          "status": "PASS",
+          "detail": "exit=1",
+          "log": "advanced-rejects-unfinished-starter.log",
+          "elapsed_seconds": 1.03
+        }
+      ]
+    },
+    "file_limit_bytes": 8388608,
+    "diagnostics_retained_bytes": 32000,
+    "linux_compile": {
+      "status": "PASS",
+      "scope": "trusted MoreDsa fixture under actual UID/GID 65534 and RLIMIT_FSIZE from Docker command; not a Docker probe run",
+      "class_bytes": 8724,
+      "old_limit_control": "PASS: 4096-byte fsize rejects valid MoreDsa bytecode",
+      "oversized_file_rejected": true,
+      "actual_uid": 65534,
+      "actual_gid": 65534,
+      "verdict": "BLOCKED"
+    },
+    "docker_probe_local": {
+      "status": "BLOCKED",
+      "reason": "Docker daemon pipe unavailable"
+    },
+    "migration": "None",
+    "trusted_web_grader": "BLOCKED: trusted test worker/image/runtime not deployed",
+    "ci": {
+      "status": "PASS",
+      "validated_commit": "2314e119634dbcc343a2b869971f59d135bd2775",
+      "website_url": "https://github.com/VanDung279206/JavaBackend_AI_RoadMap/actions/runs/37222841422",
+      "reference_url": "https://github.com/VanDung279206/JavaBackend_AI_RoadMap/actions/runs/37222841316",
+      "compile_limit_log_verified": true,
+      "database_log_verified": true,
+      "subsequent_changes": "Two documentation/result commits only"
+    }
+  }
+}
