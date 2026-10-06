@@ -24,7 +24,7 @@ export default function InteractiveRoadmap() {
             <div className="phase-card-content">
               <span className="phase-card-number">CHẶNG {phase.num}</span>
               <strong className="phase-card-title">{phase.title}</strong>
-              <span className="phase-card-link">{phase.slug ? "Xem bài tập →" : "Chuẩn bị môi trường"}</span>
+              <span className="phase-card-link">{phase.number === "0" ? "Chuẩn bị môi trường →" : "Học chặng này →"}</span>
             </div>
           );
           const style = { "--phase-color": phase.color } as CSSProperties;
@@ -33,9 +33,9 @@ export default function InteractiveRoadmap() {
             <Link
               className="phase-card"
               key={phase.num}
-              href={`/docs/${phase.slug}`}
+              href={`${phase.number === "0" ? '/docs' : '/learn'}/${phase.slug}`}
               style={style}
-              aria-label={`Mở bài tập chặng ${phase.num}: ${phase.title}`}
+              aria-label={`Học chặng ${phase.num}: ${phase.title}`}
             >
               {content}
             </Link>
