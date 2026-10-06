@@ -1,6 +1,6 @@
 # Phase 6 — RAG và đánh giá
 
-Vector và tài liệu bên dưới là dữ liệu giả lập để hiểu phép tính. Chúng không được sinh từ embedding model. Xem [lời giải](https://github.com/VanDung279206/JavaBackend_AI_RoadMap/blob/RoadMap_v3/phases/06_RAG/SOLUTIONS.md). DSA hỗ trợ: D09, D10.
+Vector và tài liệu bên dưới là dữ liệu giả lập để hiểu phép tính. Chúng không được sinh từ embedding model. Xem [lời giải](https://github.com/VanDung279206/JavaBackend_AI_RoadMap/blob/Java_Roadmap_V2/phases/06_RAG/SOLUTIONS.md). DSA hỗ trợ: D09, D10.
 
 ## P6.1 — Chia đoạn có phần chồng lặp · Cơ bản
 
@@ -20,7 +20,7 @@ Khi các đoạn truy xuất được là A,B: citation `[A]` hợp lệ về ID
 
 Gold set là `{A,C}`, retrieved là `[A,B]`, k=2. Tính Precision@2 và Recall@2. Trong bài, mẫu số precision là k, kể cả khi trả ít hơn k; gold rỗng được tách thành nhóm đánh giá “không có đáp án”, không tính recall. IDs retrieved phải không trùng.
 
-Sau đó dùng [bộ câu hỏi mẫu](https://github.com/VanDung279206/JavaBackend_AI_RoadMap/blob/RoadMap_v3/phases/06_RAG/EVALUATION_SET.md) để thiết kế kiểm tra nguồn, câu không có đáp án và quyền truy cập.
+Sau đó dùng [bộ câu hỏi mẫu](https://github.com/VanDung279206/JavaBackend_AI_RoadMap/blob/Java_Roadmap_V2/phases/06_RAG/EVALUATION_SET.md) để thiết kế kiểm tra nguồn, câu không có đáp án và quyền truy cập.
 
 ## Đạt phase khi
 
