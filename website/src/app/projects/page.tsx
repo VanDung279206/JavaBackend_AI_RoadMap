@@ -29,11 +29,13 @@ export default function ProjectsPage() {
     <section className="page-shell">
       <header className="page-heading">
         <span className="eyebrow">SẢN PHẨM XUYÊN SUỐT</span>
-        <h1 className="page-title">Hai dự án, từ dòng lệnh đến AI</h1>
+        <h1 className="page-title">Dự án mẫu và dự án của bạn</h1>
         <p className="page-description">
           Mỗi chặng bổ sung một phần vào sản phẩm. Cuối lộ trình, bạn có thể giải thích cách ứng dụng được thiết kế, kiểm thử và vận hành.
         </p>
       </header>
+
+      <section className="learning-card"><h2>Dự án của tôi</h2><p>Tự chọn vấn đề, ba chức năng chính và một điểm khác biệt. Tạo đề cương, sửa dữ liệu/nghiệp vụ, chia mốc và nộp bằng chứng. AI/RAG theo nhu cầu; có thể làm RAG bằng lab riêng.</p><Link className="button-primary" href="/projects/mine">Thiết kế dự án của tôi <ArrowRight size={16} aria-hidden="true" /></Link></section>
 
       <div className="project-grid">
         {projects.map(({ Icon, ...project }) => (
