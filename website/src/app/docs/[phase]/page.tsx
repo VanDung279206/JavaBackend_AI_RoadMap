@@ -43,6 +43,8 @@ export default async function PhasePage({
         </div>
       </header>
 
+      {catalogue.courses.some(course => course.phase === phase) && <div className="learning-actions"><Link className="button-primary" href={`/learn/${phase}`}>Học chặng này →</Link><span>Bài học → Luyện tập → Áp dụng vào dự án → Kiểm tra cuối chặng</span></div>}
+
       <ProgressTracker phase={phase} exercises={config.exercises} />
 
       {exercisesContent ? (
