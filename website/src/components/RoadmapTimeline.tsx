@@ -73,8 +73,8 @@ export default function RoadmapTimeline() {
                 </div>
 
                 {link && (
-                  <Link className="phase-guide-link" href={`/docs/${link.slug}`}>
-                    {link.title} <ArrowUpRight size={15} aria-hidden="true" />
+                  <Link className="phase-guide-link" href={`${phase.number === '00' ? '/docs' : '/learn'}/${link.slug}`}>
+                    Học chặng này · {link.title} <ArrowUpRight size={15} aria-hidden="true" />
                   </Link>
                 )}
               </details>
