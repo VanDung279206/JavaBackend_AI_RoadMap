@@ -1,6 +1,6 @@
 # Lời giải Phase 5
 
-Mã Java đầy đủ: [AiLab.java](https://github.com/VanDung279206/JavaBackend_AI_RoadMap/blob/RoadMap_v3/labs/src/AiLab.java). Gateway giả lập cho kết quả xác định để học luồng xử lý; không mô phỏng chất lượng ngôn ngữ của LLM.
+Mã Java đầy đủ: [AiLab.java](https://github.com/VanDung279206/JavaBackend_AI_RoadMap/blob/Java_Roadmap_V2/labs/src/AiLab.java). Gateway giả lập cho kết quả xác định để học luồng xử lý; không mô phỏng chất lượng ngôn ngữ của LLM.
 
 ## P5.1
 
