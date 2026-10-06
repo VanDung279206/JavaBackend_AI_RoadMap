@@ -4,6 +4,12 @@ Website học tập tại **[VanDung279206.github.io/JavaBackend_AI_RoadMap](htt
 
 ## Tính năng
 
+- “Học chặng này” tại `/learn/<phase>` với bài học, luyện tập, áp dụng dự án và đề cuối chặng; 23 ví dụ có thể kiểm bằng `py scripts/check_lessons.py`.
+- Java thí điểm 20 bài tăng mức; nhánh thử thách cần đủ tiên quyết. Bài đọc/bằng chứng tự đối chiếu lưu trên thiết bị, tách tiến độ bài và verified từ worker.
+- `/projects/mine`: năm bước tự thiết kế, đề cương Markdown chỉnh sửa/xuất được, sáu mốc và checklist kỹ năng; hỗ trợ chọn RAG lab riêng. Đề cương lưu trên thiết bị theo tài khoản/khách, chưa đồng bộ máy chủ.
+
+Khi đưa nhánh Java_Roadmap_V2 vào môi trường đang dùng V4–V6, áp dụng lại `database/catalogue_seed.sql` để đăng ký 20 ID JP01–JP20. Không cần migration mới cho dữ liệu chỉ lưu trên thiết bị.
+
 - 🗺️ Roadmap chính và các track mở rộng sinh từ `learning/catalogue.json`
 - 📚 Bài tập & lời giải ẩn/hiện theo từng phase
 - ✅ Tiến độ khách/tài khoản, dự phòng offline, nhập khách có chủ ý và xử lý xung đột
