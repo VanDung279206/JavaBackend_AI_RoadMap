@@ -27,12 +27,14 @@ export default function ProjectShowcase() {
         <div className="section-heading">
           <div className="section-heading-copy">
           <span className="eyebrow">DỰ ÁN</span>
-          <h2 className="section-title" id="projects-title">Hai dự án thực hành</h2>
+          <h2 className="section-title" id="projects-title">Dự án mẫu và lựa chọn của bạn</h2>
           </div>
           <Link href="/projects" className="text-link">
             Khám phá dự án <ArrowRight size={15} aria-hidden="true" />
           </Link>
         </div>
+
+        <div className="learning-actions"><Link className="text-link" href="/projects/mine">Thiết kế dự án của tôi <ArrowRight size={15} aria-hidden="true" /></Link></div>
 
         <div className="project-grid">
           {projects.map(({ Icon, ...project }) => (
