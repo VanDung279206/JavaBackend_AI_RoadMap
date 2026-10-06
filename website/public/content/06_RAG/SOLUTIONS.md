@@ -1,6 +1,6 @@
 # Lời giải Phase 6
 
-Mã đầy đủ: [RagLab.java](https://github.com/VanDung279206/JavaBackend_AI_RoadMap/blob/RoadMap_v3/labs/src/RagLab.java). Đây là bài toán vector và quy tắc xử lý trong bộ nhớ; kết nối pgvector và embedding model là bước tích hợp vào dự án chính.
+Mã đầy đủ: [RagLab.java](https://github.com/VanDung279206/JavaBackend_AI_RoadMap/blob/Java_Roadmap_V2/labs/src/RagLab.java). Đây là bài toán vector và quy tắc xử lý trong bộ nhớ; kết nối pgvector và embedding model là bước tích hợp vào dự án chính.
 
 ## P6.1
 
