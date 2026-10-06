@@ -1,6 +1,6 @@
 # Phase 2 — HTTP và SQL
 
-Dữ liệu giả lập: người dùng An=1, Bình=2, Chi=3; tài liệu 101 và 102 thuộc An, 201 thuộc Bình. Chi chưa có tài liệu. Đối chiếu [lời giải](https://github.com/VanDung279206/JavaBackend_AI_RoadMap/blob/RoadMap_v3/phases/02_Http-Sql/SOLUTIONS.md) sau khi tự làm. DSA đi kèm: D05 và D07.
+Dữ liệu giả lập: người dùng An=1, Bình=2, Chi=3; tài liệu 101 và 102 thuộc An, 201 thuộc Bình. Chi chưa có tài liệu. Đối chiếu [lời giải](https://github.com/VanDung279206/JavaBackend_AI_RoadMap/blob/Java_Roadmap_V2/phases/02_Http-Sql/SOLUTIONS.md) sau khi tự làm. DSA đi kèm: D05 và D07.
 
 ## P2.1 — Hợp đồng API · Cơ bản
 
