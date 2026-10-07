@@ -18,6 +18,17 @@ JDK thực chạy là 26.0.1, các checker biên dịch với `--release 17`. Py
 
 Đã kiểm giao diện bản static export trên localhost: chuyển bốn phần học, đánh dấu đã đọc giữ sau reload, bộ lọc bài Java và khóa thử thách, tạo đề cương từ ba chức năng, sửa Markdown và giữ bản sửa sau reload. Kiểm utility xuất file bằng test Blob/anchor với nội dung UTF-8; trình duyệt tự động không xác nhận được sự kiện download hoàn tất, nên không ghi download UI là PASS. Các test không tự gửi bài nộp hoặc cấp kết quả kiểm chứng.
 
+## Kiểm chứng bốn lỗi trước merge — 2026-10-07
+
+- `npm test`: 35/35 PASS. Hai tab mô phỏng dùng chung storage và khóa ghi, không gửi sự kiện `storage`: giữ JAVA01/JAVA02, ghép read/evidence trên cùng bài, ghép các trường và các ô checklist dự án. Nhập liệu hiển thị ngay và không bị bản lưu trước kéo lùi khi nhiều lần lưu đang chờ.
+- Dữ liệu `data` 49.000 ký tự tạo đề cương hơn 50.000 ký tự và đọc/lưu lại được. Kiểm cả trường hợp mọi trường đạt giới hạn 50.000 ký tự, có/không có user stories tự viết; đề cương và bản trước đều hợp lệ. Các giá trị vượt giới hạn vẫn bị từ chối.
+- Lỗi validation, lỗi sinh đề cương và quota đều giữ bản đã lưu và cho phép sửa/thử lại. Kiểm render `ProjectPlanner`: fieldset/textarea vẫn mở sau lỗi sinh đề cương, chỉ khóa khi bản lưu hỏng. Thiếu Web Locks từ chối ghi an toàn và giữ bản xuất.
+- JP01–JP20 PASS với `--release 17`. JP15 kiểm `|`, CR/LF ở đầu, cuối và giữa tiêu đề; so byte file trước/sau để chứng minh validation lỗi không ghi một phần dữ liệu.
+- Kiểm lời giải sai trên bản sao tạm: checker từ chối JP15 cũ (strip trước validation), JP13 chỉ sắp theo ID, JP13 bỏ sắp ID khi cùng tiêu đề và JP13 đảo thứ tự ID khi cùng tiêu đề.
+- `npm run lint`, `npm run build` và postbuild PASS: 36 trang tĩnh, đủ 6 chặng và trang dự án riêng. `node scripts/build_catalogue.mjs --check` và `git diff --check` PASS. Đã sinh lại lời giải JP15 trong danh mục website.
+
+Các ca đồng thời ở trên chạy bằng harness với hai ngữ cảnh độc lập và hàng đợi khóa dùng chung; không ghi nhận chúng là kiểm trình duyệt thực. Khóa ghi cần Web Locks trên HTTPS/localhost; khi hai tab sửa cùng một trường, lần ghi sau trong khóa có hiệu lực. Bản nháp vẫn lưu tại thiết bị.
+
 ## Phạm vi cần biết khi triển khai
 
 - Đọc bài học, bằng chứng tự đối chiếu và đề cương lưu trên thiết bị theo tài khoản/khách; chưa đồng bộ máy chủ. Có nút tải bản lưu. Tiến độ bài tập và verified worker tiếp tục dùng hệ thống hiện có.
