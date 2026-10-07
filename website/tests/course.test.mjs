@@ -5,7 +5,7 @@ import { readFileSync } from 'node:fs';
 const require = createRequire(import.meta.url);
 const { emptyEntry } = require('../.test-dist/progress-core.js');
 const { parseLessons, lessonRecommendations, prerequisitesMet, localKey } = require('../.test-dist/course-core.js');
-const { emptyProject, parseProject, scopeReady, generateOutline } = require('../.test-dist/project-core.js');
+const { emptyProject, parseProject, scopeReady, generateOutline, projectFields, PROJECT_FIELD_LIMIT, PROJECT_OUTLINE_LIMIT } = require('../.test-dist/project-core.js');
 const catalogue = JSON.parse(readFileSync('src/generated/catalogue.json', 'utf8'));
 
 test('lesson reading/evidence stays independent of exercise completion and verified results', () => {
@@ -67,4 +67,22 @@ test('project generation uses chosen scope, retains lab choice and leaves eviden
     assert.equal(parseProject(JSON.parse(JSON.stringify(draft))).name, 'Nhóm học');
     assert.throws(() => parseProject({ ...draft, checklist: [true] }));
     assert.throws(() => parseProject({ ...draft, name: null }));
+});
+
+test('valid large project inputs always produce a persistable editable outline', () => {
+    const draft = emptyProject();
+    for (const field of projectFields) draft[field] = 'x';
+    draft.data = 'x'.repeat(49000);
+    const outline = generateOutline(parseProject(draft));
+    assert.ok(outline.length > PROJECT_FIELD_LIMIT);
+    assert.equal(parseProject({ ...draft, outline, previousOutline: outline }).outline, outline);
+    for (const field of projectFields) draft[field] = 'x'.repeat(PROJECT_FIELD_LIMIT);
+    for (const stories of [draft.stories, '']) {
+        const largest = { ...draft, stories };
+        const generated = generateOutline(parseProject(largest));
+        assert.ok(generated.length <= PROJECT_OUTLINE_LIMIT);
+        assert.equal(parseProject({ ...largest, outline: generated, previousOutline: generated }).outline.length, generated.length);
+    }
+    assert.throws(() => parseProject({ ...draft, data: 'x'.repeat(PROJECT_FIELD_LIMIT + 1) }));
+    assert.throws(() => parseProject({ ...draft, outline: 'x'.repeat(PROJECT_OUTLINE_LIMIT + 1) }));
 });
