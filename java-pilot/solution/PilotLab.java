@@ -23,7 +23,17 @@ public final class PilotLab {
     public static List<String> readTitles(Path file) throws IOException { try(var lines=Files.lines(file)) { return lines.map(String::strip).filter(s->!s.isEmpty()).toList(); } }
     public static List<Doc> search(Collection<Doc> docs,String query) { String needle=normalize(query).toLowerCase(Locale.ROOT); return docs.stream().filter(d->d.title().toLowerCase(Locale.ROOT).contains(needle)).sorted(Comparator.comparing(Doc::title).thenComparingLong(Doc::id)).toList(); }
     public static void importRows(Map<Long,Doc> docs,List<String> rows) { var staged=new LinkedHashMap<>(docs); for(String row:rows) { String[] parts=row.split("\\|",-1); if(parts.length!=2)throw new IllegalArgumentException("expected id|title"); add(staged,create(parseId(parts[0]),parts[1])); } docs.clear(); docs.putAll(staged); }
-    public static void save(Path file,Collection<Doc> docs) throws IOException { var rows=new ArrayList<String>(); for(Doc d:docs.stream().sorted(Comparator.comparingLong(Doc::id)).toList()) { Doc valid=create(d.id(),d.title()); if(valid.title().contains("|")||valid.title().contains("\n")||valid.title().contains("\r"))throw new IllegalArgumentException("unsupported delimiter"); rows.add(valid.id()+"|"+valid.title()); } Files.write(file,rows,java.nio.charset.StandardCharsets.UTF_8); }
+    public static void save(Path file,Collection<Doc> docs) throws IOException {
+        var rows=new ArrayList<String>();
+        for(Doc d:docs.stream().sorted(Comparator.comparingLong(Doc::id)).toList()) {
+            String original=d.title();
+            if(original!=null&&(original.contains("|")||original.contains("\n")||original.contains("\r")))
+                throw new IllegalArgumentException("unsupported delimiter");
+            Doc valid=create(d.id(),original);
+            rows.add(valid.id()+"|"+valid.title());
+        }
+        Files.write(file,rows,java.nio.charset.StandardCharsets.UTF_8);
+    }
     public static Summary summarize(Collection<Doc> docs) { Map<String,Integer> initials=docs.stream().collect(Collectors.toMap(d->d.title().substring(0,1).toUpperCase(Locale.ROOT),d->1,Integer::sum)); return new Summary(docs.size(),Map.copyOf(initials)); }
     public static List<String> removeBlank(List<String> titles) { return titles.stream().filter(s->!s.isBlank()).toList(); }
     public static long sum(int[] values) { long total=0; for(int value:values)total+=value; return total; }
