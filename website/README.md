@@ -8,6 +8,10 @@ Website học tập tại **[VanDung279206.github.io/JavaBackend_AI_RoadMap](htt
 - Java thí điểm 20 bài tăng mức; nhánh thử thách cần đủ tiên quyết. Bài đọc/bằng chứng tự đối chiếu lưu trên thiết bị, tách tiến độ bài và verified từ worker.
 - `/projects/mine`: năm bước tự thiết kế, đề cương Markdown chỉnh sửa/xuất được, sáu mốc và checklist kỹ năng; hỗ trợ chọn RAG lab riêng. Đề cương lưu trên thiết bị theo tài khoản/khách, chưa đồng bộ máy chủ.
 
+Lưu bài học và bản nháp dùng Web Locks trên HTTPS (hoặc localhost). Mỗi thay đổi ghép theo bài/trường với bản lưu mới nhất trong khóa ghi chung giữa các tab, kể cả khi sự kiện `storage` đến chậm. Nếu hai tab sửa cùng một trường, lần ghi sau trong khóa có hiệu lực; các trường khác được giữ. Trình duyệt thiếu Web Locks sẽ báo lỗi và từ chối ghi, bản lưu gốc vẫn xuất được. Lỗi validation/tạo đề cương/hết dung lượng không khóa form; dữ liệu lưu bị hỏng vẫn khóa ghi để bảo vệ bản gốc.
+
+Mỗi trường dự án cho phép 50.000 ký tự. Đề cương và bản đề cương trước dùng giới hạn riêng đủ chứa tổng đầu vào và phần user stories sinh thêm; ô chỉnh Markdown dùng cùng giới hạn với bộ đọc dữ liệu.
+
 Khi đưa nhánh Java_Roadmap_V2 vào môi trường đang dùng V4–V6, áp dụng lại `database/catalogue_seed.sql` để đăng ký 20 ID JP01–JP20. Không cần migration mới cho dữ liệu chỉ lưu trên thiết bị.
 
 - 🗺️ Roadmap chính và các track mở rộng sinh từ `learning/catalogue.json`
