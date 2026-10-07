@@ -159,10 +159,20 @@ Hàm phụ: normalize/create đã triển khai ở JP03/JP07. Đối chiếu `py
 
 ## JP15 — Lưu và tải lại danh mục
 
-Kiểm delimiter bảo đảm round trip. Bài mở rộng có thể thay bằng JSON hoặc ghi file tạm rồi atomic move, nhưng phải nêu phạm vi bảo đảm.
+Kiểm delimiter trên tiêu đề gốc trước khi `strip()`: nếu chuẩn hóa trước, CR/LF ở đầu hoặc cuối bị xóa và đầu vào sai sẽ được chấp nhận. Kiểm toàn bộ các dòng trước khi ghi để giữ nguyên file khi validation thất bại. Bài mở rộng có thể thay bằng JSON hoặc ghi file tạm rồi atomic move, nhưng phải nêu phạm vi bảo đảm.
 
 ```java
-public static void save(Path file,Collection<Doc> docs) throws IOException { var rows=new ArrayList<String>(); for(Doc d:docs.stream().sorted(Comparator.comparingLong(Doc::id)).toList()) { Doc valid=create(d.id(),d.title()); if(valid.title().contains("|")||valid.title().contains("\n")||valid.title().contains("\r"))throw new IllegalArgumentException("unsupported delimiter"); rows.add(valid.id()+"|"+valid.title()); } Files.write(file,rows,java.nio.charset.StandardCharsets.UTF_8); }
+public static void save(Path file,Collection<Doc> docs) throws IOException {
+    var rows=new ArrayList<String>();
+    for(Doc d:docs.stream().sorted(Comparator.comparingLong(Doc::id)).toList()) {
+        String original=d.title();
+        if(original!=null&&(original.contains("|")||original.contains("\n")||original.contains("\r")))
+            throw new IllegalArgumentException("unsupported delimiter");
+        Doc valid=create(d.id(),original);
+        rows.add(valid.id()+"|"+valid.title());
+    }
+    Files.write(file,rows,java.nio.charset.StandardCharsets.UTF_8);
+}
 ```
 
 Hàm phụ: normalize/create đã triển khai ở JP03/JP07. Đối chiếu `py scripts/check.py --track java-pilot --id JP15` trên starter của bạn; thêm một input mới và giải thích kết quả trước khi đánh dấu đã làm.
