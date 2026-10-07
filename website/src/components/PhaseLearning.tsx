@@ -36,7 +36,10 @@ function Workspace({ phase }: { phase: string }) {
     const practiced = lesson.exercise_ids.filter(id => state.entries[id]?.status === 'self_completed');
     const verified = lesson.exercise_ids.filter(id => state.verified.includes(id));
     function choose(id: string) { setSelected(id); window.history.replaceState(null, '', `#${id}`); }
-    function patch(value: Partial<typeof progress>) { store.save({ ...store.value, [lesson.id]: { ...progress, ...value } }); }
+    function patch(value: Partial<typeof progress>) {
+        const id = lesson.id;
+        void store.save(latest => ({ ...latest, [id]: { ...(latest[id] ?? emptyLesson()), ...value } }));
+    }
     const filtered = exercises.filter(item => level === 'all' || (level === 'pilot' ? item.track === 'java-pilot' : ('kind' in item && item.kind === level)));
     return <>
         <nav className="course-steps" aria-label="Bốn phần học chặng">{steps.map((label, index) => <button type="button" key={label} aria-current={step === index ? 'step' : undefined} onClick={() => setStep(index)}><span>{index + 1}</span>{label}</button>)}</nav>
@@ -47,10 +50,10 @@ function Workspace({ phase }: { phase: string }) {
                 <article className="learning-card course-lesson"><CourseMarkdown>{lesson.markdown}</CourseMarkdown>
                     <details key={lesson.id}><summary>Đối chiếu câu trả lời hiểu bài</summary><p>{lesson.answer}</p></details>
                     <div className="lesson-progress"><h2>Đọc → làm → kiểm chứng</h2><p>Đã đọc: {progress.read ? 'có' : 'chưa'} · Đã làm bài: {practiced.length}/{lesson.exercise_ids.length} · Đạt test từ worker: {verified.length}/{lesson.exercise_ids.length}</p>
-                        <label><input type="checkbox" checked={progress.read} disabled={!store.ready || !!store.error} onChange={event => patch({ read: event.target.checked })} />Đánh dấu đã đọc</label>
+                        <label><input type="checkbox" checked={progress.read} disabled={!store.ready || store.blocked} onChange={event => patch({ read: event.target.checked })} />Đánh dấu đã đọc</label>
                         <p>Đã đọc và bằng chứng bên dưới lưu trên thiết bị theo tài khoản/khách, chưa đồng bộ máy chủ. Bài đã làm dùng tiến độ hiện có. Tự đối chiếu không cấp verified PASS hoặc điểm xếp hạng.</p>
-                        <label>Lệnh chạy, input, expected/actual và giải thích kết quả<textarea maxLength={20000} disabled={!store.ready || !!store.error} value={progress.evidence} onChange={event => patch({ evidence: event.target.value, checkedAt: null })} /></label>
-                        <button disabled={!store.ready || !!store.error || !progress.evidence.trim()} onClick={() => patch({ checkedAt: new Date().toISOString() })}>Xác nhận đã kiểm chứng kết quả trên máy</button>
+                        <label>Lệnh chạy, input, expected/actual và giải thích kết quả<textarea maxLength={20000} disabled={!store.ready || store.blocked} value={progress.evidence} onChange={event => patch({ evidence: event.target.value, checkedAt: null })} /></label>
+                        <button disabled={!store.ready || store.blocked || !progress.evidence.trim()} onClick={() => patch({ checkedAt: new Date().toISOString() })}>Xác nhận đã kiểm chứng kết quả trên máy</button>
                         {progress.checkedAt && <p>Đã kiểm chứng (tự đối chiếu): {new Date(progress.checkedAt).toLocaleString('vi-VN', { timeZone: 'Asia/Bangkok' })}</p>}
                         <p role="status">{store.error || (store.ready ? 'Đã lưu trên thiết bị.' : 'Đang tải…')}</p>
                         <div className="learning-actions"><button disabled={!store.ready} onClick={() => downloadText('lesson-progress.json', store.raw() ?? JSON.stringify(store.value), 'application/json')}>Tải bản lưu bài học</button>{lesson.exercise_ids.map(id => <Link key={id} href={`/docs/${catalogue.exercises.find(item => item.id === id)!.phase}#${id}`}>Làm {id}</Link>)}</div>
