@@ -37,11 +37,18 @@ Các ca đồng thời ở trên chạy bằng harness với hai ngữ cảnh đ
 
 Các ca giữ khóa và click handler dùng harness trên logic thực tế và render component, chưa phải kiểm thử trình duyệt.
 
+## Kiểm nâng cấp nhập bản lưu và bảo vệ tiến độ — 2026-10-08
+
+- `npm test`: 48/48 PASS. Nhập dự án được kiểm định dạng trước khi ghi và đọc lại được sau reload; nhập bài học giữ các ID vắng trong file. Hai ngữ cảnh giữ khóa chứng minh bản xem trước cũ không ghi đè dữ liệu vừa sửa ở tab khác. Nhập bị từ chối khi đang lưu hoặc bản hiện tại bị hỏng.
+- Component nhập JSON được kiểm chọn file → xem trước → áp dụng/hủy, file sai schema, JSON hỏng, lỗi đọc và file quá lớn; chọn file không tự sửa dữ liệu. Nhập lỗi vẫn cho chọn lại/thử lại.
+- Kiểm `beforeunload`: yêu cầu cảnh báo khi còn ghi chờ; hết ghi thành công hoặc thất bại thì bỏ cảnh báo. Handler kiểm chứng từ màn hình cũ bị từ chối nếu bằng chứng đã được tab khác sửa; không ghi timestamp xác nhận cho bằng chứng chưa xem.
+- `npm run lint`, `npm run build` và postbuild PASS, 36 trang tĩnh. Kiểm bằng harness và render component; chưa ghi nhận luồng chọn file/cảnh báo native là kiểm trình duyệt thực.
+
 ## Phạm vi cần biết khi triển khai
 
 - Đọc bài học, bằng chứng tự đối chiếu và đề cương lưu trên thiết bị theo tài khoản/khách; chưa đồng bộ máy chủ. Có nút tải bản lưu. Tiến độ bài tập và verified worker tiếp tục dùng hệ thống hiện có.
 - Khi triển khai tài khoản, áp dụng lại [catalogue seed](../database/catalogue_seed.sql) để đăng ký JP01–JP20; chưa sửa database từ phiên này.
 - Chấm Java/Maven trên web vẫn phụ thuộc worker cô lập; tự đánh dấu hoặc chạy solution không tạo verified PASS.
-- Chưa push branch hoặc deploy website. Chưa thí điểm với người học mới; thời lượng và độ khó cần hiệu chỉnh từ dữ liệu học thực tế trước khi tăng số bài chặng khác.
+- Branch đang được review trong PR #9; chưa deploy website. Chưa thí điểm với người học mới; thời lượng và độ khó cần hiệu chỉnh từ dữ liệu học thực tế trước khi tăng số bài chặng khác.
 
 Xem [lịch học](../learning/README.md), [20 bài Java](../java-pilot/EXERCISES.md) và [tiêu chí dự án riêng](MY_PROJECT.md).
