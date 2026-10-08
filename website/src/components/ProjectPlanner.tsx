@@ -7,8 +7,10 @@ import { localKey } from '@/lib/course-core';
 import { useLocalDraft } from '@/lib/useLocalDraft';
 import { criteria, emptyProject, generateOutline, parseProject, projectIdeas, scopeReady, PROJECT_FIELD_LIMIT, PROJECT_OUTLINE_LIMIT, type ProjectDraft, type ProjectField } from '@/lib/project-core';
 import { downloadText } from '@/lib/download';
+import DraftBackup from './DraftBackup';
 
 const empty = emptyProject();
+const describeBackup = (draft: ProjectDraft) => `Dự án: ${draft.name.slice(0, 120) || '(chưa đặt tên)'}. ${draft.outline ? 'Có đề cương và bản trước nếu đã lưu.' : 'Chưa có đề cương.'} Không cấp kết quả kiểm chứng kỹ năng.`;
 const steps = ['Chọn vấn đề', 'Chốt phạm vi', 'Thiết kế', 'Chia mốc', 'Bằng chứng & đề cương'];
 const fields: [ProjectField, string, string][][] = [
     [['name', 'Tên dự án', 'Ví dụ: Góc mượn đồ'], ['audience', 'Ứng dụng phục vụ ai?', 'Một nhóm người dùng cụ thể'], ['problem', 'Vấn đề cần giải quyết', 'Họ đang mất thời gian hoặc gặp khó khăn gì?'], ['objective', 'Mục tiêu và dấu hiệu thành công', 'Ứng dụng giúp họ làm việc gì?']],
@@ -56,5 +58,6 @@ function Planner() {
             {draft.outline && <details><summary>Xem trước đề cương</summary><div className="prose exercise-prose"><ReactMarkdown>{draft.outline}</ReactMarkdown></div></details>}
             <p>Chỉnh Markdown là sửa bản đề cương độc lập. Tạo lại sẽ dùng thông tin ở năm bước; bạn có thể khôi phục bản trước. Checklist trong Markdown cập nhật khi tạo lại, không tự đồng bộ từ sửa văn bản.</p>
         </section>}
+        <DraftBackup store={store} parse={parseProject} describe={describeBackup} maxBytes={32 * 1024 * 1024} policy="Áp dụng sẽ thay thế thông tin, đề cương và checklist của dự án hiện tại bằng nội dung trong file." />
     </>;
 }
