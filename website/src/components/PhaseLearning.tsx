@@ -7,10 +7,13 @@ import { useLearning } from '@/lib/learning-store';
 import { emptyLesson, lessonRecommendations, localKey, parseLessons, prerequisitesMet, type LessonProgress } from '@/lib/course-core';
 import { useLocalDraft } from '@/lib/useLocalDraft';
 import { downloadText } from '@/lib/download';
+import DraftBackup from './DraftBackup';
 
 const steps = ['Bài học', 'Luyện tập', 'Áp dụng vào dự án', 'Kiểm tra cuối chặng'];
 const empty: LessonProgress = {};
 const parse = (input: unknown) => parseLessons(input, catalogue.lessons.map(item => item.id));
+const mergeBackup = (latest: LessonProgress, imported: LessonProgress) => ({ ...latest, ...imported });
+const describeBackup = (value: LessonProgress) => `${Object.keys(value).length} bài: ${Object.keys(value).join(', ') || 'không có bài'}. Bằng chứng là tự đối chiếu, không cấp PASS từ worker.`;
 export default function PhaseLearning({ phase }: { phase: string }) {
     const state = useLearning();
     return <Workspace key={`${state.owner}:${phase}`} phase={phase} />;
@@ -38,7 +41,11 @@ function Workspace({ phase }: { phase: string }) {
     function choose(id: string) { setSelected(id); window.history.replaceState(null, '', `#${id}`); }
     function patch(value: Partial<typeof progress>) {
         const id = lesson.id;
-        void store.save(latest => ({ ...latest, [id]: { ...(latest[id] ?? emptyLesson()), ...value } }));
+        void store.save(latest => {
+            const next = latest[id] ?? emptyLesson();
+            if (value.checkedAt && next.evidence !== progress.evidence) throw Error('Evidence changed before confirmation');
+            return { ...latest, [id]: { ...next, ...value } };
+        });
     }
     function exportBackup() {
         const backup = store.backup();
@@ -71,5 +78,6 @@ function Workspace({ phase }: { phase: string }) {
         </section>}
         {step === 2 && <section className="learning-card"><CourseMarkdown>{course.applicationMarkdown}</CourseMarkdown><div className="learning-actions"><Link href="/projects">Xem dự án mẫu</Link><Link className="button-primary" href="/projects/mine">Tạo hoặc sửa đề cương của tôi →</Link></div></section>}
         {step === 3 && <section className="learning-card"><h2>Kiểm tra cuối chặng</h2><p>Làm với dữ liệu mới, lưu bài nộp và bằng chứng trước khi mở đối chiếu. Có thể làm đề mẫu như lab hoặc chuyển entity sang dự án riêng, giữ nguyên kỹ năng và ca lỗi cần kiểm. Tự chấm không cấp verified PASS.</p><CourseMarkdown>{course.examMarkdown}</CourseMarkdown><details><summary>Mở hướng dẫn chấm sau khi tự làm</summary><CourseMarkdown>{course.examSolution}</CourseMarkdown></details></section>}
+        <DraftBackup store={store} parse={parse} describe={describeBackup} merge={mergeBackup} maxBytes={4 * 1024 * 1024} policy="Các bài có trong file sẽ thay thế bản lưu của các bài đó; các bài khác được giữ nguyên. Tiến độ bài tập và verified từ worker không thay đổi." />
     </>;
 }
