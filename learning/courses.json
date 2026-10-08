@@ -1,0 +1,574 @@
+{
+  "courses": [
+    {
+      "phase": "01_Java",
+      "lesson_ids": [
+        "JAVA01",
+        "JAVA02",
+        "JAVA03",
+        "JAVA04",
+        "JAVA05",
+        "JAVA06",
+        "JAVA07",
+        "JAVA08"
+      ],
+      "application": "learning/applications/01_Java.md",
+      "exam": "exams/P1.md",
+      "exam_solution": "exams/solutions/P1.md"
+    },
+    {
+      "phase": "02_Http-Sql",
+      "lesson_ids": [
+        "HTTP01",
+        "SQL01",
+        "SQL02"
+      ],
+      "application": "learning/applications/02_Http-Sql.md",
+      "exam": "exams/P2.md",
+      "exam_solution": "exams/solutions/P2.md"
+    },
+    {
+      "phase": "03_Spring",
+      "lesson_ids": [
+        "SPRING01",
+        "SPRING02",
+        "SPRING03"
+      ],
+      "application": "learning/applications/03_Spring.md",
+      "exam": "exams/P3.md",
+      "exam_solution": "exams/solutions/P3.md"
+    },
+    {
+      "phase": "04_Quality",
+      "lesson_ids": [
+        "QUALITY01",
+        "QUALITY02",
+        "QUALITY03"
+      ],
+      "application": "learning/applications/04_Quality.md",
+      "exam": "exams/P4.md",
+      "exam_solution": "exams/solutions/P4.md"
+    },
+    {
+      "phase": "05_AI",
+      "lesson_ids": [
+        "AI01",
+        "AI02",
+        "AI03"
+      ],
+      "application": "learning/applications/05_AI.md",
+      "exam": "exams/P5.md",
+      "exam_solution": "exams/solutions/P5.md"
+    },
+    {
+      "phase": "06_RAG",
+      "lesson_ids": [
+        "RAG01",
+        "RAG02",
+        "RAG03"
+      ],
+      "application": "learning/applications/06_RAG.md",
+      "exam": "exams/P6.md",
+      "exam_solution": "exams/solutions/P6.md"
+    }
+  ],
+  "lessons": [
+    {
+      "id": "JAVA01",
+      "phase": "01_Java",
+      "title": "Trace chương trình và phương thức",
+      "objective": "Theo dõi biến qua từng dòng và mô tả hợp đồng một phương thức.",
+      "before": "P0.2: chạy main; biết int và println.",
+      "reading": "learning/lessons/JAVA01.md",
+      "example": "learning/examples/JAVA01.java",
+      "language": "java",
+      "command": "java learning/examples/JAVA01.java",
+      "expected": "2:1:1\n5:2:3\n6:3:6",
+      "answer": "1,2,3 vì total trở về 0 mỗi lần; không còn cộng dồn.",
+      "exercise_ids": [
+        "JP01",
+        "JP03",
+        "JP18",
+        "P1.1"
+      ],
+      "tags": [
+        "invariant",
+        "overflow"
+      ]
+    },
+    {
+      "id": "JAVA02",
+      "phase": "01_Java",
+      "title": "Class, object và tham chiếu",
+      "objective": "Phân biệt bản thiết kế, instance và biến tham chiếu.",
+      "before": "JAVA01; biết gọi phương thức.",
+      "reading": "learning/lessons/JAVA02.md",
+      "example": "learning/examples/JAVA02.java",
+      "language": "java",
+      "command": "java learning/examples/JAVA02.java",
+      "expected": "1:1:0",
+      "answer": "Hai Shelf, ba biến tham chiếu; first và second cùng trỏ Shelf đầu.",
+      "exercise_ids": [
+        "JP02",
+        "JP07"
+      ],
+      "tags": [
+        "state"
+      ]
+    },
+    {
+      "id": "JAVA03",
+      "phase": "01_Java",
+      "title": "Constructor và validation",
+      "objective": "Giữ invariant ngay khi tạo object và xử lý lỗi có chủ đích.",
+      "before": "JAVA02; if, null và String.",
+      "reading": "learning/lessons/JAVA03.md",
+      "example": "learning/examples/JAVA03.java",
+      "language": "java",
+      "command": "java learning/examples/JAVA03.java",
+      "expected": "1:Java\ninvalid document",
+      "answer": "Không. Cần isBlank; strip không tự từ chối kết quả rỗng.",
+      "exercise_ids": [
+        "JP03",
+        "JP07",
+        "JP10",
+        "P1.1"
+      ],
+      "tags": [
+        "validation"
+      ]
+    },
+    {
+      "id": "JAVA04",
+      "phase": "01_Java",
+      "title": "List và tìm phần tử",
+      "objective": "Trace thứ tự/chỉ số và xử lý trường hợp không tìm thấy.",
+      "before": "JAVA02–JAVA03; vòng lặp.",
+      "reading": "learning/lessons/JAVA04.md",
+      "example": "learning/examples/JAVA04.java",
+      "language": "java",
+      "command": "java learning/examples/JAVA04.java",
+      "expected": "[10, 30, 40]\nfalse",
+      "answer": "Index 1. Không nên vì index thay đổi sau thêm/xóa.",
+      "exercise_ids": [
+        "JP04",
+        "JP05",
+        "JP17"
+      ],
+      "tags": [
+        "off-by-one",
+        "invariant"
+      ]
+    },
+    {
+      "id": "JAVA05",
+      "phase": "01_Java",
+      "title": "Map và đếm theo khóa",
+      "objective": "Chọn Map khi cần tra cứu theo identity; hiểu put ghi đè.",
+      "before": "JAVA04; generics cơ bản.",
+      "reading": "learning/lessons/JAVA05.md",
+      "example": "learning/examples/JAVA05.java",
+      "language": "java",
+      "command": "java learning/examples/JAVA05.java",
+      "expected": "{java=2, sql=1}\n9",
+      "answer": "1 vì lượt thứ hai ghi đè lượt đầu.",
+      "exercise_ids": [
+        "JP06",
+        "JP08",
+        "JP16"
+      ],
+      "tags": [
+        "duplicates"
+      ]
+    },
+    {
+      "id": "JAVA06",
+      "phase": "01_Java",
+      "title": "Từ chối ID trùng trước mutation",
+      "objective": "Định nghĩa identity và giữ dữ liệu cũ khi thao tác lỗi.",
+      "before": "JAVA03 và JAVA05.",
+      "reading": "learning/lessons/JAVA06.md",
+      "example": "learning/examples/JAVA06.java",
+      "language": "java",
+      "command": "java learning/examples/JAVA06.java",
+      "expected": "duplicate\n{1=Java}",
+      "answer": "Không. Cần thao tác nguyên tử hoặc unique constraint/transaction ở lớp lưu trữ.",
+      "exercise_ids": [
+        "JP08",
+        "JP14",
+        "JP19",
+        "JP20",
+        "P1.2"
+      ],
+      "tags": [
+        "duplicates",
+        "transaction",
+        "stale-write"
+      ]
+    },
+    {
+      "id": "JAVA07",
+      "phase": "01_Java",
+      "title": "Bảo vệ dữ liệu bên trong",
+      "objective": "Phân biệt live view, bản sao và snapshot bất biến.",
+      "before": "JAVA02 và JAVA04.",
+      "reading": "learning/lessons/JAVA07.md",
+      "example": "learning/examples/JAVA07.java",
+      "language": "java",
+      "command": "java learning/examples/JAVA07.java",
+      "expected": "[Java]\nread-only\n[Java, SQL]",
+      "answer": "Không, wrapper là live view và sẽ thấy SQL; List.copyOf mới là snapshot cấu trúc.",
+      "exercise_ids": [
+        "JP09",
+        "JP16",
+        "P1.2"
+      ],
+      "tags": [
+        "state"
+      ]
+    },
+    {
+      "id": "JAVA08",
+      "phase": "01_Java",
+      "title": "Exception và file UTF-8",
+      "objective": "Phân biệt vắng dữ liệu với lỗi đọc; đóng tài nguyên và giữ bằng chứng.",
+      "before": "JAVA03, JAVA04 và biết try/catch.",
+      "reading": "learning/lessons/JAVA08.md",
+      "example": "learning/examples/JAVA08.java",
+      "language": "java",
+      "command": "java learning/examples/JAVA08.java",
+      "expected": "[Tiếng Việt, Java]\nmissing file",
+      "answer": "Không: file trống trả []; file thiếu ném IOException để caller phân biệt và phục hồi.",
+      "exercise_ids": [
+        "JP11",
+        "JP12",
+        "JP14",
+        "JP15",
+        "J03"
+      ],
+      "tags": [
+        "validation",
+        "state"
+      ]
+    },
+    {
+      "id": "HTTP01",
+      "phase": "02_Http-Sql",
+      "title": "Request/response và hợp đồng API",
+      "objective": "Đọc method, path, body, status và response; phân biệt lỗi dữ liệu với lỗi quyền.",
+      "before": "Java validation; biết JSON và luồng client/server.",
+      "reading": "learning/lessons/HTTP01.md",
+      "example": "learning/examples/HTTP01.java",
+      "language": "java",
+      "command": "java learning/examples/HTTP01.java",
+      "expected": "Response[status=400, body=title required]\nResponse[status=201, body=created: Java]",
+      "answer": "201 thể hiện tạo tài nguyên thành công; status không thay validation, handler phải thực sự kiểm dữ liệu.",
+      "exercise_ids": [
+        "P2.1"
+      ],
+      "tags": [
+        "validation",
+        "owner"
+      ]
+    },
+    {
+      "id": "SQL01",
+      "phase": "02_Http-Sql",
+      "title": "Truy vấn từng bước, JOIN và ràng buộc",
+      "objective": "Trace FROM → JOIN → WHERE → GROUP BY; hiểu unique/FK thay vì lọc lỗi ở ứng dụng.",
+      "before": "HTTP01; bảng, hàng, khóa.",
+      "reading": "learning/lessons/SQL01.md",
+      "example": "learning/examples/SQL01.py",
+      "language": "python",
+      "command": "py learning/examples/SQL01.py",
+      "expected": "[('An', 2), ('Binh', 0)]\nduplicate rejected",
+      "answer": "1 vì LEFT JOIN vẫn tạo một hàng có các cột docs null.",
+      "exercise_ids": [
+        "P2.2",
+        "P2.3"
+      ],
+      "tags": [
+        "duplicates",
+        "owner",
+        "ordering"
+      ]
+    },
+    {
+      "id": "SQL02",
+      "phase": "02_Http-Sql",
+      "title": "Transaction và rollback",
+      "objective": "Gộp nhiều thay đổi thành một đơn vị thành công hoặc thất bại.",
+      "before": "SQL01; exception và trạng thái trước/sau.",
+      "reading": "learning/lessons/SQL02.md",
+      "example": "learning/examples/SQL02.py",
+      "language": "python",
+      "command": "py learning/examples/SQL02.py",
+      "expected": "rollback\n[(10,), (5,)]",
+      "answer": "Có. Exception không thoát khối thì context có thể commit bước trừ tiền.",
+      "exercise_ids": [
+        "P2.4",
+        "JP14"
+      ],
+      "tags": [
+        "transaction",
+        "stale-write"
+      ]
+    },
+    {
+      "id": "SPRING01",
+      "phase": "03_Spring",
+      "title": "Request qua các lớp và dependency injection",
+      "objective": "Trace Controller → Service → Repository; dùng constructor để cung cấp dependency và fake khi test.",
+      "before": "HTTP01; interface và constructor.",
+      "reading": "learning/lessons/SPRING01.md",
+      "example": "learning/examples/SPRING01.java",
+      "language": "java",
+      "command": "java learning/examples/SPRING01.java",
+      "expected": "Controller\nRepository: Java",
+      "answer": "Inject fake repository ghi số lần gọi; blank phải bị từ chối trước save nên số lần là 0.",
+      "exercise_ids": [
+        "P3.1"
+      ],
+      "tags": [
+        "validation",
+        "state"
+      ]
+    },
+    {
+      "id": "SPRING02",
+      "phase": "03_Spring",
+      "title": "DTO, validation và lỗi API",
+      "objective": "Tách dữ liệu request/response khỏi entity và chặn field nhạy cảm.",
+      "before": "SPRING01; record và validation.",
+      "reading": "learning/lessons/SPRING02.md",
+      "example": "learning/examples/SPRING02.java",
+      "language": "java",
+      "command": "java learning/examples/SPRING02.java",
+      "expected": "an\nResponseDto[id=1, title=Java]",
+      "answer": "Không. DTO giới hạn payload; authentication và authorization cần kiểm riêng ở security/service.",
+      "exercise_ids": [
+        "P3.2",
+        "P4.2"
+      ],
+      "tags": [
+        "validation",
+        "owner"
+      ]
+    },
+    {
+      "id": "SPRING03",
+      "phase": "03_Spring",
+      "title": "Persistence, phân trang và optimistic locking",
+      "objective": "Hiểu lưu trữ, version và ranh giới transaction; nối mô phỏng với JPA thật.",
+      "before": "SQL02 và SPRING01–SPRING02.",
+      "reading": "learning/lessons/SPRING03.md",
+      "example": "learning/examples/SPRING03.java",
+      "language": "java",
+      "command": "java learning/examples/SPRING03.java",
+      "expected": "Row[title=SQL, version=1]\n409 conflict",
+      "answer": "Không. Mô phỏng một luồng; cần synchronized ở JVM hoặc optimistic locking/transaction tại database.",
+      "exercise_ids": [
+        "P3.3",
+        "P3.4",
+        "F01"
+      ],
+      "tags": [
+        "stale-write",
+        "transaction",
+        "overflow",
+        "ordering"
+      ]
+    },
+    {
+      "id": "QUALITY01",
+      "phase": "04_Quality",
+      "title": "Chọn ca kiểm thử từ hợp đồng",
+      "objective": "Chọn ca thường, biên, sai, và trạng thái sau lỗi; biết test chứng minh điều gì.",
+      "before": "Java và HTTP/SQL; expected/actual.",
+      "reading": "learning/lessons/QUALITY01.md",
+      "example": "learning/examples/QUALITY01.java",
+      "language": "java",
+      "command": "java learning/examples/QUALITY01.java",
+      "expected": "3 cases passed",
+      "answer": "Không. Chúng chỉ kiểm validate ID; phân quyền cần ca riêng với hai danh tính và dữ liệu khác chủ.",
+      "exercise_ids": [
+        "P4.1",
+        "JP17",
+        "JP18"
+      ],
+      "tags": [
+        "validation",
+        "off-by-one"
+      ]
+    },
+    {
+      "id": "QUALITY02",
+      "phase": "04_Quality",
+      "title": "Xác thực và phân quyền",
+      "objective": "Tách ai đang gọi khỏi họ được làm gì; kiểm owner trên mọi đường đọc/ghi.",
+      "before": "SPRING02; HTTP status.",
+      "reading": "learning/lessons/QUALITY02.md",
+      "example": "learning/examples/QUALITY02.java",
+      "language": "java",
+      "command": "java learning/examples/QUALITY02.java",
+      "expected": "401\n403\n200",
+      "answer": "Chưa thể suy ra. Phải ghi rõ vai trò/thao tác và thêm test cả cho phép và từ chối.",
+      "exercise_ids": [
+        "P4.2"
+      ],
+      "tags": [
+        "owner"
+      ]
+    },
+    {
+      "id": "QUALITY03",
+      "phase": "04_Quality",
+      "title": "Cấu hình, Docker và CI có bằng chứng",
+      "objective": "Tách config khỏi code; phân biệt test, đóng gói và chạy lại môi trường.",
+      "before": "QUALITY01; biến môi trường và lệnh terminal.",
+      "reading": "learning/lessons/QUALITY03.md",
+      "example": "learning/examples/QUALITY03.py",
+      "language": "python",
+      "command": "py learning/examples/QUALITY03.py",
+      "expected": "8080\n9090\ninvalid port",
+      "answer": "Chưa. Cần chứng minh container khởi động, config đúng, health/API hoạt động và dữ liệu bền sau restart nếu hợp đồng yêu cầu.",
+      "exercise_ids": [
+        "P4.3",
+        "P4.4",
+        "O01"
+      ],
+      "tags": [
+        "state",
+        "timeout"
+      ]
+    },
+    {
+      "id": "AI01",
+      "phase": "05_AI",
+      "title": "Gateway giả lập và prompt",
+      "objective": "Tách logic nghiệp vụ khỏi mô hình; giữ chỉ dẫn và dữ liệu ở vai trò riêng.",
+      "before": "SPRING01 và quyền owner.",
+      "reading": "learning/lessons/AI01.md",
+      "example": "learning/examples/AI01.java",
+      "language": "java",
+      "command": "java learning/examples/AI01.java",
+      "expected": "summary: Java",
+      "answer": "Không. Nó kiểm logic gọi gateway; model thật cần bộ đánh giá và bằng chứng riêng.",
+      "exercise_ids": [
+        "P5.1",
+        "P5.2"
+      ],
+      "tags": [
+        "owner",
+        "source",
+        "validation"
+      ]
+    },
+    {
+      "id": "AI02",
+      "phase": "05_AI",
+      "title": "Kiểm tra đầu ra có cấu trúc",
+      "objective": "Validate schema và ý nghĩa trước khi lưu/sử dụng output.",
+      "before": "AI01; DTO và validation.",
+      "reading": "learning/lessons/AI02.md",
+      "example": "learning/examples/AI02.java",
+      "language": "java",
+      "command": "java learning/examples/AI02.java",
+      "expected": "true\nfalse\nfalse",
+      "answer": "Không. Cần đối chiếu nguồn hoặc đánh giá nội dung; schema chỉ chứng minh hình dạng/luật trường.",
+      "exercise_ids": [
+        "P5.3"
+      ],
+      "tags": [
+        "validation",
+        "source"
+      ]
+    },
+    {
+      "id": "AI03",
+      "phase": "05_AI",
+      "title": "Timeout và retry hữu hạn",
+      "objective": "Đặt deadline, phân loại lỗi tạm thời và chặn retry vô hạn.",
+      "before": "AI01; exception và executor.",
+      "reading": "learning/lessons/AI03.md",
+      "example": "learning/examples/AI03.java",
+      "language": "java",
+      "command": "java learning/examples/AI03.java",
+      "expected": "timeout cancelled\nattempts=3",
+      "answer": "Trong hợp đồng này là tổng ba lần; định nghĩa rõ tránh off-by-one. cancel không bảo đảm mọi client dừng ngay.",
+      "exercise_ids": [
+        "P5.4",
+        "C03"
+      ],
+      "tags": [
+        "timeout",
+        "retry"
+      ]
+    },
+    {
+      "id": "RAG01",
+      "phase": "06_RAG",
+      "title": "Chunking và overlap",
+      "objective": "Trace cửa sổ, bảo đảm tiến lên và giữ metadata nguồn.",
+      "before": "List, chỉ số, string và validation.",
+      "reading": "learning/lessons/RAG01.md",
+      "example": "learning/examples/RAG01.java",
+      "language": "java",
+      "command": "java learning/examples/RAG01.java",
+      "expected": "0:4:ABCD\n3:7:DEFG\n6:9:GHI",
+      "answer": "Vẫn start cũ; không tiến nên phải từ chối trước vòng lặp.",
+      "exercise_ids": [
+        "P6.1"
+      ],
+      "tags": [
+        "off-by-one",
+        "invariant"
+      ]
+    },
+    {
+      "id": "RAG02",
+      "phase": "06_RAG",
+      "title": "Retrieval trước khi sinh câu trả lời",
+      "objective": "Lọc quyền trước top-k và đo retrieval bằng nguồn kỳ vọng.",
+      "before": "RAG01, Map và phân quyền.",
+      "reading": "learning/lessons/RAG02.md",
+      "example": "learning/examples/RAG02.java",
+      "language": "java",
+      "command": "java learning/examples/RAG02.java",
+      "expected": "[allowed]\nrecall@1=1.0",
+      "answer": "Rỗng vì top-1 là private; đúng thứ tự lọc giữ allowed.",
+      "exercise_ids": [
+        "P6.2",
+        "P6.4"
+      ],
+      "tags": [
+        "owner",
+        "ordering",
+        "source"
+      ]
+    },
+    {
+      "id": "RAG03",
+      "phase": "06_RAG",
+      "title": "Nguồn trích dẫn, thiếu dữ liệu và đánh giá",
+      "objective": "Validate citation thuộc context được phép; biết từ chối khi thiếu bằng chứng.",
+      "before": "RAG02 và AI02.",
+      "reading": "learning/lessons/RAG03.md",
+      "example": "learning/examples/RAG03.java",
+      "language": "java",
+      "command": "java learning/examples/RAG03.java",
+      "expected": "citation allowed\nreject unknown source\ninsufficient data",
+      "answer": "Không. Nó chỉ xác nhận membership; cần kiểm nguồn có hỗ trợ nội dung và người đọc được phép xem nguồn.",
+      "exercise_ids": [
+        "P6.3",
+        "P6.4",
+        "A01"
+      ],
+      "tags": [
+        "source",
+        "validation",
+        "stale-write"
+      ]
+    }
+  ]
+}

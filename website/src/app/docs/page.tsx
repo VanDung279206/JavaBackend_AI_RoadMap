@@ -21,7 +21,7 @@ export default function DocsPage() {
           return (
           <Link
             className="docs-card"
-            href={`/docs/${phase.slug}`}
+            href={`${/^0[1-6]_/.test(phase.slug) ? '/learn' : '/docs'}/${phase.slug}`}
             key={phase.slug}
             style={{ "--phase-color": phase.color } as CSSProperties}
           >
@@ -36,7 +36,7 @@ export default function DocsPage() {
             <span className="docs-card-output"><strong>Kết quả:</strong> {guide?.deliverable || "Starter của bạn, test và giải thích nguyên nhân."}</span>
             <div className="docs-card-bottom">
               <span>{phase.exercises} bài thực hành</span>
-              <strong>Mở bài tập <ArrowUpRight size={13} style={{ verticalAlign: "-2px" }} aria-hidden="true" /></strong>
+              <strong>{/^0[1-6]_/.test(phase.slug) ? 'Học chặng này' : 'Mở bài tập'} <ArrowUpRight size={13} style={{ verticalAlign: "-2px" }} aria-hidden="true" /></strong>
             </div>
           </Link>
           );

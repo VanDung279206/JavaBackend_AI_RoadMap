@@ -2,7 +2,7 @@
 from pathlib import Path
 import argparse, shutil, subprocess, tempfile
 p=argparse.ArgumentParser()
-p.add_argument('--track',choices=['practice','debug','mixed','concurrency','foundations','advanced'],default='practice')
+p.add_argument('--track',choices=['practice','debug','mixed','concurrency','foundations','advanced','java-pilot'],default='practice')
 p.add_argument('--mode',choices=['starter','solution'],default='starter')
 p.add_argument('--id',default='all',help='Exercise ID, comma-separated IDs, or all')
 p.add_argument('--seed',type=int,default=20260924,help='Seed for mixed checks')
@@ -11,7 +11,7 @@ java=shutil.which('java')
 if not java: p.error('Install JDK 17+; JDK 21 recommended.')
 compiler=[shutil.which('javac')] if shutil.which('javac') else [java,'-m','jdk.compiler/com.sun.tools.javac.Main']
 sources=sorted((root/a.track/a.mode).glob('*.java'))
-main={'practice':'PracticeChecks','debug':'BugChecks','mixed':'MixedChecks','concurrency':'ConcurrencyChecks','foundations':'FoundationsChecks','advanced':'RagSafetyChecks'}[a.track]
+main={'practice':'PracticeChecks','debug':'BugChecks','mixed':'MixedChecks','concurrency':'ConcurrencyChecks','foundations':'FoundationsChecks','advanced':'RagSafetyChecks','java-pilot':'PilotChecks'}[a.track]
 sources += [root/a.track/'tests'/(main+'.java')]
 try:
  with tempfile.TemporaryDirectory(prefix='roadmap-') as out:

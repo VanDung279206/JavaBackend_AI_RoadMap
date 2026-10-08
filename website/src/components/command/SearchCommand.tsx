@@ -10,6 +10,7 @@ const pages = [
   { label: "Trang chủ", href: "/" },
   { label: "Roadmap", href: "/roadmap" },
   { label: "Dự án thực tế", href: "/projects" },
+  { label: "Dự án của tôi — tạo và chỉnh đề cương", href: "/projects/mine" },
   { label: "Danh sách bài tập", href: "/docs" },
   { label: "Bài tập Phase 1 — Java", href: "/docs/01_Java" },
   { label: "Bài tập Phase 2 — HTTP & SQL", href: "/docs/02_Http-Sql" },
@@ -37,7 +38,7 @@ export default function SearchCommand() {
     return () => window.removeEventListener("keydown", handler);
   }, []);
 
-  const searchable = [...pages.map(p=>({...p, text:p.label})), ...catalogue.exercises.map(e=>({label:`${e.id} — ${e.title}`,href:`/docs/${e.phase}#${e.id}`,text:[e.id,e.title,e.markdown,e.phase,...e.tags,...e.tags.map(tag=>catalogue.tags[tag as keyof typeof catalogue.tags]||tag)].join(" ")}))];
+  const searchable = [...pages.map(p=>({...p, text:p.label})), ...catalogue.lessons.map(l=>({label:`Bài học ${l.id} — ${l.title}`,href:`/learn/${l.phase}#${l.id}`,text:[l.id,l.title,l.objective,...l.tags].join(' ')})), ...catalogue.exercises.map(e=>({label:`${e.id} — ${e.title}`,href:`/docs/${e.phase}#${e.id}`,text:[e.id,e.title,e.markdown,e.phase,...e.tags,...e.tags.map(tag=>catalogue.tags[tag as keyof typeof catalogue.tags]||tag)].join(" ")}))];
   const normalize = (s: string) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[đĐ]/g,"d").toLowerCase();
   const results = query.trim()
     ? searchable.filter(p => normalize(p.text).includes(normalize(query))).slice(0,60)

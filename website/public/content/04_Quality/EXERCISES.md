@@ -1,6 +1,6 @@
 # Phase 4 — Kiểm thử, quyền truy cập và triển khai
 
-Xem [lời giải](https://github.com/VanDung279206/JavaBackend_AI_RoadMap/blob/RoadMap_v3/phases/04_Quality/SOLUTIONS.md). DSA đi kèm: D09 và D12.
+Xem [lời giải](https://github.com/VanDung279206/JavaBackend_AI_RoadMap/blob/Java_Roadmap_V2/phases/04_Quality/SOLUTIONS.md). DSA đi kèm: D09 và D12.
 
 ## P4.1 — Hai người dùng · Trung bình
 

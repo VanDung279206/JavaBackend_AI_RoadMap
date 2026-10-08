@@ -1,5 +1,14 @@
 # Java Backend + AI Roadmap
 
+## Java_Roadmap_V2
+
+- **Học chặng này** (`/learn/<phase>`): sáu chặng, 23 bài học nhỏ với mục tiêu, tiên quyết, ví dụ chạy được, trace, lỗi/cách sửa, câu hỏi và bài thực hành; bốn phần Bài học → Luyện tập → Áp dụng vào dự án → Kiểm tra cuối chặng.
+- **20 bài Java thí điểm**: 6 đọc hiểu/có hướng dẫn, 6 tự triển khai, 4 kết hợp, 2 debug, 2 thử thách lựa chọn. Xem [đề bài](java-pilot/EXERCISES.md), [lịch 32 mốc đã cập nhật](learning/README.md).
+- **Dự án của tôi** (`/projects/mine`): quy trình năm bước, tự thiết kế dữ liệu/nghiệp vụ, tạo/sửa/xuất đề cương Markdown. Knowledge Assistant giữ làm mẫu; [tiêu chí chung](docs/MY_PROJECT.md) đánh giá theo kỹ năng, RAG có thể dùng lab riêng.
+- Tiến độ tách đã đọc, đã làm bài và bằng chứng tự đối chiếu/đạt test từ worker. Đọc và đề cương mới lưu theo tài khoản/khách trên thiết bị, chưa đồng bộ máy chủ; tải bản sao từ giao diện. Gợi ý ôn lỗi dẫn về bài học liên quan.
+
+Kiểm ví dụ: `py scripts/check_lessons.py`. Kiểm bản tham chiếu Java: `py scripts/check.py --track java-pilot --mode solution --id all`. Khi tự học sửa starter và bỏ `--mode solution`; output bản tham chiếu không cấp tiến độ. Để tài khoản đồng bộ các ID mới, áp dụng lại `database/catalogue_seed.sql` trên database hiện có. Nhánh này chưa tự triển khai website/database. Xem [kết quả kiểm chứng V2](docs/VALIDATION_V2.md).
+
 Repo tự học theo dự án quản lý tài liệu: **Java → HTTP/SQL → Spring Boot → kiểm thử và phân quyền → AI → RAG**. Mỗi phần gắn với bài tự làm, bằng chứng chạy và câu hỏi giải thích.
 
 ## RoadMap_v3

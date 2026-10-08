@@ -1,5 +1,7 @@
 # Dự án xuyên suốt: Knowledge Assistant
 
+Đây là **dự án mẫu**. Bạn có thể chọn [Dự án của tôi](MY_PROJECT.md), tạo đề cương ở `/projects/mine` và tự quyết mô hình dữ liệu/nghiệp vụ. Hai hướng dùng cùng tiêu chí kỹ năng; AI/RAG theo nhu cầu sản phẩm, hoặc RAG bằng lab riêng. Mỗi chặng học theo Bài học → Luyện tập → Áp dụng vào dự án → Kiểm tra cuối chặng.
+
 Đề xuất xây một backend quản lý tài liệu, sau đó bổ sung tóm tắt và hỏi đáp có nguồn. Phạm vi ban đầu sử dụng tài liệu văn bản hoặc Markdown để tập trung vào luồng xử lý.
 
 ## Các mốc

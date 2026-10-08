@@ -3988,4 +3988,25 @@ a.phase-card:hover .phase-card-content {
 .learning-progress-row select { max-width:100%; padding:.4rem; }
 .learning-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr)); gap:1rem; }
 .submission-source { font-family:monospace; min-height:180px!important; }
+.course-steps { display:flex; flex-wrap:wrap; gap:.5rem; margin:1.5rem 0; }
+.course-steps button { flex:1 1 160px; display:flex; align-items:center; gap:.5rem; padding:.9rem; background:var(--card); border:1px solid var(--border); border-radius:10px; text-align:left; cursor:pointer; }
+.course-steps button[aria-current="step"] { border-color:var(--foreground); background:var(--muted); font-weight:700; }
+.course-steps span { font-family:monospace; opacity:.65; }
+.course-layout { display:grid; grid-template-columns:minmax(200px,260px) minmax(0,1fr); gap:1.25rem; align-items:start; }
+.course-index { border:1px solid var(--border); border-radius:10px; padding:1rem; }
+.course-index ol { list-style:none; padding:0; }
+.course-index button { display:block; width:100%; padding:.75rem; text-align:left; border-bottom:1px solid var(--border); cursor:pointer; }
+.course-index button[aria-current="page"] { background:var(--muted); font-weight:700; }
+.course-index small { display:block; margin-top:.3rem; color:var(--muted-foreground); }
+.course-lesson { min-width:0; }
+.course-lesson pre { white-space:pre; overflow-x:auto; }
+.lesson-progress { margin-top:1.5rem; padding-top:1rem; border-top:1px solid var(--border); }
+.planner-form fieldset { border:0; padding:0; margin:0; }
+.planner-form input[type="checkbox"],.lesson-progress input[type="checkbox"] { width:auto; margin-right:.5rem; }
+.planner-form textarea { min-height:80px; }
+.project-outline { min-height:420px!important; font-family:monospace; line-height:1.6; }
+.learning-card details { margin:.8rem 0; }
+.learning-card summary { cursor:pointer; padding:.5rem 0; }
+.learning-card button:disabled,.course-steps button:disabled { cursor:not-allowed; opacity:.5; }
+@media(max-width:800px) { .course-layout { grid-template-columns:1fr; } .course-index ol { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); } }
 @media(max-width:700px) { .learning-tools { min-width:0; } .learning-progress-row { align-items:stretch; flex-direction:column; } .learning-progress-row label { flex:0 1 auto; } }

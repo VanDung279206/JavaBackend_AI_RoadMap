@@ -418,5 +418,105 @@
     "Ẩn nút admin ở frontend có ngăn request trực tiếp không?",
     "Giữ ID tài liệu của An nhưng đổi JWT subject sang Binh, quan sát RLS.",
     "USING/WITH CHECK ownership; giới hạn UPDATE theo cột; RPC lấy auth.uid và kiểm revision."
+  ],
+  "JP01": [
+    "Tách n/2 và phép cộng thành hai cột.",
+    "Ban đầu total=0; vòng đầu cộng 1.",
+    "Các lần cộng là 1,2,3; tổng cuối 6."
+  ],
+  "JP02": [
+    "Phép gán b=a có tạo danh sách mới không?",
+    "Theo dõi object được add thay vì chỉ theo tên biến.",
+    "a và b cùng object nên cả hai size đều 2."
+  ],
+  "JP03": [
+    "Xử lý null trước khi gọi phương thức String.",
+    "isBlank nhận chuỗi toàn whitespace; strip trả chuỗi mới.",
+    "Dùng title==null || title.isBlank(), rồi return title.strip()."
+  ],
+  "JP04": [
+    "Chỉ số bắt đầu từ 0.",
+    "Sau remove(1), C dịch sang vị trí 1.",
+    "Danh sách sau xóa là [A,C], sau add là [A,C,D]."
+  ],
+  "JP05": [
+    "So sánh ID thay vì title.",
+    "Return ngay khi tìm thấy, không return empty bên trong vòng.",
+    "if(doc.id()==id) return Optional.of(doc); sau vòng return Optional.empty()."
+  ],
+  "JP06": [
+    "Mỗi khóa lưu tổng số lần đã gặp.",
+    "getOrDefault(word,0)+1 hoặc merge(word,1,Integer::sum).",
+    "counts.merge(word,1,Integer::sum) cập nhật một lần cho mỗi word."
+  ],
+  "JP07": [
+    "Kiểm ID và tiêu đề trước khi tạo Doc.",
+    "Tái sử dụng normalize đã làm ở JP03.",
+    "if(id<=0) throw...; return new Doc(id,normalize(title));"
+  ],
+  "JP08": [
+    "put mặc định ghi đè nên phải kiểm trước.",
+    "Validate trước mutation; kiểm containsKey trên ID.",
+    "Tạo Doc hợp lệ, nếu containsKey ném lỗi, nếu không put."
+  ],
+  "JP09": [
+    "Chỉ unmodifiableList(input) có sao chép không?",
+    "Cần cả sao chép và chặn mutation.",
+    "List.copyOf(docs) thực hiện cả hai với phần tử không null."
+  ],
+  "JP10": [
+    "Không xóa bản cũ trước validation.",
+    "Tạo Doc mới rồi put đúng khóa.",
+    "Kiểm ID tồn tại, create(id,title), cuối cùng docs.put(id,next)."
+  ],
+  "JP11": [
+    "Đầu vào sai không phải giá trị mặc định.",
+    "Long.parseLong báo NumberFormatException khi sai hoặc tràn.",
+    "Bắt NumberFormatException/NullPointerException và bọc; sau parse kiểm <=0."
+  ],
+  "JP12": [
+    "File trống khác file không tồn tại.",
+    "Files.lines phải nằm trong try-with-resources.",
+    "lines.map(String::strip).filter(s->!s.isEmpty()).toList()."
+  ],
+  "JP13": [
+    "Lọc trước rồi sắp xếp bản kết quả.",
+    "Có hai tiêu đề bằng nhau thì cần khóa phụ.",
+    "Comparator.comparing(Doc::title).thenComparingLong(Doc::id)."
+  ],
+  "JP14": [
+    "Mutation trực tiếp để lại nửa batch khi lỗi.",
+    "Dùng Map tạm chứa dữ liệu cũ, chỉ commit sau vòng.",
+    "new LinkedHashMap<>(docs), validate/add mọi dòng, rồi clear và putAll."
+  ],
+  "JP15": [
+    "Định dạng phải đọc lại mà không mất dữ liệu.",
+    "Kiểm mọi dòng trước khi Files.write.",
+    "Tạo rows đã sort và validate, Files.write(file,rows,UTF_8)."
+  ],
+  "JP16": [
+    "count là số tài liệu, không phải số nhóm.",
+    "Gom theo substring(0,1).toUpperCase(Locale.ROOT).",
+    "Đếm bằng merge hoặc collectors; bọc Map.copyOf."
+  ],
+  "JP17": [
+    "Sau remove(i), phần tử sau dịch về i.",
+    "Vòng i++ đang bỏ qua phần tử vừa dịch.",
+    "Duyệt lùi, removeIf trên bản sao hoặc filter stream."
+  ],
+  "JP18": [
+    "Tràn xảy ra khi cộng, trước return.",
+    "Accumulator phải là long ngay từ đầu.",
+    "long total=0; for(int value:values) total+=value; return total;"
+  ],
+  "JP19": [
+    "Khóa chỉ có ID sẽ trộn người dùng.",
+    "Record Key(owner,id) tự định nghĩa equality theo cả hai field.",
+    "LinkedHashMap<Key,Owned> và putIfAbsent rồi List.copyOf(values)."
+  ],
+  "JP20": [
+    "Check và update phải là một thao tác nguyên tử.",
+    "Khóa cùng monitor cho rename và getters; không chỉ volatile version.",
+    "synchronized rename: validate, so version, đổi title và tăng; getters synchronized."
   ]
 }

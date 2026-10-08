@@ -7,6 +7,9 @@ import catalogue from "@/generated/catalogue.json";
 import LearningTools from "@/components/LearningTools";
 import CodePlayground from "@/components/CodePlayground";
 import { getPlaygroundSeed } from "@/lib/playground-seeds";
+import { useLearning } from "@/lib/learning-store";
+import { prerequisitesMet } from "@/lib/course-core";
+import Link from "next/link";
 
 type ExerciseLabel = { id: string; label: string };
 type ExerciseBlock = { id: string; title: string; markdown: string; solution: string };
@@ -64,6 +67,7 @@ function formatTables(markdown: string) {
 function localCheck(id: string) { return catalogue.exercises.find(e => e.id === id)?.check ?? null; }
 
 export default function ExerciseViewer({ phase, exercises, solutions, exerciseLabels }: Props) {
+  const state = useLearning();
   const exerciseData = useMemo(() => splitByExercise(exercises), [exercises]);
   const solutionData = useMemo(() => splitByExercise(solutions), [solutions]);
   const phaseCriteria = useMemo(() => getPhaseCriteria(exercises), [exercises]);
@@ -101,6 +105,8 @@ export default function ExerciseViewer({ phase, exercises, solutions, exerciseLa
   const seed = getPlaygroundSeed(active.id);
   const local = localCheck(active.id);
   const number = catalogue.phases.find(p=>p.slug===phase)?.number ?? "";
+  const entry = catalogue.exercises.find(item => item.id === active.id)!;
+  const locked = 'kind' in entry && entry.kind === 'challenge' && !prerequisitesMet(entry.prerequisites, state.entries);
 
   return (
     <div className="exercise-workspace">
@@ -140,6 +146,7 @@ export default function ExerciseViewer({ phase, exercises, solutions, exerciseLa
           <div className="exercise-phase-note"><ReactMarkdown>{formatTables(exerciseData.intro.replace(/\[lời giải\]\([^)]*\)/gi, ""))}</ReactMarkdown></div>
         )}
 
+        {locked ? <section className="learning-card"><h3>Nhánh thử thách cần đủ nền tảng</h3><p>Tự xác nhận đã hoàn thành {entry.prerequisites.join(', ')} trong tiến độ trước khi mở bài nâng cao.</p><div className="learning-actions">{entry.prerequisites.map(id=><Link key={id} href={`/docs/${catalogue.exercises.find(e=>e.id===id)!.phase}#${id}`} onClick={()=>selectExercise(id)}>Làm {id}</Link>)}</div></section> : <>
         <div className="exercise-main-grid">
           <article className="exercise-prompt">
             <div className="exercise-section-label">Đề bài</div>
@@ -171,7 +178,7 @@ export default function ExerciseViewer({ phase, exercises, solutions, exerciseLa
                     <p className="local-run-note">{local.note}</p>
                     <div className="local-run-file"><span>File</span><code>{local.file}</code></div>
                     <div className="local-run-command"><span>Lệnh kiểm tra</span><pre><code>{local.command}</code></pre></div>
-                    {!local.file.startsWith("work/") && <a className="local-run-link" href={`https://github.com/VanDung279206/JavaBackend_AI_RoadMap/blob/RoadMap_v3/${local.file}`} target="_blank" rel="noreferrer">
+                    {!local.file.startsWith("work/") && <a className="local-run-link" href={`https://github.com/VanDung279206/JavaBackend_AI_RoadMap/blob/Java_Roadmap_V2/${local.file}`} target="_blank" rel="noreferrer">
                       Mở file trên GitHub <ExternalLink size={14} aria-hidden="true" />
                     </a>}
                   </>
@@ -204,6 +211,8 @@ export default function ExerciseViewer({ phase, exercises, solutions, exerciseLa
             <ReactMarkdown>{formatTables(active.solution)}</ReactMarkdown>
           </div>
         </details>
+
+        </>}
 
         {phaseCriteria && (
           <details className="phase-criteria">

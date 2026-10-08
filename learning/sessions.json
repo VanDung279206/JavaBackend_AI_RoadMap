@@ -9,7 +9,8 @@
     "exercise_ids": [
       "P0.1",
       "P0.2"
-    ]
+    ],
+    "lesson_ids": []
   },
   {
     "id": "S02",
@@ -21,50 +22,89 @@
     "exercise_ids": [
       "P0.3",
       "P0.4"
-    ]
+    ],
+    "lesson_ids": []
   },
   {
     "id": "S03",
-    "title": "P1.1 — Chuẩn hóa tiêu đề",
-    "required": "Ôn một bài đến hạn trong 5–10 phút; làm P1.1 trong starter; cuối buổi viết 3 câu tiếng Anh mô tả lỗi/cách sửa.",
-    "evidence": "Chạy python3 scripts/check.py --id P1.1; lưu input biên, kết quả và giải thích.",
-    "extension": "Làm D01; cuối mỗi phase tự chấm đề exams/P1.md trong một buổi riêng nếu cần.",
-    "reading": "phases/01_Java/EXERCISES.md",
+    "title": "Trace, phương thức và object",
+    "required": "Đọc JAVA01–JAVA03; dự đoán trước khi chạy; hoàn thiện JP01–JP03 rồi P1.1.",
+    "evidence": "Lưu dự đoán, lệnh check theo ID, expected/actual và ca biên. Chạy mốc dự án từ đầu, giải thích quyết định; buổi có thể chia nhỏ, không bỏ bài nền.",
+    "extension": "JP18 khi đã hiểu long.",
+    "reading": "java-pilot/EXERCISES.md",
     "exercise_ids": [
+      "JP01",
+      "JP02",
+      "JP03",
       "P1.1"
+    ],
+    "lesson_ids": [
+      "JAVA01",
+      "JAVA02",
+      "JAVA03"
     ]
   },
   {
     "id": "S04",
-    "title": "P1.2 — Danh mục tài liệu",
-    "required": "Ôn một bài đến hạn trong 5–10 phút; làm P1.2 trong starter; cuối buổi viết 3 câu tiếng Anh mô tả lỗi/cách sửa.",
-    "evidence": "Chạy python3 scripts/check.py --id P1.2; lưu input biên, kết quả và giải thích.",
-    "extension": "Làm D02; cuối mỗi phase tự chấm đề exams/P1.md trong một buổi riêng nếu cần.",
-    "reading": "phases/01_Java/EXERCISES.md",
+    "title": "Collections trước danh mục",
+    "required": "Đọc JAVA04–JAVA07; JP04–JP09 chia thành các phiên nhỏ; chỉ làm P1.2 sau kiểm ID trùng và snapshot.",
+    "evidence": "Lưu dự đoán, lệnh check theo ID, expected/actual và ca biên. Chạy mốc dự án từ đầu, giải thích quyết định; buổi có thể chia nhỏ, không bỏ bài nền.",
+    "extension": "JP17 để tái hiện lỗi xóa liên tiếp.",
+    "reading": "java-pilot/EXERCISES.md",
     "exercise_ids": [
+      "JP04",
+      "JP05",
+      "JP06",
+      "JP07",
+      "JP08",
+      "JP09",
       "P1.2"
+    ],
+    "lesson_ids": [
+      "JAVA04",
+      "JAVA05",
+      "JAVA06",
+      "JAVA07"
     ]
   },
   {
     "id": "S05",
-    "title": "P1.3 — Đếm từ theo hợp đồng rõ ràng",
-    "required": "Ôn một bài đến hạn trong 5–10 phút; làm P1.3 trong starter; cuối buổi viết 3 câu tiếng Anh mô tả lỗi/cách sửa.",
-    "evidence": "Chạy python3 scripts/check.py --id P1.3; lưu input biên, kết quả và giải thích.",
-    "extension": "Làm D03; cuối mỗi phase tự chấm đề exams/P1.md trong một buổi riêng nếu cần.",
-    "reading": "phases/01_Java/EXERCISES.md",
+    "title": "Exception, file và báo cáo",
+    "required": "Đọc JAVA08; đổi tiêu đề, parse ID, file UTF-8; nối Map vào báo cáo.",
+    "evidence": "Lưu dự đoán, lệnh check theo ID, expected/actual và ca biên. Chạy mốc dự án từ đầu, giải thích quyết định; buổi có thể chia nhỏ, không bỏ bài nền.",
+    "extension": "JP18; J01/J03 để ôn sâu.",
+    "reading": "java-pilot/EXERCISES.md",
     "exercise_ids": [
+      "JP10",
+      "JP11",
+      "JP12",
+      "JP16",
       "P1.3"
+    ],
+    "lesson_ids": [
+      "JAVA08"
     ]
   },
   {
     "id": "S06",
-    "title": "P1.4 — Tìm và sắp xếp",
-    "required": "Ôn một bài đến hạn trong 5–10 phút; làm P1.4 trong starter; cuối buổi viết 3 câu tiếng Anh mô tả lỗi/cách sửa.",
-    "evidence": "Chạy python3 scripts/check.py --id P1.4; lưu input biên, kết quả và giải thích.",
-    "extension": "Làm D04; cuối mỗi phase tự chấm đề exams/P1.md trong một buổi riêng nếu cần.",
-    "reading": "phases/01_Java/EXERCISES.md",
+    "title": "Tích hợp danh mục chạy lại được",
+    "required": "Tìm/sort, nhập batch nguyên tử, save/load; debug JP17–JP18; hoàn thiện Catalog CLI hoặc mốc Java dự án riêng; tự chấm exams/P1.md.",
+    "evidence": "Lưu dự đoán, lệnh check theo ID, expected/actual và ca biên. Chạy mốc dự án từ đầu, giải thích quyết định; buổi có thể chia nhỏ, không bỏ bài nền.",
+    "extension": "JP19 rồi JP20 chỉ sau đủ tiên quyết; chuyển sang nhánh concurrency nếu muốn.",
+    "reading": "java-pilot/EXERCISES.md",
     "exercise_ids": [
+      "JP13",
+      "JP14",
+      "JP15",
+      "JP17",
+      "JP18",
       "P1.4"
+    ],
+    "lesson_ids": [
+      "JAVA05",
+      "JAVA06",
+      "JAVA07",
+      "JAVA08"
     ]
   },
   {
@@ -76,6 +116,9 @@
     "reading": "phases/02_Http-Sql/EXERCISES.md",
     "exercise_ids": [
       "P2.1"
+    ],
+    "lesson_ids": [
+      "HTTP01"
     ]
   },
   {
@@ -87,6 +130,9 @@
     "reading": "phases/02_Http-Sql/EXERCISES.md",
     "exercise_ids": [
       "P2.2"
+    ],
+    "lesson_ids": [
+      "SQL01"
     ]
   },
   {
@@ -98,6 +144,9 @@
     "reading": "phases/02_Http-Sql/EXERCISES.md",
     "exercise_ids": [
       "P2.3"
+    ],
+    "lesson_ids": [
+      "SQL01"
     ]
   },
   {
@@ -109,6 +158,9 @@
     "reading": "phases/02_Http-Sql/EXERCISES.md",
     "exercise_ids": [
       "P2.4"
+    ],
+    "lesson_ids": [
+      "SQL02"
     ]
   },
   {
@@ -120,6 +172,9 @@
     "reading": "phases/03_Spring/EXERCISES.md",
     "exercise_ids": [
       "P3.1"
+    ],
+    "lesson_ids": [
+      "SPRING01"
     ]
   },
   {
@@ -131,6 +186,9 @@
     "reading": "phases/03_Spring/EXERCISES.md",
     "exercise_ids": [
       "P3.2"
+    ],
+    "lesson_ids": [
+      "SPRING02"
     ]
   },
   {
@@ -142,6 +200,9 @@
     "reading": "phases/03_Spring/EXERCISES.md",
     "exercise_ids": [
       "P3.3"
+    ],
+    "lesson_ids": [
+      "SPRING03"
     ]
   },
   {
@@ -153,6 +214,9 @@
     "reading": "phases/03_Spring/EXERCISES.md",
     "exercise_ids": [
       "P3.4"
+    ],
+    "lesson_ids": [
+      "SPRING03"
     ]
   },
   {
@@ -164,6 +228,9 @@
     "reading": "phases/04_Quality/EXERCISES.md",
     "exercise_ids": [
       "P4.1"
+    ],
+    "lesson_ids": [
+      "QUALITY01"
     ]
   },
   {
@@ -175,6 +242,9 @@
     "reading": "phases/04_Quality/EXERCISES.md",
     "exercise_ids": [
       "P4.2"
+    ],
+    "lesson_ids": [
+      "QUALITY02"
     ]
   },
   {
@@ -186,6 +256,9 @@
     "reading": "phases/04_Quality/EXERCISES.md",
     "exercise_ids": [
       "P4.3"
+    ],
+    "lesson_ids": [
+      "QUALITY03"
     ]
   },
   {
@@ -197,6 +270,9 @@
     "reading": "phases/04_Quality/EXERCISES.md",
     "exercise_ids": [
       "P4.4"
+    ],
+    "lesson_ids": [
+      "QUALITY03"
     ]
   },
   {
@@ -208,6 +284,9 @@
     "reading": "phases/05_AI/EXERCISES.md",
     "exercise_ids": [
       "P5.1"
+    ],
+    "lesson_ids": [
+      "AI01"
     ]
   },
   {
@@ -219,6 +298,9 @@
     "reading": "phases/05_AI/EXERCISES.md",
     "exercise_ids": [
       "P5.2"
+    ],
+    "lesson_ids": [
+      "AI01"
     ]
   },
   {
@@ -230,6 +312,9 @@
     "reading": "phases/05_AI/EXERCISES.md",
     "exercise_ids": [
       "P5.3"
+    ],
+    "lesson_ids": [
+      "AI02"
     ]
   },
   {
@@ -241,6 +326,9 @@
     "reading": "phases/05_AI/EXERCISES.md",
     "exercise_ids": [
       "P5.4"
+    ],
+    "lesson_ids": [
+      "AI03"
     ]
   },
   {
@@ -252,6 +340,9 @@
     "reading": "phases/06_RAG/EXERCISES.md",
     "exercise_ids": [
       "P6.1"
+    ],
+    "lesson_ids": [
+      "RAG01"
     ]
   },
   {
@@ -263,6 +354,9 @@
     "reading": "phases/06_RAG/EXERCISES.md",
     "exercise_ids": [
       "P6.2"
+    ],
+    "lesson_ids": [
+      "RAG02"
     ]
   },
   {
@@ -274,6 +368,9 @@
     "reading": "phases/06_RAG/EXERCISES.md",
     "exercise_ids": [
       "P6.3"
+    ],
+    "lesson_ids": [
+      "RAG03"
     ]
   },
   {
@@ -285,6 +382,10 @@
     "reading": "phases/06_RAG/EXERCISES.md",
     "exercise_ids": [
       "P6.4"
+    ],
+    "lesson_ids": [
+      "RAG02",
+      "RAG03"
     ]
   },
   {
@@ -298,7 +399,8 @@
       "D13",
       "D14",
       "D15"
-    ]
+    ],
+    "lesson_ids": []
   },
   {
     "id": "S28",
@@ -310,6 +412,10 @@
     "exercise_ids": [
       "C01",
       "C02"
+    ],
+    "lesson_ids": [
+      "JAVA06",
+      "SPRING03"
     ]
   },
   {
@@ -321,6 +427,9 @@
     "reading": "english/ERROR_CLINIC.md",
     "exercise_ids": [
       "C03"
+    ],
+    "lesson_ids": [
+      "AI03"
     ]
   },
   {
@@ -335,7 +444,8 @@
       "M02",
       "M03",
       "M04"
-    ]
+    ],
+    "lesson_ids": []
   },
   {
     "id": "S31",
@@ -349,15 +459,17 @@
       "M06",
       "M07",
       "M08"
-    ]
+    ],
+    "lesson_ids": []
   },
   {
     "id": "S32",
     "title": "Chứng minh dự án cuối",
-    "required": "Chạy verify theo môi trường; làm checklist docs/PROJECT.md; viết mô tả đúng phạm vi đã chạy.",
+    "required": "Chạy lại dự án mẫu hoặc dự án riêng từ clone sạch; nộp repository, test, hướng dẫn chạy, demo và quyết định thiết kế. Chấm theo kỹ năng chung trong docs/MY_PROJECT.md; RAG có thể nộp lab riêng.",
     "evidence": "Báo cáo PASS/FAIL/BLOCKED; trace HTTP; với AI phải chấm ngữ nghĩa thủ công.",
     "extension": "Tự chạy lại từ bản clone sạch; kiểm tra evidence không chứa secrets.",
     "reading": "docs/RUNNING.md",
-    "exercise_ids": []
+    "exercise_ids": [],
+    "lesson_ids": []
   }
 ]

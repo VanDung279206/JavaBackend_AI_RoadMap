@@ -25,7 +25,7 @@
       "phase": "01_Java",
       "track": "practice",
       "prerequisites": [
-        "J01"
+        "JP03"
       ],
       "solution": "phases/01_Java/SOLUTIONS.md",
       "check": {
@@ -46,7 +46,11 @@
       "phase": "01_Java",
       "track": "practice",
       "prerequisites": [
-        "P1.1"
+        "P1.1",
+        "JP05",
+        "JP07",
+        "JP08",
+        "JP09"
       ],
       "solution": "phases/01_Java/SOLUTIONS.md",
       "check": {
@@ -87,7 +91,8 @@
       "phase": "01_Java",
       "track": "practice",
       "prerequisites": [
-        "P1.2"
+        "P1.2",
+        "JP13"
       ],
       "solution": "phases/01_Java/SOLUTIONS.md",
       "check": {
@@ -1753,6 +1758,492 @@
         "note": "Kiểm database fixture riêng; không cấp tiến độ cá nhân từ bản tham chiếu."
       },
       "playground": null
+    },
+    "JP01": {
+      "title": "Trace vòng lặp",
+      "tags": [
+        "invariant"
+      ],
+      "reading": "java-pilot/EXERCISES.md",
+      "phase": "01_Java",
+      "track": "java-pilot",
+      "prerequisites": [
+        "P0.2"
+      ],
+      "solution": "java-pilot/SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "java-pilot/starter/PilotLab.java",
+        "command": "py scripts/check.py --track java-pilot --id JP01",
+        "note": "Kiểm hợp đồng trên starter của bạn; lưu output thật. Bản tham chiếu không cấp tiến độ."
+      },
+      "skill": "Biến, vòng lặp, phép chia nguyên",
+      "level": "1. Đọc hiểu",
+      "required": true,
+      "kind": "read"
+    },
+    "JP02": {
+      "title": "Hai biến, một object",
+      "tags": [
+        "state"
+      ],
+      "reading": "java-pilot/EXERCISES.md",
+      "phase": "01_Java",
+      "track": "java-pilot",
+      "prerequisites": [
+        "JP01"
+      ],
+      "solution": "java-pilot/SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "java-pilot/starter/PilotLab.java",
+        "command": "py scripts/check.py --track java-pilot --id JP02",
+        "note": "Kiểm hợp đồng trên starter của bạn; lưu output thật. Bản tham chiếu không cấp tiến độ."
+      },
+      "skill": "Class/object và tham chiếu",
+      "level": "1. Đọc hiểu",
+      "required": true,
+      "kind": "read"
+    },
+    "JP03": {
+      "title": "Hoàn thiện phương thức chuẩn hóa",
+      "tags": [
+        "validation"
+      ],
+      "reading": "java-pilot/EXERCISES.md",
+      "phase": "01_Java",
+      "track": "java-pilot",
+      "prerequisites": [
+        "JP01"
+      ],
+      "solution": "java-pilot/SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "java-pilot/starter/PilotLab.java",
+        "command": "py scripts/check.py --track java-pilot --id JP03",
+        "note": "Kiểm hợp đồng trên starter của bạn; lưu output thật. Bản tham chiếu không cấp tiến độ."
+      },
+      "skill": "Phương thức và validation",
+      "level": "2. Có hướng dẫn",
+      "required": true,
+      "kind": "guided"
+    },
+    "JP04": {
+      "title": "Trace thêm và xóa List",
+      "tags": [
+        "off-by-one",
+        "state"
+      ],
+      "reading": "java-pilot/EXERCISES.md",
+      "phase": "01_Java",
+      "track": "java-pilot",
+      "prerequisites": [
+        "JP02"
+      ],
+      "solution": "java-pilot/SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "java-pilot/starter/PilotLab.java",
+        "command": "py scripts/check.py --track java-pilot --id JP04",
+        "note": "Kiểm hợp đồng trên starter của bạn; lưu output thật. Bản tham chiếu không cấp tiến độ."
+      },
+      "skill": "List, index và thứ tự",
+      "level": "1. Đọc hiểu",
+      "required": true,
+      "kind": "read"
+    },
+    "JP05": {
+      "title": "Điền tìm tài liệu theo ID",
+      "tags": [
+        "invariant"
+      ],
+      "reading": "java-pilot/EXERCISES.md",
+      "phase": "01_Java",
+      "track": "java-pilot",
+      "prerequisites": [
+        "JP04",
+        "JP03"
+      ],
+      "solution": "java-pilot/SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "java-pilot/starter/PilotLab.java",
+        "command": "py scripts/check.py --track java-pilot --id JP05",
+        "note": "Kiểm hợp đồng trên starter của bạn; lưu output thật. Bản tham chiếu không cấp tiến độ."
+      },
+      "skill": "List, Optional, vòng lặp",
+      "level": "2. Có hướng dẫn",
+      "required": true,
+      "kind": "guided"
+    },
+    "JP06": {
+      "title": "Điền bộ đếm Map",
+      "tags": [
+        "duplicates"
+      ],
+      "reading": "java-pilot/EXERCISES.md",
+      "phase": "01_Java",
+      "track": "java-pilot",
+      "prerequisites": [
+        "JP04"
+      ],
+      "solution": "java-pilot/SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "java-pilot/starter/PilotLab.java",
+        "command": "py scripts/check.py --track java-pilot --id JP06",
+        "note": "Kiểm hợp đồng trên starter của bạn; lưu output thật. Bản tham chiếu không cấp tiến độ."
+      },
+      "skill": "Map, getOrDefault và merge",
+      "level": "2. Có hướng dẫn",
+      "required": true,
+      "kind": "guided"
+    },
+    "JP07": {
+      "title": "Tạo object hợp lệ",
+      "tags": [
+        "validation"
+      ],
+      "reading": "java-pilot/EXERCISES.md",
+      "phase": "01_Java",
+      "track": "java-pilot",
+      "prerequisites": [
+        "JP03",
+        "JP02"
+      ],
+      "solution": "java-pilot/SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "java-pilot/starter/PilotLab.java",
+        "command": "py scripts/check.py --track java-pilot --id JP07",
+        "note": "Kiểm hợp đồng trên starter của bạn; lưu output thật. Bản tham chiếu không cấp tiến độ."
+      },
+      "skill": "Constructor, invariant, phương thức tạo",
+      "level": "3. Tự triển khai",
+      "required": true,
+      "kind": "implement"
+    },
+    "JP08": {
+      "title": "Từ chối ID trùng",
+      "tags": [
+        "duplicates",
+        "state"
+      ],
+      "reading": "java-pilot/EXERCISES.md",
+      "phase": "01_Java",
+      "track": "java-pilot",
+      "prerequisites": [
+        "JP07",
+        "JP06"
+      ],
+      "solution": "java-pilot/SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "java-pilot/starter/PilotLab.java",
+        "command": "py scripts/check.py --track java-pilot --id JP08",
+        "note": "Kiểm hợp đồng trên starter của bạn; lưu output thật. Bản tham chiếu không cấp tiến độ."
+      },
+      "skill": "Map, identity và invariant",
+      "level": "3. Tự triển khai",
+      "required": true,
+      "kind": "implement"
+    },
+    "JP09": {
+      "title": "Bảo vệ dữ liệu bên trong",
+      "tags": [
+        "state"
+      ],
+      "reading": "java-pilot/EXERCISES.md",
+      "phase": "01_Java",
+      "track": "java-pilot",
+      "prerequisites": [
+        "JP04",
+        "JP07"
+      ],
+      "solution": "java-pilot/SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "java-pilot/starter/PilotLab.java",
+        "command": "py scripts/check.py --track java-pilot --id JP09",
+        "note": "Kiểm hợp đồng trên starter của bạn; lưu output thật. Bản tham chiếu không cấp tiến độ."
+      },
+      "skill": "Defensive copy, immutable snapshot",
+      "level": "3. Tự triển khai",
+      "required": true,
+      "kind": "implement"
+    },
+    "JP10": {
+      "title": "Đổi tiêu đề không mất trạng thái",
+      "tags": [
+        "validation",
+        "state"
+      ],
+      "reading": "java-pilot/EXERCISES.md",
+      "phase": "01_Java",
+      "track": "java-pilot",
+      "prerequisites": [
+        "JP08",
+        "JP09"
+      ],
+      "solution": "java-pilot/SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "java-pilot/starter/PilotLab.java",
+        "command": "py scripts/check.py --track java-pilot --id JP10",
+        "note": "Kiểm hợp đồng trên starter của bạn; lưu output thật. Bản tham chiếu không cấp tiến độ."
+      },
+      "skill": "Validation và cập nhật Map",
+      "level": "3. Tự triển khai",
+      "required": true,
+      "kind": "implement"
+    },
+    "JP11": {
+      "title": "Chuyển chuỗi sang ID",
+      "tags": [
+        "validation",
+        "overflow"
+      ],
+      "reading": "java-pilot/EXERCISES.md",
+      "phase": "01_Java",
+      "track": "java-pilot",
+      "prerequisites": [
+        "JP03"
+      ],
+      "solution": "java-pilot/SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "java-pilot/starter/PilotLab.java",
+        "command": "py scripts/check.py --track java-pilot --id JP11",
+        "note": "Kiểm hợp đồng trên starter của bạn; lưu output thật. Bản tham chiếu không cấp tiến độ."
+      },
+      "skill": "Exception, parsing và lỗi biên",
+      "level": "3. Tự triển khai",
+      "required": true,
+      "kind": "implement"
+    },
+    "JP12": {
+      "title": "Đọc file UTF-8",
+      "tags": [
+        "state"
+      ],
+      "reading": "java-pilot/EXERCISES.md",
+      "phase": "01_Java",
+      "track": "java-pilot",
+      "prerequisites": [
+        "JP11"
+      ],
+      "solution": "java-pilot/SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "java-pilot/starter/PilotLab.java",
+        "command": "py scripts/check.py --track java-pilot --id JP12",
+        "note": "Kiểm hợp đồng trên starter của bạn; lưu output thật. Bản tham chiếu không cấp tiến độ."
+      },
+      "skill": "File, tài nguyên và IOException",
+      "level": "3. Tự triển khai",
+      "required": true,
+      "kind": "implement"
+    },
+    "JP13": {
+      "title": "Tìm kiếm và sắp xếp ổn định",
+      "tags": [
+        "ordering",
+        "validation"
+      ],
+      "reading": "java-pilot/EXERCISES.md",
+      "phase": "01_Java",
+      "track": "java-pilot",
+      "prerequisites": [
+        "JP08",
+        "JP09"
+      ],
+      "solution": "java-pilot/SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "java-pilot/starter/PilotLab.java",
+        "command": "py scripts/check.py --track java-pilot --id JP13",
+        "note": "Kiểm hợp đồng trên starter của bạn; lưu output thật. Bản tham chiếu không cấp tiến độ."
+      },
+      "skill": "Collections, comparator, validation",
+      "level": "4. Kết hợp",
+      "required": true,
+      "kind": "combine"
+    },
+    "JP14": {
+      "title": "Nhập danh mục nguyên tử",
+      "tags": [
+        "transaction",
+        "duplicates"
+      ],
+      "reading": "java-pilot/EXERCISES.md",
+      "phase": "01_Java",
+      "track": "java-pilot",
+      "prerequisites": [
+        "JP08",
+        "JP11"
+      ],
+      "solution": "java-pilot/SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "java-pilot/starter/PilotLab.java",
+        "command": "py scripts/check.py --track java-pilot --id JP14",
+        "note": "Kiểm hợp đồng trên starter của bạn; lưu output thật. Bản tham chiếu không cấp tiến độ."
+      },
+      "skill": "Parsing, Map, exception và rollback",
+      "level": "4. Kết hợp",
+      "required": true,
+      "kind": "combine"
+    },
+    "JP15": {
+      "title": "Lưu và tải lại danh mục",
+      "tags": [
+        "state",
+        "ordering"
+      ],
+      "reading": "java-pilot/EXERCISES.md",
+      "phase": "01_Java",
+      "track": "java-pilot",
+      "prerequisites": [
+        "JP12",
+        "JP14"
+      ],
+      "solution": "java-pilot/SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "java-pilot/starter/PilotLab.java",
+        "command": "py scripts/check.py --track java-pilot --id JP15",
+        "note": "Kiểm hợp đồng trên starter của bạn; lưu output thật. Bản tham chiếu không cấp tiến độ."
+      },
+      "skill": "File UTF-8, sorting, import",
+      "level": "4. Kết hợp",
+      "required": true,
+      "kind": "combine"
+    },
+    "JP16": {
+      "title": "Báo cáo danh mục",
+      "tags": [
+        "duplicates",
+        "state"
+      ],
+      "reading": "java-pilot/EXERCISES.md",
+      "phase": "01_Java",
+      "track": "java-pilot",
+      "prerequisites": [
+        "JP06",
+        "JP07",
+        "JP09"
+      ],
+      "solution": "java-pilot/SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "java-pilot/starter/PilotLab.java",
+        "command": "py scripts/check.py --track java-pilot --id JP16",
+        "note": "Kiểm hợp đồng trên starter của bạn; lưu output thật. Bản tham chiếu không cấp tiến độ."
+      },
+      "skill": "OOP, phương thức, Map và snapshot",
+      "level": "4. Kết hợp",
+      "required": true,
+      "kind": "combine"
+    },
+    "JP17": {
+      "title": "Debug xóa phần tử liên tiếp",
+      "tags": [
+        "off-by-one",
+        "state"
+      ],
+      "reading": "java-pilot/EXERCISES.md",
+      "phase": "01_Java",
+      "track": "java-pilot",
+      "prerequisites": [
+        "JP04",
+        "JP09"
+      ],
+      "solution": "java-pilot/SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "java-pilot/starter/PilotLab.java",
+        "command": "py scripts/check.py --track java-pilot --id JP17",
+        "note": "Kiểm hợp đồng trên starter của bạn; lưu output thật. Bản tham chiếu không cấp tiến độ."
+      },
+      "skill": "Debug List và off-by-one",
+      "level": "Debug",
+      "required": true,
+      "kind": "debug"
+    },
+    "JP18": {
+      "title": "Debug tổng bị tràn",
+      "tags": [
+        "overflow"
+      ],
+      "reading": "java-pilot/EXERCISES.md",
+      "phase": "01_Java",
+      "track": "java-pilot",
+      "prerequisites": [
+        "JP01"
+      ],
+      "solution": "java-pilot/SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "java-pilot/starter/PilotLab.java",
+        "command": "py scripts/check.py --track java-pilot --id JP18",
+        "note": "Kiểm hợp đồng trên starter của bạn; lưu output thật. Bản tham chiếu không cấp tiến độ."
+      },
+      "skill": "Debug kiểu số và overflow",
+      "level": "Debug",
+      "required": true,
+      "kind": "debug"
+    },
+    "JP19": {
+      "title": "Khóa ghép cho nhiều người dùng",
+      "tags": [
+        "owner",
+        "duplicates"
+      ],
+      "reading": "java-pilot/EXERCISES.md",
+      "phase": "01_Java",
+      "track": "java-pilot",
+      "prerequisites": [
+        "JP08",
+        "JP09",
+        "JP16"
+      ],
+      "solution": "java-pilot/SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "java-pilot/starter/PilotLab.java",
+        "command": "py scripts/check.py --track java-pilot --id JP19",
+        "note": "Kiểm hợp đồng trên starter của bạn; lưu output thật. Bản tham chiếu không cấp tiến độ."
+      },
+      "skill": "Identity, equals/hashCode và thiết kế",
+      "level": "5. Thử thách",
+      "required": false,
+      "kind": "challenge"
+    },
+    "JP20": {
+      "title": "Hai cập nhật cùng phiên bản",
+      "tags": [
+        "stale-write",
+        "state"
+      ],
+      "reading": "java-pilot/EXERCISES.md",
+      "phase": "01_Java",
+      "track": "java-pilot",
+      "prerequisites": [
+        "JP10",
+        "JP14",
+        "JP19"
+      ],
+      "solution": "java-pilot/SOLUTIONS.md",
+      "check": {
+        "kind": "java",
+        "file": "java-pilot/starter/PilotLab.java",
+        "command": "py scripts/check.py --track java-pilot --id JP20",
+        "note": "Kiểm hợp đồng trên starter của bạn; lưu output thật. Bản tham chiếu không cấp tiến độ."
+      },
+      "skill": "Concurrency, version và invariant",
+      "level": "5. Thử thách",
+      "required": false,
+      "kind": "challenge"
     }
   },
   "phases": [

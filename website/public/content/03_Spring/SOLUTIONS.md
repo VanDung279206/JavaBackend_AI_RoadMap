@@ -1,6 +1,6 @@
 # Lời giải Phase 3
 
-Các đoạn Spring bên dưới là mẫu tích hợp vào ứng dụng đang học, không phải một ứng dụng Spring hoàn chỉnh. Chúng cần entity, bean, security và datasource tương ứng. Phần tính toán phân trang độc lập nằm trong [BackendLab.java](https://github.com/VanDung279206/JavaBackend_AI_RoadMap/blob/RoadMap_v3/labs/src/BackendLab.java) và có kiểm tra chạy được.
+Các đoạn Spring bên dưới là mẫu tích hợp vào ứng dụng đang học, không phải một ứng dụng Spring hoàn chỉnh. Chúng cần entity, bean, security và datasource tương ứng. Phần tính toán phân trang độc lập nằm trong [BackendLab.java](https://github.com/VanDung279206/JavaBackend_AI_RoadMap/blob/Java_Roadmap_V2/labs/src/BackendLab.java) và có kiểm tra chạy được.
 
 ## P3.1 — DTO
 
