@@ -23,7 +23,7 @@ function renderWorkspace(area, store, downloads = []) {
                     return runtime[method](type, props, key);
                 }])) };
             }
-            if (name === 'next/link' || name === 'react-markdown' || name === './CourseMarkdown') return { default: () => null };
+            if (name === 'next/link' || name === 'react-markdown' || name === './CourseMarkdown' || name === './DraftBackup') return { default: () => null };
             if (name === '@/generated/catalogue.json') return { default: JSON.parse(readFileSync('src/generated/catalogue.json', 'utf8')) };
             if (name === '@/lib/learning-store') return { useLearning: () => ({ owner: null, entries: {}, verified: [] }) };
             if (name === '@/lib/useLocalDraft') return { useLocalDraft: () => store };
@@ -34,7 +34,10 @@ function renderWorkspace(area, store, downloads = []) {
         },
     });
     const html = require('react-dom/server').renderToStaticMarkup(require('react').createElement(module.exports.default, { phase: '01_Java' }));
-    return { html, backupButton: buttons.find(button => button.children === (area === 'project' ? 'Tải bản lưu JSON' : 'Tải bản lưu bài học')) };
+    return { html,
+        backupButton: buttons.find(button => button.children === (area === 'project' ? 'Tải bản lưu JSON' : 'Tải bản lưu bài học')),
+        confirmButton: buttons.find(button => button.children === 'Xác nhận đã kiểm chứng kết quả trên máy'),
+    };
 }
 const renderPlanner = store => renderWorkspace('project', store).html;
 function sharedBrowser() {
@@ -56,13 +59,21 @@ function harness(browser = sharedBrowser()) {
             if (browser.failWrite) throw Error('QuotaExceededError');
             storage.set(key, value);
         } },
-        window: { addEventListener: (name, handler) => handlers.push(handler) },
+        window: { addEventListener: (name, handler) => handlers.push({ name, handler }) },
         require(name) {
             assert.equal(name, 'react');
             return { useMemo: fn => fn(), useEffect: fn => fn(), useSyncExternalStore: (_subscribe, get) => get() };
         },
     });
-    return { storage, hook: module.exports.useLocalDraft, changed(key) { handlers.forEach(handler => handler({ key })); } };
+    return {
+        storage, hook: module.exports.useLocalDraft,
+        changed(key) { handlers.filter(item => item.name === 'storage').forEach(item => item.handler({ key })); },
+        leaving() {
+            const event = { defaultPrevented: false, returnValue: undefined, preventDefault() { this.defaultPrevented = true; } };
+            handlers.filter(item => item.name === 'beforeunload').forEach(item => item.handler(event));
+            return event;
+        },
+    };
 }
 async function holdWriteLock(browser, key) {
     let release, entered;
@@ -279,4 +290,76 @@ test('failed queued saves stop the saving status and never export their optimist
     assert.equal(await failed, false);
     assert.equal(get().saving, false); assert.ok(get().error);
     assert.equal(JSON.parse(get().backup()).name, 'Original');
+});
+
+test('leaving the page warns only while a write is queued and clears after success or failure', async () => {
+    const browser = sharedBrowser(), h = harness(browser), initial = emptyProject(), key = 'project:guest';
+    const get = () => h.hook(key, initial, parseProject);
+    get();
+    assert.equal(h.leaving().defaultPrevented, false);
+    for (const failWrite of [false, true]) {
+        browser.failWrite = failWrite;
+        const release = await holdWriteLock(browser, key);
+        const saved = get().save(latest => ({ ...latest, name: 'Pending' }));
+        assert.equal(h.leaving().defaultPrevented, true);
+        assert.equal(h.leaving().returnValue, '');
+        await release(); await saved;
+        assert.equal(h.leaving().defaultPrevented, false);
+    }
+});
+
+test('restoring a project is validated before mutation and survives refresh', async () => {
+    const h = harness(), key = 'project:guest', initial = emptyProject();
+    const get = () => h.hook(key, initial, parseProject);
+    get(); await get().save(latest => ({ ...latest, name: 'Original' }));
+    const baseline = get().raw();
+    assert.equal(await get().restore({ name: 'Incomplete' }, baseline), false);
+    assert.equal(get().raw(), baseline);
+    const imported = { ...initial, name: 'Imported', outline: '# My own project' };
+    assert.equal(await get().restore(imported, baseline), true);
+    const fresh = harness(); fresh.storage.set(key, get().raw()); fresh.hook(key, initial, parseProject);
+    assert.equal(fresh.hook(key, initial, parseProject).value.name, 'Imported');
+    assert.equal(fresh.hook(key, initial, parseProject).value.outline, '# My own project');
+});
+
+test('import compares the preview baseline inside the write lock and keeps newer edits from another tab', async () => {
+    const browser = sharedBrowser(), a = harness(browser), b = harness(browser), key = 'project:guest', initial = emptyProject();
+    const get = tab => tab.hook(key, initial, parseProject);
+    get(a); get(b); await get(a).save(latest => ({ ...latest, name: 'Original' }));
+    const baseline = get(a).raw(), release = await holdWriteLock(browser, key);
+    const edit = get(b).save(latest => ({ ...latest, name: 'Newer edit' }));
+    const imported = get(a).restore({ ...initial, name: 'Old backup' }, baseline);
+    await release();
+    assert.equal(await edit, true); assert.equal(await imported, false);
+    assert.equal(JSON.parse(get(a).raw()).name, 'Newer edit');
+    assert.match(get(a).error, /đã thay đổi/);
+});
+
+test('import refuses to overwrite pending or corrupt drafts and lesson merge preserves absent IDs', async () => {
+    const h = harness(), key = 'lessons:guest', initial = {}, parse = value => parseLessons(value, ['JAVA01', 'JAVA02']);
+    const get = () => h.hook(key, initial, parse);
+    get();
+    const row = { read: true, evidence: 'Original evidence', checkedAt: null };
+    const saved = get().save(latest => ({ ...latest, JAVA01: row }));
+    assert.equal(await get().restore({ JAVA02: row }, get().raw()), false);
+    await saved;
+    assert.equal(await get().restore({ JAVA02: row }, get().raw(), (latest, imported) => ({ ...latest, ...imported })), true);
+    assert.deepEqual(Object.keys(JSON.parse(get().raw())).sort(), ['JAVA01', 'JAVA02']);
+    h.storage.set(key, '{broken'); h.changed(key);
+    assert.equal(await get().restore({}, '{broken'), false);
+    assert.equal(get().backup(), '{broken');
+});
+
+test('a confirmation from a stale lesson view cannot verify evidence edited in another tab', async () => {
+    const browser = sharedBrowser(), a = harness(browser), b = harness(browser), key = 'lessons:guest', initial = {}, parse = value => parseLessons(value, ['JAVA01']);
+    const get = tab => tab.hook(key, initial, parse);
+    get(a); get(b);
+    await get(a).save(() => ({ JAVA01: { read: true, evidence: 'I checked this output', checkedAt: null } }));
+    const stale = renderWorkspace('lessons', get(a));
+    await get(b).save(latest => ({ ...latest, JAVA01: { ...latest.JAVA01, evidence: 'Changed output', checkedAt: null } }));
+    stale.confirmButton.onClick();
+    await browser.locks.request(`draft:${key}`, { mode: 'exclusive' }, () => {});
+    assert.equal(JSON.parse(get(a).raw()).JAVA01.checkedAt, null);
+    assert.equal(JSON.parse(get(a).raw()).JAVA01.evidence, 'Changed output');
+    assert.ok(get(a).error);
 });
