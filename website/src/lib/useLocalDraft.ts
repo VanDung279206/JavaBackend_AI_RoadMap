@@ -1,14 +1,17 @@
 "use client";
 import { useEffect, useMemo, useSyncExternalStore } from 'react';
 
-type Snapshot<T> = { value: T; ready: boolean; blocked: boolean; error: string };
+type Snapshot<T> = { value: T; ready: boolean; saving: boolean; blocked: boolean; error: string };
 function createStore<T>(key: string | null, empty: T, parse: (input: unknown) => T) {
-    const initial: Snapshot<T> = { value: empty, ready: false, blocked: false, error: '' };
+    const initial: Snapshot<T> = { value: empty, ready: false, saving: false, blocked: false, error: '' };
     let current = initial, started = false, locked = false;
     let savedValue = empty;
     const listeners = new Set<() => void>();
     const pending = new Map<symbol, (latest: T) => T>();
-    function publish(next: Snapshot<T>) { current = next; listeners.forEach(fn => fn()); }
+    function publish(next: Omit<Snapshot<T>, 'saving'>) {
+        current = { ...next, saving: pending.size > 0 };
+        listeners.forEach(fn => fn());
+    }
     function read() {
         const raw = localStorage.getItem(key!);
         return raw === null ? empty : parse(JSON.parse(raw));
@@ -76,6 +79,12 @@ function createStore<T>(key: string | null, empty: T, parse: (input: unknown) =>
             }
         },
         raw() { try { return key ? localStorage.getItem(key) : null; } catch { return null; } },
+        backup() {
+            // Check the live queue as well as the UI flag, so a stale click handler
+            // cannot export old bytes while an optimistic edit is waiting to save.
+            if (!key || !current.ready || (pending.size > 0 && !locked)) return null;
+            try { return localStorage.getItem(key) ?? JSON.stringify(savedValue); } catch { return null; }
+        },
     };
 }
 // One stable store per owner/area; account changes never reuse the guest snapshot.
@@ -88,5 +97,5 @@ export function useLocalDraft<T>(key: string | null, empty: T, parse: (input: un
     }, [key, empty, parse]);
     const state = useSyncExternalStore(store.subscribe, store.snapshot, () => store.initial);
     useEffect(() => { store.start(); }, [store]);
-    return { ...state, save: store.save, raw: store.raw };
+    return { ...state, save: store.save, raw: store.raw, backup: store.backup };
 }
