@@ -29,6 +29,14 @@ JDK thực chạy là 26.0.1, các checker biên dịch với `--release 17`. Py
 
 Các ca đồng thời ở trên chạy bằng harness với hai ngữ cảnh độc lập và hàng đợi khóa dùng chung; không ghi nhận chúng là kiểm trình duyệt thực. Khóa ghi cần Web Locks trên HTTPS/localhost; khi hai tab sửa cùng một trường, lần ghi sau trong khóa có hiệu lực. Bản nháp vẫn lưu tại thiết bị.
 
+## Kiểm review Dung06-tech về xuất JSON — 2026-10-08
+
+- `npm test`: 40/40 PASS. Giữ Web Lock bằng ngữ cảnh khác, đổi `Original` → `Updated` → `Latest`, kiểm cả trang dự án và bài học: trạng thái báo đang lưu, nút tải JSON khóa, handler cũ cũng không xuất dữ liệu cũ. Giữ khóa thêm giữa hai lần ghi để xác nhận chỉ mở xuất khi hết hàng đợi; JSON sau đó chứa `Latest`.
+- Bản lưu bị hỏng vẫn xuất đúng byte gốc ở cả hai trang. Lỗi ghi do quota kết thúc trạng thái đang lưu, báo lỗi và không xuất giá trị chỉ có trên giao diện.
+- `npm run lint`, `npm run build` và postbuild PASS; 36 trang tĩnh. `git diff --check` và `node scripts/build_catalogue.mjs --check` PASS.
+
+Các ca giữ khóa và click handler dùng harness trên logic thực tế và render component, chưa phải kiểm thử trình duyệt.
+
 ## Phạm vi cần biết khi triển khai
 
 - Đọc bài học, bằng chứng tự đối chiếu và đề cương lưu trên thiết bị theo tài khoản/khách; chưa đồng bộ máy chủ. Có nút tải bản lưu. Tiến độ bài tập và verified worker tiếp tục dùng hệ thống hiện có.
