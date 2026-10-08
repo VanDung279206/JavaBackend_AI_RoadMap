@@ -9,24 +9,34 @@ const { parseProject, emptyProject } = require('../.test-dist/project-core.js');
 const { parseLessons } = require('../.test-dist/course-core.js');
 const compiled = ts.transpileModule(readFileSync('src/lib/useLocalDraft.ts', 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020 } }).outputText;
 const plannerCode = ts.transpileModule(readFileSync('src/components/ProjectPlanner.tsx', 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020, jsx: ts.JsxEmit.ReactJSX } }).outputText;
-function renderPlanner(store) {
-    const module = { exports: {} };
-    runInNewContext(plannerCode, {
+const phaseCode = ts.transpileModule(readFileSync('src/components/PhaseLearning.tsx', 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020, jsx: ts.JsxEmit.ReactJSX } }).outputText;
+function renderWorkspace(area, store, downloads = []) {
+    const module = { exports: {} }, buttons = [];
+    runInNewContext(area === 'project' ? plannerCode : phaseCode, {
         module, exports: module.exports,
         require(name) {
-            if (name === 'react') return { useState: initial => [typeof initial === 'number' ? 4 : initial, () => {}] };
-            if (name === 'react/jsx-runtime') return require(name);
-            if (name === 'next/link' || name === 'react-markdown') return { default: () => null };
-            if (name === '@/lib/learning-store') return { useLearning: () => ({ owner: null }) };
+            if (name === 'react') return { useState: initial => [area === 'project' ? (typeof initial === 'number' ? 4 : 'Đã lưu trên thiết bị trong phạm vi tài khoản/khách này.') : initial, () => {}], useMemo: fn => fn(), useEffect: () => {} };
+            if (name === 'react/jsx-runtime') {
+                const runtime = require(name);
+                return { ...runtime, ...Object.fromEntries(['jsx', 'jsxs'].map(method => [method, (type, props, key) => {
+                    if (type === 'button') buttons.push(props);
+                    return runtime[method](type, props, key);
+                }])) };
+            }
+            if (name === 'next/link' || name === 'react-markdown' || name === './CourseMarkdown') return { default: () => null };
+            if (name === '@/generated/catalogue.json') return { default: JSON.parse(readFileSync('src/generated/catalogue.json', 'utf8')) };
+            if (name === '@/lib/learning-store') return { useLearning: () => ({ owner: null, entries: {}, verified: [] }) };
             if (name === '@/lib/useLocalDraft') return { useLocalDraft: () => store };
             if (name === '@/lib/project-core') return require('../.test-dist/project-core.js');
             if (name === '@/lib/course-core') return require('../.test-dist/course-core.js');
-            if (name === '@/lib/download') return { downloadText: () => {} };
+            if (name === '@/lib/download') return { downloadText: (...args) => downloads.push(args) };
             throw Error(`Unexpected import: ${name}`);
         },
     });
-    return require('react-dom/server').renderToStaticMarkup(require('react').createElement(module.exports.default));
+    const html = require('react-dom/server').renderToStaticMarkup(require('react').createElement(module.exports.default, { phase: '01_Java' }));
+    return { html, backupButton: buttons.find(button => button.children === (area === 'project' ? 'Tải bản lưu JSON' : 'Tải bản lưu bài học')) };
 }
+const renderPlanner = store => renderWorkspace('project', store).html;
 function sharedBrowser() {
     const storage = new Map(), queues = new Map();
     const locks = { request(name, options, action) {
@@ -53,6 +63,16 @@ function harness(browser = sharedBrowser()) {
         },
     });
     return { storage, hook: module.exports.useLocalDraft, changed(key) { handlers.forEach(handler => handler({ key })); } };
+}
+async function holdWriteLock(browser, key) {
+    let release, entered;
+    const acquired = new Promise(resolve => { entered = resolve; });
+    const held = browser.locks.request(`draft:${key}`, { mode: 'exclusive' }, () => {
+        entered();
+        return new Promise(resolve => { release = resolve; });
+    });
+    await acquired;
+    return async () => { release(); await held; };
 }
 test('local project draft survives refresh and never leaks into guest or another account', async () => {
     const h = harness(), initial = emptyProject();
@@ -188,4 +208,75 @@ test('unsupported lock API refuses unsafe writes and leaves the existing draft e
     assert.equal(await h.hook('project', initial, parseProject).save(latest => ({ ...latest, name: 'Overwrite' })), false);
     assert.equal(JSON.parse(h.hook('project', initial, parseProject).raw()).name, 'Original');
     assert.match(h.hook('project', initial, parseProject).error, /Web Locks/);
+});
+
+for (const area of ['project', 'lessons']) {
+    test(`${area} backup and success status wait for all saves while another context holds the lock`, async () => {
+        const browser = sharedBrowser(), h = harness(browser), key = `${area}:guest`, downloads = [];
+        const initial = area === 'project' ? emptyProject() : {};
+        const parse = area === 'project' ? parseProject : value => parseLessons(value, ['JAVA01']);
+        const change = label => latest => area === 'project' ? { ...latest, name: label } : { ...latest, JAVA01: { read: true, evidence: label, checkedAt: null } };
+        const get = () => h.hook(key, initial, parse);
+        get(); await get().save(change('Original'));
+        const stale = renderWorkspace(area, get(), downloads).backupButton;
+        const release = await holdWriteLock(browser, key);
+        const first = get().save(change('Updated'));
+        const betweenWrites = holdWriteLock(browser, key);
+        const second = get().save(change('Latest'));
+        try {
+            assert.equal(get().value[area === 'project' ? 'name' : 'JAVA01']?.evidence ?? get().value.name, 'Latest');
+            assert.equal(get().saving, true);
+            const view = renderWorkspace(area, get(), downloads);
+            assert.equal(view.backupButton.disabled, true);
+            assert.match(view.html, /Đang lưu/);
+            assert.ok(!view.html.includes('Đã lưu trên thiết bị'));
+            // Exercise both a normal pending click and the handler from before
+            // editing: the store must guard stale handlers as well as the button.
+            view.backupButton.onClick(); stale.onClick();
+            assert.equal(get().backup(), null);
+            assert.equal(downloads.length, 0);
+            assert.ok(get().raw().includes('Original'));
+        } finally { await release(); }
+        assert.equal(await first, true);
+        const releaseBetween = await betweenWrites;
+        try {
+            assert.equal(get().saving, true);
+            assert.equal(get().backup(), null);
+            assert.equal(renderWorkspace(area, get(), downloads).backupButton.disabled, true);
+        } finally { await releaseBetween(); }
+        assert.equal(await second, true);
+        assert.equal(get().saving, false);
+        const view = renderWorkspace(area, get(), downloads);
+        assert.equal(view.backupButton.disabled, false);
+        view.backupButton.onClick();
+        assert.equal(downloads.length, 1);
+        const exported = JSON.parse(downloads[0][1]);
+        assert.equal(area === 'project' ? exported.name : exported.JAVA01.evidence, 'Latest');
+        if (area === 'lessons') assert.match(view.html, /Đã lưu trên thiết bị\./);
+    });
+    test(`${area} still exports the exact original bytes when the stored draft is corrupt`, () => {
+        const h = harness(), key = `${area}:guest`, raw = '{broken original', downloads = [];
+        const initial = area === 'project' ? emptyProject() : {};
+        const parse = area === 'project' ? parseProject : value => parseLessons(value, ['JAVA01']);
+        h.storage.set(key, raw); h.hook(key, initial, parse);
+        const store = h.hook(key, initial, parse), view = renderWorkspace(area, store, downloads);
+        assert.equal(store.blocked, true);
+        assert.equal(view.backupButton.disabled, false);
+        view.backupButton.onClick();
+        assert.equal(downloads[0][1], raw);
+    });
+}
+
+test('failed queued saves stop the saving status and never export their optimistic values', async () => {
+    const browser = sharedBrowser(), h = harness(browser), key = 'project:guest', initial = emptyProject();
+    const get = () => h.hook(key, initial, parseProject);
+    get(); await get().save(latest => ({ ...latest, name: 'Original' }));
+    const release = await holdWriteLock(browser, key);
+    browser.failWrite = true;
+    const failed = get().save(latest => ({ ...latest, name: 'Not saved' }));
+    assert.equal(get().saving, true); assert.equal(get().backup(), null);
+    await release();
+    assert.equal(await failed, false);
+    assert.equal(get().saving, false); assert.ok(get().error);
+    assert.equal(JSON.parse(get().backup()).name, 'Original');
 });
