@@ -7,8 +7,11 @@ Website học tập tại **[VanDung279206.github.io/JavaBackend_AI_RoadMap](htt
 - “Học chặng này” tại `/learn/<phase>` với bài học, luyện tập, áp dụng dự án và đề cuối chặng; 23 ví dụ có thể kiểm bằng `py scripts/check_lessons.py`.
 - Java thí điểm 20 bài tăng mức; nhánh thử thách cần đủ tiên quyết. Bài đọc/bằng chứng tự đối chiếu lưu trên thiết bị, tách tiến độ bài và verified từ worker.
 - `/projects/mine`: năm bước tự thiết kế, đề cương Markdown chỉnh sửa/xuất được, sáu mốc và checklist kỹ năng; hỗ trợ chọn RAG lab riêng. Đề cương lưu trên thiết bị theo tài khoản/khách, chưa đồng bộ máy chủ.
+- Nhập JSON đã tải ở trang bài học và dự án: kiểm định dạng/kích thước, xem trước, áp dụng hoặc hủy. Dự án thay thế toàn bộ bản hiện tại; bài học ghép các ID có trong file, giữ các bài khác. Nhập không cấp verified từ worker.
 
 Lưu bài học và bản nháp dùng Web Locks trên HTTPS (hoặc localhost). Mỗi thay đổi ghép theo bài/trường với bản lưu mới nhất trong khóa ghi chung giữa các tab, kể cả khi sự kiện `storage` đến chậm. Nếu hai tab sửa cùng một trường, lần ghi sau trong khóa có hiệu lực; các trường khác được giữ. Trình duyệt thiếu Web Locks sẽ báo lỗi và từ chối ghi, bản lưu gốc vẫn xuất được. Lỗi validation/tạo đề cương/hết dung lượng không khóa form; dữ liệu lưu bị hỏng vẫn khóa ghi để bảo vệ bản gốc.
+
+Xuất JSON bị khóa khi còn thay đổi chờ ghi. Nhập JSON kiểm bản lưu hiện tại một lần nữa trong khóa ghi; nếu thay đổi từ lúc chọn file, nhập bị từ chối và dữ liệu mới được giữ. File lỗi, quá lớn hoặc bản hiện tại bị hỏng không được dùng để ghi đè. Trình duyệt được yêu cầu cảnh báo khi rời trang lúc có ghi chờ. Xác nhận tự kiểm chứng chỉ áp dụng khi bằng chứng chưa thay đổi ở tab khác.
 
 Mỗi trường dự án cho phép 50.000 ký tự. Đề cương và bản đề cương trước dùng giới hạn riêng đủ chứa tổng đầu vào và phần user stories sinh thêm; ô chỉnh Markdown dùng cùng giới hạn với bộ đọc dữ liệu.
 
