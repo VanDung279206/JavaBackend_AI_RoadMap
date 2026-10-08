@@ -2,6 +2,8 @@
 
 Knowledge Assistant là dự án mẫu để tham khảo. Bạn có thể tự chọn vấn đề, dữ liệu và luồng nghiệp vụ; dùng `/projects/mine` trên website để tạo, sửa, lưu đề cương trên thiết bị theo tài khoản/khách và tải Markdown. Đề cương là kế hoạch, chưa phải sản phẩm hoặc bằng chứng hoàn thành. Dữ liệu này chưa đồng bộ lên máy chủ; tải bản sao để chuyển máy.
 
+Để chuyển thiết bị, tải bản JSON khi đã lưu xong. Ở thiết bị mới, mở **Nhập bản lưu JSON**, chọn file, xem tên dự án rồi **Áp dụng bản lưu đã chọn**. File hợp lệ chỉ thay đổi dữ liệu sau khi bạn áp dụng; có thể hủy ở bước xem trước. Áp dụng thay thế thông tin, đề cương và checklist hiện tại. Nếu bản hiện tại thay đổi trong lúc xem trước, hệ thống giữ thay đổi mới và yêu cầu chọn lại file. Bạn có thể tải bản hiện tại trước khi nhập.
+
 ## 1. Chọn vấn đề
 
 Viết: ai dùng, họ đang gặp khó khăn gì, ứng dụng giúp họ làm việc gì và một dấu hiệu cho thấy vấn đề được giải quyết. Ví dụ: thành viên khu dân cư cần tìm và mượn dụng cụ còn trống vào một khoảng thời gian.
