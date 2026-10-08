@@ -34,7 +34,7 @@ function createStore<T>(key: string | null, empty: T, parse: (input: unknown) =>
             publish({ value: current.value, ready: true, blocked: true, error: 'Không đọc được bản lưu. Đã khóa ghi để giữ dữ liệu; xuất bản lưu gốc trước khi sửa bộ nhớ trình duyệt.' });
         }
     }
-    return {
+    const api = {
         initial,
         snapshot: () => current,
         subscribe(fn: () => void) { listeners.add(fn); return () => { listeners.delete(fn); }; },
@@ -42,8 +42,11 @@ function createStore<T>(key: string | null, empty: T, parse: (input: unknown) =>
             if (started || !key) return;
             started = true; load();
             window.addEventListener('storage', event => { if (event.key === key || event.key === null) load(); });
+            window.addEventListener('beforeunload', event => {
+                if (pending.size > 0) { event.preventDefault(); event.returnValue = ''; }
+            });
         },
-        async save(change: (latest: T) => T) {
+        async save(change: (latest: T) => T): Promise<boolean> {
             if (!key || !current.ready || locked) return false;
             if (!navigator.locks) {
                 publish({ ...current, error: 'Trình duyệt chưa hỗ trợ khóa ghi an toàn. Dùng HTTPS và trình duyệt hỗ trợ Web Locks để lưu; bạn vẫn có thể xuất bản đang có.' });
@@ -85,7 +88,23 @@ function createStore<T>(key: string | null, empty: T, parse: (input: unknown) =>
             if (!key || !current.ready || (pending.size > 0 && !locked)) return null;
             try { return localStorage.getItem(key) ?? JSON.stringify(savedValue); } catch { return null; }
         },
+        async restore(input: unknown, baseline: string | null, merge: (latest: T, imported: T) => T = (_latest, imported) => imported): Promise<boolean> {
+            if (!key || !current.ready || locked || pending.size > 0) return false;
+            let imported: T;
+            try { imported = parse(input); } catch {
+                publish({ ...current, error: 'File không đúng định dạng bản lưu. Dữ liệu hiện tại được giữ nguyên.' });
+                return false;
+            }
+            let conflict = false;
+            const restored = await api.save(latest => {
+                if (localStorage.getItem(key) !== baseline) { conflict = true; throw Error('Draft changed during import'); }
+                return merge(latest, imported);
+            });
+            if (conflict) publish({ ...current, error: 'Bản lưu đã thay đổi sau khi chọn file. Chọn lại file và xem trước để tránh ghi đè thay đổi mới.' });
+            return restored;
+        },
     };
+    return api;
 }
 // One stable store per owner/area; account changes never reuse the guest snapshot.
 const stores = new Map<string, ReturnType<typeof createStore<unknown>>>();
@@ -97,5 +116,5 @@ export function useLocalDraft<T>(key: string | null, empty: T, parse: (input: un
     }, [key, empty, parse]);
     const state = useSyncExternalStore(store.subscribe, store.snapshot, () => store.initial);
     useEffect(() => { store.start(); }, [store]);
-    return { ...state, save: store.save, raw: store.raw, backup: store.backup };
+    return { ...state, save: store.save, raw: store.raw, backup: store.backup, restore: store.restore };
 }
