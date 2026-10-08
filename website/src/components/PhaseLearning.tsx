@@ -40,6 +40,10 @@ function Workspace({ phase }: { phase: string }) {
         const id = lesson.id;
         void store.save(latest => ({ ...latest, [id]: { ...(latest[id] ?? emptyLesson()), ...value } }));
     }
+    function exportBackup() {
+        const backup = store.backup();
+        if (backup !== null) downloadText('lesson-progress.json', backup, 'application/json');
+    }
     const filtered = exercises.filter(item => level === 'all' || (level === 'pilot' ? item.track === 'java-pilot' : ('kind' in item && item.kind === level)));
     return <>
         <nav className="course-steps" aria-label="Bốn phần học chặng">{steps.map((label, index) => <button type="button" key={label} aria-current={step === index ? 'step' : undefined} onClick={() => setStep(index)}><span>{index + 1}</span>{label}</button>)}</nav>
@@ -55,8 +59,8 @@ function Workspace({ phase }: { phase: string }) {
                         <label>Lệnh chạy, input, expected/actual và giải thích kết quả<textarea maxLength={20000} disabled={!store.ready || store.blocked} value={progress.evidence} onChange={event => patch({ evidence: event.target.value, checkedAt: null })} /></label>
                         <button disabled={!store.ready || store.blocked || !progress.evidence.trim()} onClick={() => patch({ checkedAt: new Date().toISOString() })}>Xác nhận đã kiểm chứng kết quả trên máy</button>
                         {progress.checkedAt && <p>Đã kiểm chứng (tự đối chiếu): {new Date(progress.checkedAt).toLocaleString('vi-VN', { timeZone: 'Asia/Bangkok' })}</p>}
-                        <p role="status">{store.error || (store.ready ? 'Đã lưu trên thiết bị.' : 'Đang tải…')}</p>
-                        <div className="learning-actions"><button disabled={!store.ready} onClick={() => downloadText('lesson-progress.json', store.raw() ?? JSON.stringify(store.value), 'application/json')}>Tải bản lưu bài học</button>{lesson.exercise_ids.map(id => <Link key={id} href={`/docs/${catalogue.exercises.find(item => item.id === id)!.phase}#${id}`}>Làm {id}</Link>)}</div>
+                        <p role="status">{store.error || (!store.ready ? 'Đang tải…' : store.saving ? 'Đang lưu… Chờ lưu xong để tải bản sao JSON.' : 'Đã lưu trên thiết bị.')}</p>
+                        <div className="learning-actions"><button disabled={!store.ready || (store.saving && !store.blocked)} onClick={exportBackup}>Tải bản lưu bài học</button>{lesson.exercise_ids.map(id => <Link key={id} href={`/docs/${catalogue.exercises.find(item => item.id === id)!.phase}#${id}`}>Làm {id}</Link>)}</div>
                     </div>
                     <div className="learning-actions"><button onClick={() => { const next = lessons[lessons.findIndex(item => item.id === selected) + 1]; if (next) choose(next.id); else setStep(1); }}>{selected === lessons[lessons.length - 1].id ? 'Chuyển sang luyện tập' : 'Bài học tiếp theo'}</button></div>
                 </article></div>
