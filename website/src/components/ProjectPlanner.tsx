@@ -33,11 +33,15 @@ function Planner() {
     function generate() {
         void update(latest => ({ outline: generateOutline(latest), previousOutline: latest.outline }));
     }
+    function exportBackup() {
+        const backup = store.backup();
+        if (backup !== null) downloadText('my-project-backup.json', backup, 'application/json');
+    }
     const locked = !store.ready || store.blocked;
     return <>
         <nav className="course-steps planner-steps" aria-label="Năm bước tạo dự án">{steps.map((label, index) => <button key={label} aria-current={step === index ? 'step' : undefined} onClick={() => setStep(index)}><span>{index + 1}</span>{label}</button>)}</nav>
         <p>Dữ liệu lưu trên thiết bị, tách tài khoản và khách, chưa đồng bộ máy chủ. Tải đề cương và bản JSON để giữ bản sao hoặc chuyển thiết bị.</p>
-        <p role="status">{store.error || (!store.ready ? 'Đang tải bản lưu…' : message)}</p>
+        <p role="status">{store.error || (!store.ready ? 'Đang tải bản lưu…' : store.saving ? 'Đang lưu… Chờ lưu xong để tải bản sao JSON.' : message)}</p>
         {step === 0 && <div className="learning-grid">{projectIdeas.map(idea => <article className="learning-card" key={idea.title}><h2>{idea.title}</h2><p>Quy tắc: {idea.rule}</p><p>Sáng tạo: {idea.direction}</p><button disabled={locked} onClick={() => update({ name: idea.title })}>Dùng tên gợi mở</button></article>)}</div>}
         <section className="learning-card planner-form"><h2>{step + 1}. {steps[step]}</h2><p>{step === 3 ? 'Để trống mốc để đề cương dùng gợi ý theo kỹ năng; sửa lại theo sản phẩm của bạn.' : 'Điền theo nhu cầu của bạn. Có thể chuyển bước và sửa bất kỳ phần nào.'}</p>
             <fieldset disabled={locked}>{fields[step].map(([field, label, placeholder]) => <label key={field}>{label}<textarea value={draft[field]} placeholder={placeholder} maxLength={PROJECT_FIELD_LIMIT} onChange={event => update({ [field]: event.target.value })} /></label>)}
@@ -48,7 +52,7 @@ function Planner() {
         </section>
         {step === 4 && <section className="learning-card"><h2>Đề cương có thể chỉnh sửa</h2><p>Điền tên, người dùng, vấn đề, mục tiêu, ba chức năng, điểm khác biệt và phần để sau để tạo khung. Phần chưa thiết kế được ghi “Cần bổ sung”; không tự đánh dấu hoàn thành.</p><button disabled={locked || !scopeReady(draft)} onClick={generate}>{draft.outline ? 'Tạo lại từ thông tin hiện tại' : 'Tạo đề cương'}</button>{draft.previousOutline && <button disabled={locked} onClick={() => update(latest => ({ outline: latest.previousOutline, previousOutline: latest.outline }))}>Khôi phục đề cương trước khi tạo lại</button>}
             <label>Chỉnh đề cương Markdown<textarea className="project-outline" disabled={locked} value={draft.outline} maxLength={PROJECT_OUTLINE_LIMIT} onChange={event => update({ outline: event.target.value })} /></label>
-            <div className="learning-actions"><button disabled={!draft.outline.trim()} onClick={() => downloadText('my-project.md', draft.outline)}>Tải đề cương Markdown</button><button disabled={!store.ready} onClick={() => downloadText('my-project-backup.json', store.raw() ?? JSON.stringify(draft), 'application/json')}>Tải bản lưu JSON</button></div>
+            <div className="learning-actions"><button disabled={!draft.outline.trim()} onClick={() => downloadText('my-project.md', draft.outline)}>Tải đề cương Markdown</button><button disabled={!store.ready || (store.saving && !store.blocked)} onClick={exportBackup}>Tải bản lưu JSON</button></div>
             {draft.outline && <details><summary>Xem trước đề cương</summary><div className="prose exercise-prose"><ReactMarkdown>{draft.outline}</ReactMarkdown></div></details>}
             <p>Chỉnh Markdown là sửa bản đề cương độc lập. Tạo lại sẽ dùng thông tin ở năm bước; bạn có thể khôi phục bản trước. Checklist trong Markdown cập nhật khi tạo lại, không tự đồng bộ từ sửa văn bản.</p>
         </section>}
