@@ -2,10 +2,11 @@ name: Website CI — Lint & Build check
 
 on:
   push:
-    branches: [RoadMap_v3]
+    branches: [RoadMap_v3, feature/english-learning]
     paths:
       - "website/**"
       - "learning/**"
+      - "english/**"
       - "scripts/**"
       - "foundations/**"
       - "advanced/**"
@@ -16,6 +17,7 @@ on:
     paths:
       - "website/**"
       - "learning/**"
+      - "english/**"
       - "scripts/**"
       - "foundations/**"
       - "advanced/**"
@@ -63,3 +65,8 @@ jobs:
           NEXT_PUBLIC_ADMIN_GITHUB: VanDung279206
           NEXT_PUBLIC_BASE_PATH: /JavaBackend_AI_RoadMap
 
+      - name: Install browser test runtime
+        run: npx playwright install --with-deps chromium
+
+      - name: English learning browser regressions
+        run: npm run test:browser

@@ -6,6 +6,7 @@ import catalogue from '@/generated/catalogue.json';
 import { useLearning, updateEntry } from '@/lib/learning-store';
 import { recommend, bangkokDate } from '@/lib/progress-core';
 import { lessonRecommendations } from '@/lib/course-core';
+import EnglishDaily from '@/components/english/EnglishDaily';
 export default function Today() {
     const state = useLearning(), [filter, setFilter] = useState('');
     const date = bangkokDate(new Date());
@@ -14,6 +15,7 @@ export default function Today() {
     return <main className="page-shell">
         <header className="page-heading"><h1>Hôm nay học gì?</h1><p>Ưu tiên bài đang sai, đến hạn, đang làm, rồi bài mới đủ kiến thức tiên quyết theo tiến độ tự khai báo.</p><div className="learning-actions"><Link href="/skills">Bản đồ & kiểm tra đầu vào</Link><Link href="/lab">Bàn thử nghiệm RAG</Link><Link href="/learn/01_Java">Học chặng Java</Link><Link href="/projects/mine">Dự án của tôi</Link></div></header>
         <ReviewImport /><p role="status">{state.loading ? 'Đang tải tiến độ…' : state.message}</p>
+        <EnglishDaily phase={catalogue.exercises.find(e => e.id === choices[0]?.id)?.phase} />
         {!state.loading && lessons.length > 0 && <section className="learning-card"><h2>Xem lại bài học theo lỗi</h2><p>Gợi ý theo bài cần ôn và tag lỗi đang mắc.</p><div className="learning-actions">{lessons.map(item => <Link key={item.id} href={`/learn/${item.phase}#${item.id}`}>{catalogue.lessons.find(lesson => lesson.id === item.id)!.title} · {item.exerciseIds.join(', ')}</Link>)}</div></section>}
         <div className="learning-grid">{!state.loading && choices.map(choice => {
             const exercise = catalogue.exercises.find(item => item.id === choice.id)!;

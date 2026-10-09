@@ -1,0 +1,1085 @@
+{
+  "version": 1,
+  "units": [
+    {
+      "id": "EN-SETUP",
+      "phase": "00_setup",
+      "title": "Bắt đầu: compile, run và câu đơn",
+      "objective": "Mô tả một lần chạy và phân biệt biên dịch với thực thi.",
+      "prerequisite": "Không cần vốn thuật ngữ trước; dùng mẫu câu có chỗ trống.",
+      "explanation": "I checked … ghi điều đã kiểm. The function returns … mô tả hành vi. Bắt đầu với một câu đúng trước khi tăng độ dài.",
+      "application": "Chạy HelloRoadmap; viết một câu về kết quả thực nhận và một commit mô tả thay đổi.",
+      "exerciseIds": [
+        "P0.1",
+        "P0.2"
+      ]
+    },
+    {
+      "id": "EN-1",
+      "number": "1",
+      "phase": "01_Java",
+      "title": "Java: đọc hợp đồng của phương thức",
+      "objective": "Phân biệt tham số và đối số; đọc điều kiện ném lỗi; mô tả đầu ra.",
+      "prerequisite": "Nhận ra chủ ngữ và động từ đơn giản; có thể bắt đầu với từ vựng trước khi đọc đoạn.",
+      "explanation": "Bắt đầu với chủ ngữ + động từ: The method returns … . must là điều bắt buộc; if giới thiệu điều kiện.",
+      "application": "Mở một bài liên quan hoặc code dự án của bạn. Chọn 3 từ, viết một commit và 3–5 câu về hành vi cùng kết quả đã kiểm.",
+      "exerciseIds": [
+        "P1.1",
+        "JP15"
+      ]
+    },
+    {
+      "id": "EN-2",
+      "number": "2",
+      "phase": "02_Http-Sql",
+      "title": "HTTP & SQL: hiểu truy vấn và dữ liệu",
+      "objective": "Đọc điều kiện LEFT JOIN, đếm ID và thứ tự trước phân trang.",
+      "prerequisite": "Nhận ra chủ ngữ và động từ đơn giản; có thể bắt đầu với từ vựng trước khi đọc đoạn.",
+      "explanation": "The query returns … mô tả kết quả. including giữ cả trường hợp đặc biệt, before diễn tả thứ tự thao tác.",
+      "application": "Mở một bài liên quan hoặc code dự án của bạn. Chọn 3 từ, viết một commit và 3–5 câu về hành vi cùng kết quả đã kiểm.",
+      "exerciseIds": [
+        "P2.2",
+        "P2.3"
+      ]
+    },
+    {
+      "id": "EN-3",
+      "number": "3",
+      "phase": "03_Spring",
+      "title": "Spring: giải thích trách nhiệm các lớp",
+      "objective": "Xác định controller, service, repository; viết câu về dependency.",
+      "prerequisite": "Nhận ra chủ ngữ và động từ đơn giản; có thể bắt đầu với từ vựng trước khi đọc đoạn.",
+      "explanation": "A delegates to B nghĩa là A giao việc cho B. uses mô tả sử dụng; injection mô tả cách cung cấp dependency.",
+      "application": "Mở một bài liên quan hoặc code dự án của bạn. Chọn 3 từ, viết một commit và 3–5 câu về hành vi cùng kết quả đã kiểm.",
+      "exerciseIds": [
+        "P3.1",
+        "P3.2"
+      ]
+    },
+    {
+      "id": "EN-4",
+      "number": "4",
+      "phase": "04_Quality",
+      "title": "Kiểm thử: danh tính, quyền và kết quả",
+      "objective": "Phân biệt xác thực và phân quyền; mô tả một ca kiểm thử thực.",
+      "prerequisite": "Nhận ra chủ ngữ và động từ đơn giản; có thể bắt đầu với từ vựng trước khi đọc đoạn.",
+      "explanation": "alone nghĩa là chỉ riêng điều đó. Authentication identifies … còn authorization checks … .",
+      "application": "Mở một bài liên quan hoặc code dự án của bạn. Chọn 3 từ, viết một commit và 3–5 câu về hành vi cùng kết quả đã kiểm.",
+      "exerciseIds": [
+        "P4.1",
+        "P4.2"
+      ]
+    },
+    {
+      "id": "EN-5",
+      "number": "5",
+      "phase": "05_AI",
+      "title": "AI: đọc giới hạn và chính sách retry",
+      "objective": "Hiểu may/must, giới hạn số lần thử và tính đúng của JSON.",
+      "prerequisite": "Nhận ra chủ ngữ và động từ đơn giản; có thể bắt đầu với từ vựng trước khi đọc đoạn.",
+      "explanation": "may diễn tả khả năng; only giới hạn trường hợp; at most là tối đa. JSON hợp lệ chưa chứng minh dữ kiện đúng.",
+      "application": "Mở một bài liên quan hoặc code dự án của bạn. Chọn 3 từ, viết một commit và 3–5 câu về hành vi cùng kết quả đã kiểm.",
+      "exerciseIds": [
+        "P5.3",
+        "P5.4"
+      ]
+    },
+    {
+      "id": "EN-6",
+      "number": "6",
+      "phase": "06_RAG",
+      "title": "RAG: nguồn, truy xuất và bằng chứng",
+      "objective": "Đọc quy tắc lọc quyền, giữ nguồn và trả lời khi thiếu bằng chứng.",
+      "prerequisite": "Nhận ra chủ ngữ và động từ đơn giản; có thể bắt đầu với từ vựng trước khi đọc đoạn.",
+      "explanation": "before chỉ thứ tự, during chỉ trong quá trình. insufficient nghĩa là chưa đủ để hỗ trợ kết luận.",
+      "application": "Mở một bài liên quan hoặc code dự án của bạn. Chọn 3 từ, viết một commit và 3–5 câu về hành vi cùng kết quả đã kiểm.",
+      "exerciseIds": [
+        "P6.2",
+        "P6.3"
+      ]
+    },
+    {
+      "id": "EN-DSA",
+      "phase": "dsa",
+      "title": "DSA: giải thích thuật toán",
+      "objective": "Gọi tên cấu trúc dữ liệu và mô tả invariant, độ phức tạp, ca biên.",
+      "prerequisite": "Đã làm một bài DSA đơn giản; dùng bộ từ vựng để tra thuật ngữ.",
+      "explanation": "because nối nhận định với lý do. in terms of n diễn tả độ phức tạp theo kích thước input.",
+      "application": "Chọn một bài DSA đã làm; tự giải thích vì sao chọn cấu trúc dữ liệu và input biên đã chạy.",
+      "exerciseIds": [
+        "D01",
+        "D05"
+      ]
+    }
+  ],
+  "exercises": [
+    {
+      "phase": "01_Java",
+      "source": "english/curriculum.json",
+      "id": "P1-FILL",
+      "section": "practice",
+      "kind": "fill",
+      "level": "Hoàn thành câu",
+      "prompt": "The caller supplies an ____.",
+      "answers": [
+        "argument"
+      ],
+      "explanation": "Điền argument. Bắt đầu với chủ ngữ + động từ: The method returns … . must là điều bắt buộc; if giới thiệu điều kiện."
+    },
+    {
+      "phase": "01_Java",
+      "source": "english/curriculum.json",
+      "id": "P1-ORDER",
+      "section": "practice",
+      "kind": "reorder",
+      "level": "Hiểu cấu trúc câu",
+      "prompt": "Bấm các từ theo thứ tự để tạo câu đúng.",
+      "tokens": [
+        "returns",
+        "a",
+        "The",
+        "list.",
+        "method"
+      ],
+      "answers": [
+        "The method returns a list."
+      ],
+      "explanation": "Chủ ngữ số ít The method dùng returns."
+    },
+    {
+      "phase": "01_Java",
+      "source": "english/curriculum.json",
+      "id": "P1-WORD",
+      "section": "practice",
+      "kind": "choice",
+      "level": "Hiểu từ trong câu",
+      "prompt": "“parameter” nằm ở đâu?",
+      "options": [
+        {
+          "id": "2",
+          "label": "Trong output"
+        },
+        {
+          "id": "0",
+          "label": "Ở định nghĩa phương thức"
+        },
+        {
+          "id": "1",
+          "label": "Ở lời gọi phương thức"
+        }
+      ],
+      "answers": [
+        "0"
+      ],
+      "explanation": "Ở định nghĩa; argument là giá trị truyền tại lời gọi."
+    },
+    {
+      "phase": "01_Java",
+      "source": "english/curriculum.json",
+      "id": "READ-1-Q1",
+      "section": "reading",
+      "kind": "choice",
+      "level": "Đọc đoạn",
+      "prompt": "Khi nào phương thức ném exception?",
+      "options": [
+        {
+          "id": "0",
+          "label": "Khi title trắng"
+        },
+        {
+          "id": "1",
+          "label": "Mọi lần gọi"
+        },
+        {
+          "id": "2",
+          "label": "Khi title đã chuẩn hóa"
+        }
+      ],
+      "answers": [
+        "0"
+      ],
+      "explanation": "Điều kiện là if the title is blank."
+    },
+    {
+      "phase": "01_Java",
+      "source": "english/curriculum.json",
+      "id": "READ-1-Q2",
+      "section": "reading",
+      "kind": "choice",
+      "level": "Đọc đoạn",
+      "prompt": "Caller phải cung cấp argument thế nào?",
+      "options": [
+        {
+          "id": "2",
+          "label": "Có thể bỏ qua"
+        },
+        {
+          "id": "0",
+          "label": "Không null"
+        },
+        {
+          "id": "1",
+          "label": "Luôn là số"
+        }
+      ],
+      "answers": [
+        "0"
+      ],
+      "explanation": "must provide a non-null argument là điều kiện bắt buộc."
+    },
+    {
+      "phase": "02_Http-Sql",
+      "source": "english/curriculum.json",
+      "id": "P2-FILL",
+      "section": "practice",
+      "kind": "fill",
+      "level": "Hoàn thành câu",
+      "prompt": "Roll back the ____ if saving fails.",
+      "answers": [
+        "transaction"
+      ],
+      "explanation": "Điền transaction. The query returns … mô tả kết quả. including giữ cả trường hợp đặc biệt, before diễn tả thứ tự thao tác."
+    },
+    {
+      "phase": "02_Http-Sql",
+      "source": "english/curriculum.json",
+      "id": "P2-ORDER",
+      "section": "practice",
+      "kind": "reorder",
+      "level": "Hiểu cấu trúc câu",
+      "prompt": "Bấm các từ theo thứ tự để tạo câu đúng.",
+      "tokens": [
+        "every",
+        "returns",
+        "The",
+        "query",
+        "user."
+      ],
+      "answers": [
+        "The query returns every user."
+      ],
+      "explanation": "every user giữ mọi người dùng, kể cả người chưa có tài liệu."
+    },
+    {
+      "phase": "02_Http-Sql",
+      "source": "english/curriculum.json",
+      "id": "P2-WORD",
+      "section": "practice",
+      "kind": "choice",
+      "level": "Hiểu từ trong câu",
+      "prompt": "“constraint” diễn tả gì?",
+      "options": [
+        {
+          "id": "1",
+          "label": "Một trang kết quả"
+        },
+        {
+          "id": "2",
+          "label": "Một lần thử lại"
+        },
+        {
+          "id": "0",
+          "label": "Quy tắc dữ liệu phải tuân thủ"
+        }
+      ],
+      "answers": [
+        "0"
+      ],
+      "explanation": "Ràng buộc từ chối dữ liệu vi phạm; không phải phân trang hay retry."
+    },
+    {
+      "phase": "02_Http-Sql",
+      "source": "english/curriculum.json",
+      "id": "READ-2-Q1",
+      "section": "reading",
+      "kind": "choice",
+      "level": "Đọc đoạn",
+      "prompt": "Người dùng không có document có được giữ lại?",
+      "options": [
+        {
+          "id": "0",
+          "label": "Có, dùng LEFT JOIN"
+        },
+        {
+          "id": "1",
+          "label": "Không, bỏ họ"
+        },
+        {
+          "id": "2",
+          "label": "Chỉ giữ nếu ID bằng 0"
+        }
+      ],
+      "answers": [
+        "0"
+      ],
+      "explanation": "including users without documents yêu cầu giữ người dùng có 0 tài liệu."
+    },
+    {
+      "phase": "02_Http-Sql",
+      "source": "english/curriculum.json",
+      "id": "READ-2-Q2",
+      "section": "reading",
+      "kind": "choice",
+      "level": "Đọc đoạn",
+      "prompt": "Cần làm gì trước pagination?",
+      "options": [
+        {
+          "id": "2",
+          "label": "Đếm mọi dòng ghép bằng COUNT(*)"
+        },
+        {
+          "id": "0",
+          "label": "Thêm thứ tự ổn định"
+        },
+        {
+          "id": "1",
+          "label": "Xóa primary key"
+        }
+      ],
+      "answers": [
+        "0"
+      ],
+      "explanation": "stable ordering before applying pagination bảo đảm thứ tự rõ ràng."
+    },
+    {
+      "phase": "03_Spring",
+      "source": "english/curriculum.json",
+      "id": "P3-FILL",
+      "section": "practice",
+      "kind": "fill",
+      "level": "Hoàn thành câu",
+      "prompt": "The ____ loads the entity.",
+      "answers": [
+        "repository"
+      ],
+      "explanation": "Điền repository. A delegates to B nghĩa là A giao việc cho B. uses mô tả sử dụng; injection mô tả cách cung cấp dependency."
+    },
+    {
+      "phase": "03_Spring",
+      "source": "english/curriculum.json",
+      "id": "P3-ORDER",
+      "section": "practice",
+      "kind": "reorder",
+      "level": "Hiểu cấu trúc câu",
+      "prompt": "Bấm các từ theo thứ tự để tạo câu đúng.",
+      "tokens": [
+        "loads",
+        "entity.",
+        "The",
+        "the",
+        "repository"
+      ],
+      "answers": [
+        "The repository loads the entity."
+      ],
+      "explanation": "repository truy cập dữ liệu, entity là đối tượng được tải."
+    },
+    {
+      "phase": "03_Spring",
+      "source": "english/curriculum.json",
+      "id": "P3-WORD",
+      "section": "practice",
+      "kind": "choice",
+      "level": "Hiểu từ trong câu",
+      "prompt": "“dependency injection” là gì?",
+      "options": [
+        {
+          "id": "0",
+          "label": "Cung cấp dependency từ bên ngoài"
+        },
+        {
+          "id": "1",
+          "label": "Tạo một bảng mới"
+        },
+        {
+          "id": "2",
+          "label": "Xác nhận mọi test đã qua"
+        }
+      ],
+      "answers": [
+        "0"
+      ],
+      "explanation": "Injection cung cấp dependency; không chứng nhận kết quả kiểm thử."
+    },
+    {
+      "phase": "03_Spring",
+      "source": "english/curriculum.json",
+      "id": "READ-3-Q1",
+      "section": "reading",
+      "kind": "choice",
+      "level": "Đọc đoạn",
+      "prompt": "Thành phần nào nhận DTO?",
+      "options": [
+        {
+          "id": "0",
+          "label": "Controller"
+        },
+        {
+          "id": "1",
+          "label": "Repository"
+        },
+        {
+          "id": "2",
+          "label": "Vector store"
+        }
+      ],
+      "answers": [
+        "0"
+      ],
+      "explanation": "The controller receives a DTO."
+    },
+    {
+      "phase": "03_Spring",
+      "source": "english/curriculum.json",
+      "id": "READ-3-Q2",
+      "section": "reading",
+      "kind": "choice",
+      "level": "Đọc đoạn",
+      "prompt": "“delegates” nghĩa là gì ở đây?",
+      "options": [
+        {
+          "id": "2",
+          "label": "Chỉ tạo bản dịch"
+        },
+        {
+          "id": "0",
+          "label": "Giao việc xử lý cho thành phần khác"
+        },
+        {
+          "id": "1",
+          "label": "Xóa dữ liệu"
+        }
+      ],
+      "answers": [
+        "0"
+      ],
+      "explanation": "Controller giao thao tác cho service."
+    },
+    {
+      "phase": "04_Quality",
+      "source": "english/curriculum.json",
+      "id": "P4-FILL",
+      "section": "practice",
+      "kind": "fill",
+      "level": "Hoàn thành câu",
+      "prompt": "____ identifies the user.",
+      "answers": [
+        "authentication"
+      ],
+      "explanation": "Điền Authentication. alone nghĩa là chỉ riêng điều đó. Authentication identifies … còn authorization checks … ."
+    },
+    {
+      "phase": "04_Quality",
+      "source": "english/curriculum.json",
+      "id": "P4-ORDER",
+      "section": "practice",
+      "kind": "reorder",
+      "level": "Hiểu cấu trúc câu",
+      "prompt": "Bấm các từ theo thứ tự để tạo câu đúng.",
+      "tokens": [
+        "checks",
+        "Authorization",
+        "access."
+      ],
+      "answers": [
+        "Authorization checks access."
+      ],
+      "explanation": "Authorization kiểm quyền truy cập; authentication xác định danh tính."
+    },
+    {
+      "phase": "04_Quality",
+      "source": "english/curriculum.json",
+      "id": "P4-WORD",
+      "section": "practice",
+      "kind": "choice",
+      "level": "Hiểu từ trong câu",
+      "prompt": "“fixture” dùng để làm gì?",
+      "options": [
+        {
+          "id": "2",
+          "label": "Bảo đảm mô hình luôn đúng"
+        },
+        {
+          "id": "0",
+          "label": "Chuẩn bị dữ liệu hoặc trạng thái kiểm thử"
+        },
+        {
+          "id": "1",
+          "label": "Cấp quyền cho mọi người dùng"
+        }
+      ],
+      "answers": [
+        "0"
+      ],
+      "explanation": "Fixture tạo điều kiện kiểm; bằng chứng là kết quả thực chạy."
+    },
+    {
+      "phase": "04_Quality",
+      "source": "english/curriculum.json",
+      "id": "READ-4-Q1",
+      "section": "reading",
+      "kind": "choice",
+      "level": "Đọc đoạn",
+      "prompt": "Chỉ đăng nhập đã đủ đọc mọi document?",
+      "options": [
+        {
+          "id": "0",
+          "label": "Chưa đủ; cần authorization"
+        },
+        {
+          "id": "1",
+          "label": "Đủ; khỏi kiểm quyền"
+        },
+        {
+          "id": "2",
+          "label": "Đủ nếu dùng DTO"
+        }
+      ],
+      "answers": [
+        "0"
+      ],
+      "explanation": "Authentication alone does not prove quyền đọc tài liệu cụ thể."
+    },
+    {
+      "phase": "04_Quality",
+      "source": "english/curriculum.json",
+      "id": "READ-4-Q2",
+      "section": "reading",
+      "kind": "choice",
+      "level": "Đọc đoạn",
+      "prompt": "Ca test nào được yêu cầu?",
+      "options": [
+        {
+          "id": "2",
+          "label": "Chỉ đổi ngôn ngữ UI"
+        },
+        {
+          "id": "0",
+          "label": "Người dùng khác thử truy cập"
+        },
+        {
+          "id": "1",
+          "label": "Chỉ người sở hữu truy cập"
+        }
+      ],
+      "answers": [
+        "0"
+      ],
+      "explanation": "another user attempts to access it kiểm sự cách ly giữa người dùng."
+    },
+    {
+      "phase": "05_AI",
+      "source": "english/curriculum.json",
+      "id": "P5-FILL",
+      "section": "practice",
+      "kind": "fill",
+      "level": "Hoàn thành câu",
+      "prompt": "Retry only when the ____ allows it.",
+      "answers": [
+        "policy"
+      ],
+      "explanation": "Điền policy. may diễn tả khả năng; only giới hạn trường hợp; at most là tối đa. JSON hợp lệ chưa chứng minh dữ kiện đúng."
+    },
+    {
+      "phase": "05_AI",
+      "source": "english/curriculum.json",
+      "id": "P5-ORDER",
+      "section": "practice",
+      "kind": "reorder",
+      "level": "Hiểu cấu trúc câu",
+      "prompt": "Bấm các từ theo thứ tự để tạo câu đúng.",
+      "tokens": [
+        "JSON",
+        "guarantee",
+        "does",
+        "not",
+        "accuracy.",
+        "Valid"
+      ],
+      "answers": [
+        "Valid JSON does not guarantee accuracy."
+      ],
+      "explanation": "does not guarantee diễn tả điều chưa được bảo đảm; không bỏ not."
+    },
+    {
+      "phase": "05_AI",
+      "source": "english/curriculum.json",
+      "id": "P5-WORD",
+      "section": "practice",
+      "kind": "choice",
+      "level": "Hiểu từ trong câu",
+      "prompt": "“retry” là gì?",
+      "options": [
+        {
+          "id": "1",
+          "label": "Lần thử đầu tiên"
+        },
+        {
+          "id": "2",
+          "label": "Định dạng dữ liệu"
+        },
+        {
+          "id": "0",
+          "label": "Thử lại sau một lần thất bại"
+        }
+      ],
+      "answers": [
+        "0"
+      ],
+      "explanation": "attempt gồm cả lần đầu; retry diễn tả thử lại."
+    },
+    {
+      "phase": "05_AI",
+      "source": "english/curriculum.json",
+      "id": "READ-5-Q1",
+      "section": "reading",
+      "kind": "choice",
+      "level": "Đọc đoạn",
+      "prompt": "Có được retry mọi lỗi?",
+      "options": [
+        {
+          "id": "0",
+          "label": "Không; chỉ khi policy cho phép"
+        },
+        {
+          "id": "1",
+          "label": "Có; retry vô hạn"
+        },
+        {
+          "id": "2",
+          "label": "Có; lỗi input cũng retry"
+        }
+      ],
+      "answers": [
+        "0"
+      ],
+      "explanation": "only when the policy allows it giới hạn các trường hợp thử lại."
+    },
+    {
+      "phase": "05_AI",
+      "source": "english/curriculum.json",
+      "id": "READ-5-Q2",
+      "section": "reading",
+      "kind": "choice",
+      "level": "Đọc đoạn",
+      "prompt": "JSON hợp lệ có bảo đảm dữ kiện đúng?",
+      "options": [
+        {
+          "id": "2",
+          "label": "Chỉ cần JSON chứa citation"
+        },
+        {
+          "id": "0",
+          "label": "Không"
+        },
+        {
+          "id": "1",
+          "label": "Có"
+        }
+      ],
+      "answers": [
+        "0"
+      ],
+      "explanation": "does not guarantee factual accuracy tách định dạng với tính đúng của dữ kiện."
+    },
+    {
+      "phase": "06_RAG",
+      "source": "english/curriculum.json",
+      "id": "P6-FILL",
+      "section": "practice",
+      "kind": "fill",
+      "level": "Hoàn thành câu",
+      "prompt": "Retain the source ____ for each chunk.",
+      "answers": [
+        "ids",
+        "id"
+      ],
+      "explanation": "Điền IDs. before chỉ thứ tự, during chỉ trong quá trình. insufficient nghĩa là chưa đủ để hỗ trợ kết luận."
+    },
+    {
+      "phase": "06_RAG",
+      "source": "english/curriculum.json",
+      "id": "P6-ORDER",
+      "section": "practice",
+      "kind": "reorder",
+      "level": "Hiểu cấu trúc câu",
+      "prompt": "Bấm các từ theo thứ tự để tạo câu đúng.",
+      "tokens": [
+        "before",
+        "Retrieve",
+        "answering.",
+        "evidence"
+      ],
+      "answers": [
+        "Retrieve evidence before answering."
+      ],
+      "explanation": "before chỉ thứ tự: lấy bằng chứng trước khi trả lời."
+    },
+    {
+      "phase": "06_RAG",
+      "source": "english/curriculum.json",
+      "id": "P6-WORD",
+      "section": "practice",
+      "kind": "choice",
+      "level": "Hiểu từ trong câu",
+      "prompt": "“citation” có nghĩa gì?",
+      "options": [
+        {
+          "id": "0",
+          "label": "Tham chiếu nguồn cho nội dung trả lời"
+        },
+        {
+          "id": "1",
+          "label": "Một lần thử lại"
+        },
+        {
+          "id": "2",
+          "label": "Giới hạn thời gian"
+        }
+      ],
+      "answers": [
+        "0"
+      ],
+      "explanation": "Citation cần định danh nguồn thực, không chỉ một chuỗi trông giống ID."
+    },
+    {
+      "phase": "06_RAG",
+      "source": "english/curriculum.json",
+      "id": "READ-6-Q1",
+      "section": "reading",
+      "kind": "choice",
+      "level": "Đọc đoạn",
+      "prompt": "Lọc quyền ở bước nào?",
+      "options": [
+        {
+          "id": "0",
+          "label": "Trong quá trình retrieval"
+        },
+        {
+          "id": "1",
+          "label": "Sau khi đã lấy top-k ngoài quyền"
+        },
+        {
+          "id": "2",
+          "label": "Sau khi gửi câu trả lời"
+        }
+      ],
+      "answers": [
+        "0"
+      ],
+      "explanation": "during retrieval yêu cầu lọc trong lúc truy xuất."
+    },
+    {
+      "phase": "06_RAG",
+      "source": "english/curriculum.json",
+      "id": "READ-6-Q2",
+      "section": "reading",
+      "kind": "choice",
+      "level": "Đọc đoạn",
+      "prompt": "Khi thiếu bằng chứng thì làm gì?",
+      "options": [
+        {
+          "id": "2",
+          "label": "Luôn trả lời chắc chắn"
+        },
+        {
+          "id": "0",
+          "label": "Báo tài liệu chưa hỗ trợ câu trả lời"
+        },
+        {
+          "id": "1",
+          "label": "Tự bịa một nguồn"
+        }
+      ],
+      "answers": [
+        "0"
+      ],
+      "explanation": "report that the available documents do not support an answer nêu giới hạn bằng chứng."
+    }
+  ],
+  "errors": [
+    {
+      "id": "E01",
+      "phase": "01_Java",
+      "question": "Làm gì trước khi gọi length trên title?",
+      "answer": "cause",
+      "options": [
+        {
+          "id": "cause",
+          "label": "Kiểm title theo hợp đồng và từ chối null"
+        },
+        {
+          "id": "other-1",
+          "label": "Bỏ mọi validation"
+        },
+        {
+          "id": "other-2",
+          "label": "Luôn đổi null thành chuỗi hợp lệ"
+        }
+      ],
+      "type": "java.lang.NullPointerException",
+      "detail": "Cannot invoke \"String.length()\" because \"<local3>\" is null",
+      "detailMeaning": "title bằng null khi gọi length",
+      "cause": "Fixture gọi một phương thức trên tham chiếu null."
+    },
+    {
+      "id": "E02",
+      "phase": "01_Java",
+      "question": "Với mảng dài 3, chỉ số hợp lệ là gì?",
+      "answer": "cause",
+      "options": [
+        {
+          "id": "other-1",
+          "label": "0 đến 3"
+        },
+        {
+          "id": "other-2",
+          "label": "1 đến 3"
+        },
+        {
+          "id": "cause",
+          "label": "0 đến 2"
+        }
+      ],
+      "type": "java.lang.ArrayIndexOutOfBoundsException",
+      "detail": "Index 3 out of bounds for length 3",
+      "detailMeaning": "Index là 3 nhưng length là 3",
+      "cause": "Fixture trực tiếp truy cập a[3] trong mảng có length 3, vượt chỉ số hợp lệ 0..2."
+    },
+    {
+      "id": "E03",
+      "phase": "01_Java",
+      "question": "Vì sao parseInt(\"12x\") thất bại?",
+      "answer": "cause",
+      "options": [
+        {
+          "id": "other-2",
+          "label": "Vì phải mặc định lỗi thành 0"
+        },
+        {
+          "id": "cause",
+          "label": "Input có ký tự không biểu diễn số nguyên"
+        },
+        {
+          "id": "other-1",
+          "label": "Vì mọi số cần dấu trừ"
+        }
+      ],
+      "type": "java.lang.NumberFormatException",
+      "detail": "For input string: \"12x\"",
+      "detailMeaning": "Chuỗi đầu vào là \"12x\"",
+      "cause": "Chuỗi đầu vào có ký tự x và không biểu diễn số nguyên."
+    },
+    {
+      "id": "E04",
+      "phase": "01_Java",
+      "question": "Khi ID trùng, cần bảo vệ điều gì?",
+      "answer": "cause",
+      "options": [
+        {
+          "id": "cause",
+          "label": "Giữ bản ghi gốc và từ chối trùng"
+        },
+        {
+          "id": "other-1",
+          "label": "Ghi đè bản cũ bằng bản mới"
+        },
+        {
+          "id": "other-2",
+          "label": "Xóa kiểm tra duplicate"
+        }
+      ],
+      "type": "java.lang.IllegalArgumentException",
+      "detail": "duplicate id",
+      "detailMeaning": "Catalog báo ID đã tồn tại; log không ghi giá trị ID",
+      "cause": "Catalog cố ý từ chối thêm một ID đã tồn tại."
+    },
+    {
+      "id": "E05",
+      "phase": "01_Java",
+      "question": "TODO P1.1 trong starter cần xử lý thế nào?",
+      "answer": "cause",
+      "options": [
+        {
+          "id": "other-1",
+          "label": "Chỉ xóa throw"
+        },
+        {
+          "id": "other-2",
+          "label": "Luôn trả một chuỗi cố định"
+        },
+        {
+          "id": "cause",
+          "label": "Triển khai đúng hợp đồng rồi chạy test"
+        }
+      ],
+      "type": "java.lang.UnsupportedOperationException",
+      "detail": "TODO P1.1",
+      "detailMeaning": "Phần normalizeTitle trong starter chưa được triển khai",
+      "cause": "Starter cố ý ném lỗi tại phần TODO."
+    },
+    {
+      "id": "E06",
+      "phase": "04_Quality",
+      "question": "expected=3 actual=2 nên bắt đầu kiểm từ đâu?",
+      "answer": "cause",
+      "options": [
+        {
+          "id": "other-2",
+          "label": "Bỏ assertion"
+        },
+        {
+          "id": "cause",
+          "label": "Đọc đề, input và hợp đồng trước khi sửa"
+        },
+        {
+          "id": "other-1",
+          "label": "Luôn đổi expected thành 2"
+        }
+      ],
+      "type": "java.lang.AssertionError",
+      "detail": "expected=3 actual=2",
+      "detailMeaning": "Kỳ vọng 3, thực nhận 2",
+      "cause": "Fixture cố ý đặt expected khác actual; chưa thể kết luận code thật sai từ fixture."
+    },
+    {
+      "id": "E07",
+      "phase": "05_AI",
+      "question": "Timeout cần chính sách nào?",
+      "answer": "cause",
+      "options": [
+        {
+          "id": "cause",
+          "label": "Giới hạn thời gian và lần retry theo hợp đồng"
+        },
+        {
+          "id": "other-1",
+          "label": "Đợi vô hạn"
+        },
+        {
+          "id": "other-2",
+          "label": "Retry mọi lỗi vô hạn"
+        }
+      ],
+      "type": "java.util.concurrent.TimeoutException",
+      "detail": "TimeoutException",
+      "detailMeaning": "Tác vụ không hoàn tất trước thời hạn chờ",
+      "cause": "Fixture chờ một latch không được mở."
+    },
+    {
+      "id": "E08",
+      "phase": "00_setup",
+      "question": "cannot find symbol: missingValue cho biết gì?",
+      "answer": "cause",
+      "options": [
+        {
+          "id": "other-1",
+          "label": "Mọi dependency đều đã cài đúng"
+        },
+        {
+          "id": "other-2",
+          "label": "Chỉ cần bỏ compiler"
+        },
+        {
+          "id": "cause",
+          "label": "Biến chưa được khai báo hoặc không nằm trong scope"
+        }
+      ],
+      "type": "compiler error: cannot find symbol",
+      "detail": "MissingSymbol.java:2: error: cannot find symbol",
+      "detailMeaning": "Compiler không tìm được biến missingValue tại dòng 2",
+      "cause": "Biến chưa được khai báo hoặc nằm ngoài scope."
+    }
+  ],
+  "correctionPhases": [
+    "01_Java",
+    "01_Java",
+    "04_Quality",
+    "04_Quality",
+    "02_Http-Sql",
+    "01_Java",
+    "05_AI"
+  ],
+  "pairExamples": {
+    "parameter / argument": "The method declares a parameter, and the caller supplies an argument.",
+    "authentication / authorization": "Authentication identifies the user, while authorization checks permission to read a document.",
+    "entity / DTO": "The repository loads an entity, and the controller returns a DTO.",
+    "validation / verification of facts": "Validation checks the schema; verification of facts checks the claims.",
+    "precision / recall": "Precision measures relevance among retrieved results, while recall measures how much relevant material was retrieved.",
+    "mutable / immutable": "A mutable list can change, while an immutable list cannot be modified."
+  },
+  "termIds": {
+    "01_Java:class": "01_Java-class",
+    "01_Java:object": "01_Java-object",
+    "01_Java:method": "01_Java-method",
+    "01_Java:parameter": "01_Java-parameter",
+    "01_Java:argument": "01_Java-argument",
+    "01_Java:return value": "01_Java-return-value",
+    "01_Java:exception": "01_Java-exception",
+    "01_Java:collection": "01_Java-collection",
+    "01_Java:mutable": "01_Java-mutable",
+    "01_Java:immutable": "01_Java-immutable",
+    "02_Http-Sql:request": "02_Http-Sql-request",
+    "02_Http-Sql:response": "02_Http-Sql-response",
+    "02_Http-Sql:endpoint": "02_Http-Sql-endpoint",
+    "02_Http-Sql:payload": "02_Http-Sql-payload",
+    "02_Http-Sql:query": "02_Http-Sql-query",
+    "02_Http-Sql:constraint": "02_Http-Sql-constraint",
+    "02_Http-Sql:primary key": "02_Http-Sql-primary-key",
+    "02_Http-Sql:foreign key": "02_Http-Sql-foreign-key",
+    "02_Http-Sql:transaction": "02_Http-Sql-transaction",
+    "02_Http-Sql:index": "02_Http-Sql-index",
+    "03_Spring:dependency injection": "03_Spring-dependency-injection",
+    "03_Spring:bean": "03_Spring-bean",
+    "03_Spring:controller": "03_Spring-controller",
+    "03_Spring:service": "03_Spring-service",
+    "03_Spring:repository": "03_Spring-repository",
+    "03_Spring:entity": "03_Spring-entity",
+    "03_Spring:DTO": "03_Spring-dto",
+    "03_Spring:validation": "03_Spring-validation",
+    "03_Spring:mapping": "03_Spring-mapping",
+    "03_Spring:pagination": "03_Spring-pagination",
+    "04_Quality:authentication": "04_Quality-authentication",
+    "04_Quality:authorization": "04_Quality-authorization",
+    "04_Quality:principal": "04_Quality-principal",
+    "04_Quality:unit test": "04_Quality-unit-test",
+    "04_Quality:integration test": "04_Quality-integration-test",
+    "04_Quality:mock": "04_Quality-mock",
+    "04_Quality:fixture": "04_Quality-fixture",
+    "04_Quality:deployment": "04_Quality-deployment",
+    "04_Quality:environment variable": "04_Quality-environment-variable",
+    "04_Quality:log": "04_Quality-log",
+    "05_AI:prompt": "05_AI-prompt",
+    "05_AI:token": "05_AI-token",
+    "05_AI:context window": "05_AI-context-window",
+    "05_AI:inference": "05_AI-inference",
+    "05_AI:structured output": "05_AI-structured-output",
+    "05_AI:schema": "05_AI-schema",
+    "05_AI:timeout": "05_AI-timeout",
+    "05_AI:retry": "05_AI-retry",
+    "05_AI:rate limit": "05_AI-rate-limit",
+    "05_AI:provider": "05_AI-provider",
+    "06_RAG:chunk": "06_RAG-chunk",
+    "06_RAG:embedding": "06_RAG-embedding",
+    "06_RAG:vector store": "06_RAG-vector-store",
+    "06_RAG:retrieval": "06_RAG-retrieval",
+    "06_RAG:relevance": "06_RAG-relevance",
+    "06_RAG:similarity": "06_RAG-similarity",
+    "06_RAG:citation": "06_RAG-citation",
+    "06_RAG:grounding": "06_RAG-grounding",
+    "06_RAG:precision": "06_RAG-precision",
+    "06_RAG:recall": "06_RAG-recall",
+    "dsa:array": "dsa-array",
+    "dsa:hash map": "dsa-hash-map",
+    "dsa:stack": "dsa-stack",
+    "dsa:queue": "dsa-queue",
+    "dsa:heap": "dsa-heap",
+    "dsa:graph": "dsa-graph",
+    "dsa:traversal": "dsa-traversal",
+    "dsa:dynamic programming": "dsa-dynamic-programming",
+    "dsa:invariant": "dsa-invariant",
+    "dsa:time complexity": "dsa-time-complexity",
+    "dsa:space complexity": "dsa-space-complexity",
+    "dsa:amortized": "dsa-amortized"
+  }
+}
