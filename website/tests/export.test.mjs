@@ -42,3 +42,22 @@ test('course export rejects a missing four-step course and personal project rout
   rmSync(output,{recursive:true});
  }
 });
+
+test('English export requires the study route, daily task and phase/course links', () => {
+ const output=mkdtempSync(path.join(tmpdir(),'roadmap-english-export-'));
+ try {
+  const write=(route,content)=>{const file=path.join(output,route+'.html');mkdirSync(path.dirname(file),{recursive:true});writeFileSync(file,content);};
+  const catalogue={phases:[{slug:'01_Java'}],exercises:[],courses:[{phase:'01_Java'}]};
+  for(const route of ['today','skills','lab','auth/reset'])write(route,'page');
+  write('docs/01_Java','Chạy thử / Nộp bài Gia sư gợi ý theo cấp');
+  write('learn/01_Java','Bài học Luyện tập Áp dụng vào dự án Kiểm tra cuối chặng');
+  write('projects/mine','Dự án của tôi');
+  assert.ok(checkExport(output,catalogue,{}).includes('Missing exported route /english'));
+  write('english','Tiếng Anh cho lập trình viên Từ vựng Đọc hiểu Đọc thông báo lỗi Viết và giải thích code Ôn tập Nhập bản lưu JSON');
+  assert.equal(checkExport(output,catalogue,{}).length,3);
+  write('today','10–15 phút tiếng Anh hôm nay');
+  write('docs/01_Java','Chạy thử / Nộp bài Gia sư gợi ý theo cấp Tiếng Anh của chặng này');
+  write('learn/01_Java','Bài học Luyện tập Áp dụng vào dự án Kiểm tra cuối chặng Tiếng Anh của chặng này');
+  assert.deepEqual(checkExport(output,catalogue,{}),[]);
+ } finally { rmSync(output,{recursive:true}); }
+});

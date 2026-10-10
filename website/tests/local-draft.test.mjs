@@ -29,6 +29,7 @@ function renderWorkspace(area, store, downloads = []) {
             if (name === '@/lib/useLocalDraft') return { useLocalDraft: () => store };
             if (name === '@/lib/project-core') return require('../.test-dist/project-core.js');
             if (name === '@/lib/course-core') return require('../.test-dist/course-core.js');
+            if (name === '@/lib/english') return { englishLink: (phase, section) => `/english#${phase}/${section}` };
             if (name === '@/lib/download') return { downloadText: (...args) => downloads.push(args) };
             throw Error(`Unexpected import: ${name}`);
         },

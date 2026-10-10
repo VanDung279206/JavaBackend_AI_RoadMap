@@ -6,6 +6,7 @@ import ProgressTracker from "@/components/ProgressTracker";
 import GiscusComments from "@/components/GiscusComments";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { english, englishLink, englishPhaseFor } from "@/lib/english";
 
 // Generate static params cho `output: export`
 export function generateStaticParams() {
@@ -44,6 +45,12 @@ export default async function PhasePage({
       </header>
 
       {catalogue.courses.some(course => course.phase === phase) && <div className="learning-actions"><Link className="button-primary" href={`/learn/${phase}`}>Học chặng này →</Link><span>Bài học → Luyện tập → Áp dụng vào dự án → Kiểm tra cuối chặng</span></div>}
+
+      <section className="learning-card"><h2>Tiếng Anh của chặng này</h2><p>Đọc đề và thông báo lỗi, rồi viết về hành vi và kết quả thực chạy của code.</p><div className="learning-actions">
+        {english.terms.some(t => t.phase === englishPhaseFor(phase)) && <Link href={englishLink(phase)}>Từ vựng liên quan</Link>}
+        {english.readings.some(r => r.phase === englishPhaseFor(phase)) && <Link href={englishLink(phase, 'reading')}>Đọc và luyện câu</Link>}
+        <Link href={englishLink(english.errors.some(e => e.phase === englishPhaseFor(phase)) ? phase : 'all', 'errors')}>Đọc thông báo lỗi</Link><Link href={englishLink(phase, 'writing')}>Viết và giải thích code</Link>
+      </div></section>
 
       <ProgressTracker phase={phase} exercises={config.exercises} />
 

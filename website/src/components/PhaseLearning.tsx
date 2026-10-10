@@ -8,6 +8,7 @@ import { emptyLesson, lessonRecommendations, localKey, parseLessons, prerequisit
 import { useLocalDraft } from '@/lib/useLocalDraft';
 import { downloadText } from '@/lib/download';
 import DraftBackup from './DraftBackup';
+import { englishLink } from '@/lib/english';
 
 const steps = ['Bài học', 'Luyện tập', 'Áp dụng vào dự án', 'Kiểm tra cuối chặng'];
 const empty: LessonProgress = {};
@@ -55,6 +56,7 @@ function Workspace({ phase }: { phase: string }) {
     return <>
         <nav className="course-steps" aria-label="Bốn phần học chặng">{steps.map((label, index) => <button type="button" key={label} aria-current={step === index ? 'step' : undefined} onClick={() => setStep(index)}><span>{index + 1}</span>{label}</button>)}</nav>
         <div className="learning-actions"><Link href={`/docs/${phase}`}>Tất cả bài tập & tiến độ</Link><Link href="/today">Lịch học và ôn lỗi</Link><Link href="/projects/mine">Dự án của tôi</Link></div>
+        <aside className="learning-card"><h2>Tiếng Anh của chặng này</h2><p>Học thuật ngữ, đọc hợp đồng và viết vài câu về bài bạn đang làm.</p><div className="learning-actions"><Link href={englishLink(phase, 'vocabulary')}>Từ vựng</Link><Link href={englishLink(phase, 'reading')}>Đọc và luyện câu</Link><Link href={englishLink(phase, 'writing')}>Viết và giải thích code</Link></div></aside>
         {step === 0 && <>
             {recommendations.length > 0 && <aside className="learning-card"><h2>Bài học nên xem lại</h2><p>Dựa trên bài cần ôn và tag lỗi đang mắc.</p>{recommendations.map(item => <button key={item.id} onClick={() => choose(item.id)}>{item.id} · lỗi liên quan {item.exerciseIds.join(', ')}</button>)}</aside>}
             <div className="course-layout"><aside className="course-index"><h2>Bài học nhỏ</h2><ol>{lessons.map(item => <li key={item.id}><button aria-current={selected === item.id ? 'page' : undefined} onClick={() => choose(item.id)}>{item.title}<small>{store.value[item.id]?.read ? 'Đã đọc' : 'Chưa đọc'}</small></button></li>)}</ol></aside>

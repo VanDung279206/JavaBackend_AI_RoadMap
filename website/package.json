@@ -10,7 +10,8 @@
     "prebuild": "node ../scripts/build_catalogue.mjs",
     "postbuild": "node tests/check-export.mjs",
     "predev": "node ../scripts/build_catalogue.mjs",
-    "test": "node tests/run.mjs"
+    "test": "node tests/run.mjs",
+    "test:browser": "node tests/english-browser.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",
@@ -36,6 +37,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.3.6",
+    "playwright": "1.62.1",
     "shadcn": "^4.21.0",
     "tailwindcss": "^4",
     "typescript": "^5"

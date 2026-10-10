@@ -11,6 +11,7 @@ const links = [
   { href: "/today", label: "Hôm nay" },
   { href: "/roadmap", label: "Lộ trình" },
   { href: "/docs", label: "Bài tập" },
+  { href: "/english", label: "Tiếng Anh" },
   { href: "/materials", label: "Tài liệu" },
   { href: "/projects", label: "Dự án" },
   { href: "/leaderboard", label: "Xếp hạng" },
