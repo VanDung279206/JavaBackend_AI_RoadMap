@@ -119,6 +119,17 @@ try {
     const progress = await page.evaluate(() => JSON.parse(localStorage.getItem('roadmap-v2:english:guest')));
     assert.equal(progress.terms[term.id].reviews.length, 1); assert.equal(progress.terms[term.id].intervalDays, 1);
     assert.ok(progress.terms[term.id].dueAt); pass('flashcard answer-before-reveal and native persisted review schedule');
+    await expect(page.locator('.english-flashcard')).toHaveCount(0);
+    await expect(page.getByText(/Đã hết từ đến hạn trong chủ đề này/)).toBeVisible();
+    await page.getByRole('button', { name: 'Luyện thêm tất cả từ', exact: true }).click();
+    const practiceFlash = page.locator('.english-flashcard').first();
+    await practiceFlash.getByLabel('Nghĩa bạn nhớ').fill('my meaning');
+    await practiceFlash.getByRole('button', { name: 'Mở đáp án flashcard' }).click();
+    await practiceFlash.getByRole('button', { name: 'Nhớ khó', exact: true }).click();
+    await saved();
+    await expect(practiceFlash.getByLabel('Nghĩa bạn nhớ')).toBeDisabled();
+    await expect(practiceFlash.getByRole('button', { name: 'Nhớ được', exact: true })).toBeDisabled();
+    pass('due review ends without refilling all terms; extra practice requires explicit choice and locks a rated attempt');
 
     const downloadEvent = page.waitForEvent('download');
     await page.getByRole('button', { name: 'Tải tiến độ tiếng Anh JSON' }).click();
@@ -162,9 +173,67 @@ try {
     pass('Today, course and DSA navigation honor GitHub Pages basePath');
 
     await visit('/english', '#all/review');
+    await page.getByRole('button', { name: 'Luyện thêm tất cả từ', exact: true }).click();
     await page.getByRole('button', { name: 'Nhóm flashcard tiếp', exact: true }).click();
     await expect(page.getByText('Nhóm 2/9', { exact: true })).toBeVisible();
     pass('review pagination keeps all 72 terms accessible');
+
+    await visit('/english', '#02_Http-Sql/reading');
+    const sqlBridge = page.locator('.english-practice').filter({ hasText: 'SQL-BRIDGE-JOIN' });
+    await expect(sqlBridge.locator('pre')).toContainText('COUNT(d.id)');
+    await expect(sqlBridge.getByText(/COUNT\(d.id\) chỉ đếm/)).not.toBeVisible();
+    await sqlBridge.getByText('Mở gợi ý từng bước', { exact: true }).click();
+    await expect(sqlBridge.getByText(/COUNT\(d.id\) chỉ đếm/)).toBeVisible();
+    await sqlBridge.getByLabel('Câu trả lời').fill('zero');
+    await sqlBridge.getByRole('button', { name: 'Kiểm tra câu trả lời' }).click();
+    await expect(sqlBridge.getByText('Đúng theo đáp án của bài.', { exact: true })).toBeVisible();
+    await visit('/english', '#03_Spring/reading');
+    const springBridge = page.locator('.english-practice').filter({ hasText: 'SPRING-BRIDGE-ROLLBACK' });
+    await springBridge.getByLabel('Câu trả lời').fill('rolls back');
+    await springBridge.getByRole('button', { name: 'Kiểm tra câu trả lời' }).click();
+    await expect(springBridge.getByText('Đúng theo đáp án của bài.', { exact: true })).toBeVisible();
+    await saved(); await shot('desktop-intermediate');
+    pass('SQL/Spring intermediate traces, on-demand hints and accepted answers work in the exported site');
+
+    const resumeContext = await browser.newContext();
+    await resumeContext.route('**/*', route => new URL(route.request().url()).origin === origin ? route.continue() : route.abort());
+    const resume = await resumeContext.newPage();
+    resume.on('pageerror', error => errors.push(error.message));
+    await resume.goto(origin + base + '/english');
+    const seedResume = async stage => {
+        await resume.evaluate(({ catalogue, stage }) => {
+            const now = new Date().toISOString(), value = { version: 1, terms: {}, exercises: {}, readings: {}, writing: {} };
+            for (const e of catalogue.exercises.filter(e => e.section !== 'error')) {
+                if (e.phase === '01_Java' && (stage === 'reading' ? e.section !== 'vocabulary' : stage === 'writing' && e.section === 'writing')) continue;
+                let answer = e.answers[0];
+                if (e.kind === 'reorder') {
+                    const remaining = e.tokens.map((token, index) => ({ token, index }));
+                    answer = JSON.stringify(e.answers[0].split(' ').map(token => remaining.splice(remaining.findIndex(t => t.token === token), 1)[0].index));
+                }
+                value.exercises[e.id] = { answer, checkedAnswer: answer, correct: true, checkedAt: now, attempts: 1 };
+            }
+            for (const r of catalogue.readings) if (r.phase !== '01_Java' || stage !== 'reading') value.readings[r.id] = { readAt: now };
+            for (const w of catalogue.writers.filter(w => !catalogue.errors.some(error => w.id === `WRITE-${error.id}`))) if (w.phase !== '01_Java' || stage === 'complete') value.writing[w.id] = { text: 'I checked the output.', commit: '', reviewedAt: now };
+            localStorage.setItem('roadmap-v2:english:guest', JSON.stringify(value));
+        }, { catalogue, stage });
+    };
+    for (const stage of ['reading', 'writing']) {
+        await seedResume(stage);
+        await resume.goto(origin + base + '/english#01_Java/overview');
+        await resume.reload();
+        await expect(resume.getByText('Đã lưu tiến độ tiếng Anh trên thiết bị.', { exact: true })).toBeVisible();
+        await resume.getByRole('button', { name: /^Tiếp tục: Java:/ }).click();
+        await expect(resume).toHaveURL(new RegExp('/english#01_Java/' + stage + '$'));
+        await resume.goto(origin + base + '/today');
+        await expect(resume.getByRole('link', { name: 'Bắt đầu tiếng Anh', exact: true })).toHaveAttribute('href', base + '/english#01_Java/' + stage);
+    }
+    await seedResume('complete');
+    await resume.goto(origin + base + '/english');
+    await resume.reload();
+    await resume.getByRole('button', { name: 'Đã hoàn thành các chặng · Mở lịch ôn', exact: true }).click();
+    await expect(resume.locator('.english-flashcard')).toHaveCount(0);
+    await resumeContext.close();
+    pass('overview and Today resume reading/writing after vocabulary, and all-complete opens the review schedule');
 
     await page.setViewportSize({ width: 390, height: 844 });
     await visit();
@@ -191,7 +260,13 @@ try {
     await saved(); await page.reload(); await saved();
     await expect(page.getByLabel('Bài viết tiếng Anh')).toHaveValue('The method rejects an empty title. I checked the error.');
     await page.locator('.english-writing').scrollIntoViewIfNeeded(); await shot('mobile-writing-practice');
-    pass('390px mobile menu, all five areas, vocabulary grading and writing reload');
+    await visit('/english', '#03_Spring/reading');
+    const mobileBridge = page.locator('.english-practice').filter({ hasText: 'SPRING-BRIDGE-VALIDATE' });
+    await mobileBridge.getByText('Mở gợi ý từng bước', { exact: true }).click();
+    await mobileBridge.scrollIntoViewIfNeeded();
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true, 'mobile intermediate trace overflows');
+    await shot('mobile-intermediate');
+    pass('390px mobile menu, all five areas, vocabulary grading, writing reload and intermediate trace');
 
     const unsupported = await context.newPage();
     await unsupported.addInitScript(() => Object.defineProperty(window, 'speechSynthesis', { value: undefined, configurable: true }));

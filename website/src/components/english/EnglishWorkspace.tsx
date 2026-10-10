@@ -5,7 +5,7 @@ import DraftBackup from '@/components/DraftBackup';
 import { useLearning } from '@/lib/learning-store';
 import { useEnglishProgress } from '@/lib/useEnglishProgress';
 import { english, englishLink, parseEnglishBackup } from '@/lib/english';
-import { dueTerms, englishStats, nextEnglishUnit, normalizeEnglishSearch, ENGLISH_BACKUP_MAX_BYTES, type EnglishProgress, type EnglishTerm } from '@/lib/english-core';
+import { dueTerms, englishStats, nextEnglishUnit, englishUnitStatus, normalizeEnglishSearch, ENGLISH_BACKUP_MAX_BYTES, type EnglishProgress, type EnglishTerm } from '@/lib/english-core';
 import { downloadText } from '@/lib/download';
 import coding from '@/generated/catalogue.json';
 import EnglishTermCard from './EnglishTermCard';
@@ -36,6 +36,7 @@ export default function EnglishWorkspace() {
 function Workspace() {
     const store = useEnglishProgress();
     const [phase, setPhase] = useState('01_Java'), [section, setSection] = useState<Section>('overview');
+    const [reviewMode, setReviewMode] = useState<'due' | 'all'>('due');
     const [query, setQuery] = useState(''), [neededOnly, setNeededOnly] = useState(false), [page, setPage] = useState(0), [reviewPage, setReviewPage] = useState(0);
     useEffect(() => {
         function fromHash() {
@@ -44,7 +45,7 @@ function Workspace() {
                 if (nextPhase === 'all' || english.units.some(u => u.phase === nextPhase)) setPhase(nextPhase);
                 if (tabs.some(([id]) => id === nextSection)) setSection(nextSection as Section);
                 const term = english.terms.find(t => t.id === termId);
-                setQuery(term?.term ?? ''); setPage(0); setReviewPage(0);
+                setQuery(term?.term ?? ''); setPage(0); setReviewPage(0); setReviewMode('due');
             } catch { /* Keep a usable default when a pasted hash is malformed. */ }
         }
         function followLesson(event: MouseEvent) {
@@ -61,15 +62,17 @@ function Workspace() {
         return () => { window.removeEventListener('hashchange', fromHash); window.removeEventListener('popstate', fromHash); document.removeEventListener('click', followLesson, true); };
     }, []);
     function choose(nextPhase: string, nextSection: Section) {
-        setPhase(nextPhase); setSection(nextSection); setQuery(''); setPage(0); setReviewPage(0);
+        setPhase(nextPhase); setSection(nextSection); setQuery(''); setPage(0); setReviewPage(0); setReviewMode('due');
         window.history.replaceState(null, '', `#${nextPhase}/${nextSection}`);
     }
     const progress = store.value, disabled = !store.ready || store.blocked;
     const now = useEnglishClock(), due = dueTerms(english, progress, now), stats = englishStats(progress);
     const next = nextEnglishUnit(english, progress, phase === 'all' ? undefined : phase);
+    const nextStatus = englishUnitStatus(english, progress, next.phase);
     const inPhase = (item: { phase: string }) => phase === 'all' || item.phase === phase;
     const terms = english.terms.filter(inPhase);
-    const reviewTerms = due.filter(inPhase).length ? due.filter(inPhase) : terms;
+    const phaseDue = due.filter(inPhase);
+    const reviewTerms = reviewMode === 'all' ? terms : phaseDue;
     const currentReviewPage = Math.min(reviewPage, Math.max(0, Math.ceil(reviewTerms.length / 8) - 1));
     const visibleTerms = terms.filter(t => (!neededOnly || progress.terms[t.id]?.reviewNeeded) && normalizeEnglishSearch(`${t.term} ${t.meaning}`).includes(normalizeEnglishSearch(query)));
     const currentPage = Math.min(page, Math.max(0, Math.ceil(visibleTerms.length / 8) - 1));
@@ -86,8 +89,8 @@ function Workspace() {
         {unit && section !== 'overview' && <aside className="learning-card english-unit-intro"><h2>{unit.title}</h2><p><strong>Mục tiêu:</strong> {unit.objective}</p><p><strong>Chuẩn bị:</strong> {unit.prerequisite}</p><p>{unit.explanation}</p><p><strong>Áp dụng:</strong> {unit.application}</p><div className="learning-actions">{unit.exerciseIds.map(id => <Link key={id} href={`/docs/${coding.exercises.find(e => e.id === id)!.phase}#${id}`}>Mở bài {id}</Link>)}</div></aside>}
         {section === 'overview' && <>
             <div className="english-stats" aria-label="Tiến độ tiếng Anh"><p><strong>{stats.seen}/{english.terms.length}</strong>Từ đã xem</p><p><strong>{stats.recalled}</strong>Từ trả lời/nhớ được</p><p><strong>{stats.used}</strong>Từ tự dùng trong câu</p><p><strong>{stats.correct}/{english.exercises.length}</strong>Bài đúng theo đáp án</p></div>
-            <section className="learning-card"><h2>Tiếp tục học trong 10–15 phút</h2><p>{store.ready ? `${due.length} từ đến hạn hoặc được chọn ôn ngay.` : 'Đang tải lịch ôn…'}</p><div className="learning-actions"><button type="button" onClick={() => choose(next.phase, english.terms.some(t => t.phase === next.phase) ? 'vocabulary' : 'writing')}>Bắt đầu: {next.title}</button><button type="button" onClick={() => choose('all', 'review')}>Mở lịch ôn</button></div><p>Học từ → hiểu câu → hoàn thành câu → đọc đoạn → tự viết → giải thích code. Có thể bắt đầu ở bất kỳ chặng phù hợp với bài lập trình đang làm.</p></section>
-            <div className="learning-grid">{english.units.map(u => <article className="learning-card" key={u.id}><h2>{u.title}</h2><p>{u.objective}</p><p>{u.prerequisite}</p><div className="learning-actions">{english.terms.some(t => t.phase === u.phase) && <Link href={englishLink(u.phase, 'vocabulary')}>Học từ</Link>}{english.readings.some(r => r.phase === u.phase) && <Link href={englishLink(u.phase, 'reading')}>Đọc và luyện câu</Link>}<Link href={englishLink(u.phase, 'writing')}>Tự giải thích code</Link></div></article>)}</div>
+            <section className="learning-card"><h2>Tiếp tục học trong 10–15 phút</h2><p>{store.ready ? `${due.length} từ đến hạn hoặc được chọn ôn ngay.` : 'Đang tải lịch ôn…'}</p><div className="learning-actions"><button type="button" disabled={disabled} onClick={() => due.length ? choose('all', 'review') : nextStatus.nextSection ? choose(next.phase, nextStatus.nextSection) : choose('all', 'review')}>{due.length ? 'Ôn từ đến hạn' : nextStatus.nextSection ? `Tiếp tục: ${next.title}` : 'Đã hoàn thành các chặng · Mở lịch ôn'}</button><button type="button" onClick={() => choose('all', 'review')}>Mở lịch ôn</button></div><p>Học từ → hiểu câu → hoàn thành câu → đọc đoạn → tự viết → giải thích code. Có thể bắt đầu ở bất kỳ chặng phù hợp với bài lập trình đang làm.</p></section>
+            <div className="learning-grid">{english.units.map(u => <article className="learning-card" key={u.id}><h2>{u.title}</h2><p>{u.objective}</p><p>{u.prerequisite}</p><p>Nhiệm vụ chặng: {englishUnitStatus(english, progress, u.phase).completed}/{englishUnitStatus(english, progress, u.phase).total} (đáp án đúng, đã đọc và bài viết tự đối chiếu).</p><div className="learning-actions">{english.terms.some(t => t.phase === u.phase) && <Link href={englishLink(u.phase, 'vocabulary')}>Học từ</Link>}{english.readings.some(r => r.phase === u.phase) && <Link href={englishLink(u.phase, 'reading')}>Đọc và luyện câu</Link>}<Link href={englishLink(u.phase, 'writing')}>Tự giải thích code</Link></div></article>)}</div>
         </>}
         {section === 'vocabulary' && <>
             <div className="english-toolbar"><label>Tìm từ hoặc nghĩa<input value={query} onChange={event => { setQuery(event.target.value); setPage(0); }} /></label><label><input type="checkbox" checked={neededOnly} onChange={event => { setNeededOnly(event.target.checked); setPage(0); }} />Chỉ từ trong danh sách cần ôn</label></div>
@@ -111,11 +114,14 @@ function Workspace() {
         {section === 'writing' && <>
             <section className="learning-card"><h2>Từ một câu đến giải thích code</h2><p>Bắt đầu với “The method returns …”. Thêm cách làm, lý do và “I checked …” với input/expected/actual. Sau đó viết commit đúng với thay đổi và 3–5 câu giải thích. Câu kỹ thuật nên dùng thuật ngữ nhất quán và tránh khẳng định mức bảo đảm chưa kiểm được.</p></section>
             {english.exercises.filter(e => inPhase(e) && e.section === 'writing').map(exercise => <EnglishPractice key={exercise.id} exercise={exercise} progress={progress} save={store.save} disabled={disabled} />)}
-            {english.writers.filter(w => inPhase(w) && !/^WRITE-E/.test(w.id)).map(task => <article className="learning-card" key={task.id}><EnglishWriting task={task} progress={progress} save={store.save} disabled={disabled} /></article>)}
+            {english.writers.filter(w => inPhase(w) && !english.errors.some(error => w.id === `WRITE-${error.id}`)).map(task => <article className="learning-card" key={task.id}><EnglishWriting task={task} progress={progress} save={store.save} disabled={disabled} /></article>)}
         </>}
         {section === 'review' && <>
             <h2>Ôn tập đến hạn</h2><p>Tự trả lời trước khi mở nghĩa. Chưa nhớ: ôn lại sau 10 phút; nhớ khó: tăng chậm; nhớ được/dễ: giãn lịch. Lịch này là gợi ý cá nhân theo mức nhớ tự chọn.</p>
-            {due.filter(inPhase).length === 0 && <p>Không có từ đến hạn trong chủ đề này. Có thể luyện thêm bằng các flashcard bên dưới hoặc chọn tất cả chủ đề.</p>}
+            <div className="learning-actions"><button type="button" aria-pressed={reviewMode === 'due'} onClick={() => { setReviewMode('due'); setReviewPage(0); }}>Đến hạn ({phaseDue.length})</button><button type="button" aria-pressed={reviewMode === 'all'} onClick={() => { setReviewMode('all'); setReviewPage(0); }}>Luyện thêm tất cả từ</button></div>
+            {reviewMode === 'due' && phaseDue.length === 0 && <p role="status">Đã hết từ đến hạn trong chủ đề này. Chọn “Luyện thêm tất cả từ” nếu muốn ôn ngoài lịch.</p>}
+            {reviewMode === 'all' && <p>Luyện thêm ngoài lịch: chọn mức nhớ vẫn cập nhật ngày ôn tiếp theo. Mỗi flashcard chỉ ghi một mức nhớ trong lượt này.</p>}
+            {reviewMode === 'all' && terms.length === 0 && <p>Chủ đề này chưa có flashcard. Chọn một chủ đề có từ vựng hoặc tất cả chủ đề.</p>}
             <div className="learning-grid">{reviewTerms.slice(currentReviewPage * 8, currentReviewPage * 8 + 8).map(term => <EnglishReview key={term.id} term={term} progress={progress} save={store.save} disabled={disabled} />)}</div>
             {reviewTerms.length > 8 && <div className="learning-actions"><button type="button" disabled={currentReviewPage === 0} onClick={() => setReviewPage(currentReviewPage - 1)}>Nhóm flashcard trước</button><span>Nhóm {currentReviewPage + 1}/{Math.ceil(reviewTerms.length / 8)}</span><button type="button" disabled={(currentReviewPage + 1) * 8 >= reviewTerms.length} onClick={() => setReviewPage(currentReviewPage + 1)}>Nhóm flashcard tiếp</button></div>}
         </>}

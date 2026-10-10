@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
 import { compileEnglish, validateEnglish } from '../../scripts/english-content.mjs';
 const read = file => readFileSync(new URL('../../' + file, import.meta.url), 'utf8').replaceAll('\r\n', '\n');
 const learning = JSON.parse(read('learning/catalogue.json'));
@@ -58,4 +59,36 @@ test('validator rejects duplicate IDs, orphan links, empty content and unusable 
     reject(d => d.writers[0].model = '');
     reject(d => d.pairs[0].example = '');
     reject(d => d.units[0].phase = d.units[1].phase);
+    reject(d => d.exercises[0].context = []);
+    reject(d => d.exercises[0].hint = '');
+});
+test('SQL and Spring bridges contain distinct increasing objectives, concrete traces and optional hints', () => {
+    for (const prefix of ['SQL-BRIDGE-', 'SPRING-BRIDGE-']) {
+        const tasks = published.exercises.filter(e => e.id.startsWith(prefix));
+        assert.equal(tasks.length, 3);
+        assert.deepEqual(tasks.map(e => e.level), ['Bước trung gian 1/3', 'Bước trung gian 2/3', 'Bước trung gian 3/3']);
+        for (const e of tasks) { assert.ok(e.context.includes('Input:')); assert.ok(e.hint.includes('1.')); assert.equal(e.section, 'practice'); }
+    }
+});
+test('SQL bridge queries execute against their stated input and produce exactly the documented output', () => {
+    const tasks = published.exercises.filter(e => e.id.startsWith('SQL-BRIDGE-'));
+    const script = `import ast,json,re,sqlite3,sys
+for task in json.load(sys.stdin):
+    db=sqlite3.connect(':memory:')
+    context=task['context']
+    for name,columns,values in re.findall(r'Input: (\\w+)\\(([^)]+)\\) = ([^\\n]+)',context):
+        names=columns.split(',')
+        db.execute('CREATE TABLE '+name+' ('+','.join(c.strip()+' INTEGER' for c in names)+')')
+        rows=ast.literal_eval(values)
+        db.executemany('INSERT INTO '+name+' VALUES ('+','.join('?' for _ in names)+')',[tuple(r) if isinstance(r,tuple) else (r,) for r in rows])
+    query=re.search(r'SELECT[\\s\\S]+?;',context).group(0)
+    actual=db.execute(query).fetchall()
+    expected=ast.literal_eval(re.search(r'Output: ([^\\n]+)',context).group(1))
+    if actual and len(actual[0])==1: actual=[r[0] for r in actual]
+    assert actual==expected,(task['id'],actual,expected)
+    db.close()
+print('PASS SQL input/output')`;
+    const command = process.platform === 'win32' ? 'py' : 'python3';
+    const args = process.platform === 'win32' ? ['-3', '-c', script] : ['-c', script];
+    assert.match(execFileSync(command, args, { input: JSON.stringify(tasks), encoding: 'utf8' }), /PASS SQL input\/output/);
 });

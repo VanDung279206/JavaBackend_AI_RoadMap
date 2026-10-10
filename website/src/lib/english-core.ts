@@ -1,6 +1,6 @@
 export type EnglishUnit = { id: string; phase: string; number?: string; title: string; objective: string; prerequisite: string; explanation: string; application: string; exerciseIds: string[] };
 export type EnglishTerm = { id: string; phase: string; term: string; meaning: string; example: string; translation: string; level: string; source: string };
-export type EnglishExercise = { id: string; phase: string; section: string; kind: 'choice' | 'fill' | 'reorder' | 'correct'; level: string; prompt: string; options?: { id: string; label: string }[]; tokens?: string[]; answers: string[]; explanation: string; source: string; termId?: string };
+export type EnglishExercise = { id: string; phase: string; section: string; kind: 'choice' | 'fill' | 'reorder' | 'correct'; level: string; prompt: string; context?: string; hint?: string; options?: { id: string; label: string }[]; tokens?: string[]; answers: string[]; explanation: string; source: string; termId?: string };
 export type EnglishCatalogue = {
     version: number; units: EnglishUnit[]; terms: EnglishTerm[]; exercises: EnglishExercise[];
     readings: { id: string; phase: string; text: string; translation: string; questions: string; source: string }[];
@@ -110,14 +110,21 @@ export function dueTerms(catalogue: EnglishCatalogue, progress: EnglishProgress,
         return row && (row.dueAt ? row.dueAt <= now : row.reviewNeeded);
     }).sort((a, b) => (progress.terms[a.id].dueAt ?? '').localeCompare(progress.terms[b.id].dueAt ?? '') || a.id.localeCompare(b.id));
 }
+export type EnglishLearningSection = 'vocabulary' | 'reading' | 'writing';
+export function englishUnitStatus(catalogue: EnglishCatalogue, progress: EnglishProgress, phase: string) {
+    const tasks = catalogue.exercises.filter(e => e.phase === phase && e.section !== 'error');
+    const readings = catalogue.readings.filter(r => r.phase === phase);
+    const writers = catalogue.writers.filter(w => w.phase === phase && !catalogue.errors.some(error => w.id === `WRITE-${error.id}`));
+    const completed = tasks.filter(e => progress.exercises[e.id]?.correct === true).length + readings.filter(r => progress.readings[r.id]?.readAt).length + writers.filter(w => progress.writing[w.id]?.reviewedAt).length;
+    let nextSection: EnglishLearningSection | null = null;
+    if (tasks.some(e => e.section === 'vocabulary' && progress.exercises[e.id]?.correct !== true)) nextSection = 'vocabulary';
+    else if (readings.some(r => !progress.readings[r.id]?.readAt) || tasks.some(e => ['reading', 'practice'].includes(e.section) && progress.exercises[e.id]?.correct !== true)) nextSection = 'reading';
+    else if (tasks.some(e => e.section === 'writing' && progress.exercises[e.id]?.correct !== true) || writers.some(w => !progress.writing[w.id]?.reviewedAt)) nextSection = 'writing';
+    return { completed, total: tasks.length + readings.length + writers.length, nextSection };
+}
 export function nextEnglishUnit(catalogue: EnglishCatalogue, progress: EnglishProgress, activePhase?: string): EnglishUnit {
     const candidates = activePhase ? [...catalogue.units.filter(u => u.phase === activePhase), ...catalogue.units.filter(u => u.phase !== activePhase)] : catalogue.units;
-    return candidates.find(unit => {
-        const reading = catalogue.readings.find(r => r.phase === unit.phase);
-        const tasks = catalogue.exercises.filter(e => e.phase === unit.phase && ['practice', 'reading'].includes(e.section));
-        const writer = catalogue.writers.find(w => w.phase === unit.phase && !/^WRITE-E/.test(w.id));
-        return (reading && !progress.readings[reading.id]?.readAt) || tasks.some(e => progress.exercises[e.id]?.correct !== true) || (writer && !progress.writing[writer.id]?.reviewedAt);
-    }) ?? candidates[0];
+    return candidates.find(unit => englishUnitStatus(catalogue, progress, unit.phase).nextSection !== null) ?? candidates[0];
 }
 export function englishStats(progress: EnglishProgress) {
     return { seen: Object.values(progress.terms).filter(t => t.seenAt).length, recalled: Object.values(progress.terms).filter(t => t.recalledAt).length, used: Object.values(progress.terms).filter(t => t.usedAt).length, correct: Object.values(progress.exercises).filter(e => e.correct).length, writing: Object.values(progress.writing).filter(w => w.reviewedAt).length };

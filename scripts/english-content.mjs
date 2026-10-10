@@ -99,6 +99,7 @@ export function validateEnglish(data, learning) {
     for (const writer of data.writers) if (!writer.task || !writer.model) throw Error(`Incomplete writing ${writer.id}`);
     for (const guide of data.guides) if (!guide.id || !guide.markdown || !guide.source) throw Error('Incomplete source guide');
     for (const task of data.exercises) {
+        for (const field of ['context', 'hint']) if (task[field] !== undefined && (typeof task[field] !== 'string' || !task[field].trim() || task[field].length > 10000)) throw Error(`Invalid ${field}: ${task.id}`);
         if (!['choice', 'fill', 'reorder', 'correct'].includes(task.kind) || !['vocabulary', 'reading', 'practice', 'writing', 'error'].includes(task.section) || !task.prompt || !task.explanation || !task.answers?.length || task.answers.some(x => typeof x !== 'string' || !x.trim())) throw Error(`Invalid task: ${task.id}`);
         if (task.termId && !data.terms.some(t => t.id === task.termId)) throw Error(`Invalid term link ${task.id}`);
         if (task.kind === 'choice' && (!task.options || task.options.length < 2 || task.options.some(o => !o.id || !o.label) || new Set(task.options.map(o => o.id)).size !== task.options.length || task.answers.some(a => !task.options.some(o => o.id === a)))) throw Error(`Invalid choices ${task.id}`);

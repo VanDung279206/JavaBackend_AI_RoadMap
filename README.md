@@ -5,10 +5,12 @@
 Sau khi merge và triển khai, mở [khu tiếng Anh](https://vandung279206.github.io/JavaBackend_AI_RoadMap/english) (`/english` dưới basePath của repo). Menu desktop/mobile, tìm kiếm toàn website, mỗi chặng và **Hôm nay học gì?** đều dẫn vào bài phù hợp.
 
 - 72 thuật ngữ Java/HTTP/SQL/Spring/kiểm thử/AI/RAG/DSA; tìm/lọc, chọn nghĩa, điền từ, tự viết câu, bảng phân biệt cặp từ và phát âm nếu thiết bị có giọng English.
-- Sáu đoạn đọc, mỗi chặng có ba bài luyện câu tăng dần; tra từ tại chỗ, mở bản dịch và đáp án sau khi tự làm.
+- Sáu đoạn đọc, mỗi chặng có ít nhất ba bài luyện câu tăng dần; SQL/Spring thêm sáu bước trung gian với input/output và gợi ý mở theo thao tác; tra từ tại chỗ, mở bản dịch và đáp án sau khi tự làm.
 - Tám log fixture với câu hỏi về loại lỗi/thông tin/nguyên nhân/xử lý, rồi viết 1–3 câu về lỗi và bằng chứng sửa. Fixture cố ý gây lỗi; kiểm fixture không xác nhận bạn đã sửa đúng.
-- Viết commit, expected/actual, sửa/sắp câu và giải thích code 3–5 câu. Tổng cộng 213 bài có đáp án cố định; bài tự viết dùng tiêu chí và mẫu để tự đối chiếu, chưa có chấm AI.
-- Flashcard yêu cầu trả lời trước khi mở nghĩa; lịch ôn theo mức nhớ, lịch sử 50 lượt gần nhất mỗi từ. Đã xem, trả lời/nhớ được và tự dùng từ có tiến độ riêng.
+- Viết commit, expected/actual, sửa/sắp câu và giải thích code 3–5 câu. Tổng cộng 219 bài có đáp án cố định; bài tự viết dùng tiêu chí và mẫu để tự đối chiếu, chưa có chấm AI.
+- Flashcard yêu cầu trả lời trước khi mở nghĩa; lịch ôn theo mức nhớ, lịch sử 50 lượt gần nhất mỗi từ. Ôn đến hạn kết thúc khi hết từ; chọn “Luyện thêm tất cả từ” để ôn ngoài lịch. Mỗi flashcard chỉ ghi một mức nhớ trong lượt hiện tại. Đã xem, trả lời/nhớ được và tự dùng từ có tiến độ riêng.
+
+“Tiếp tục học” và Hôm nay mở đúng phần còn thiếu: từ vựng → đọc/luyện câu → viết. Tổng quan hiển thị số nhiệm vụ chặng đã hoàn thành; bài viết vẫn là tự đối chiếu, log lỗi là luyện thêm. Bài mới được thêm sẽ hiện là chưa làm và không xóa tiến độ cũ.
 
 Mỗi ngày dành 10–15 phút: ôn 3–5 từ đến hạn → đọc một đoạn hoặc log → viết hai câu khớp code và kết quả thực chạy. Sau đó tăng lên 3–5 câu giải thích, có lý do chọn cách làm và một input biên.
 

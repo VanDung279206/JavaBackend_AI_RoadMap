@@ -22,6 +22,8 @@ export default function EnglishPractice({ exercise, progress, save, disabled }: 
     }
     return <section className="english-practice" aria-labelledby={labelId}>
         <p className="eyebrow">{exercise.level} · {exercise.id}</p><h3 id={labelId}>{exercise.prompt}</h3>
+        {exercise.context && <pre className="english-error-log" lang="en">{exercise.context}</pre>}
+        {exercise.hint && <details><summary>Mở gợi ý từng bước</summary><p>{exercise.hint}</p></details>}
         <fieldset disabled={disabled}>
             {exercise.kind === 'choice' ? <div className="english-choices">{exercise.options!.map(option => <label key={option.id}><input type="radio" name={labelId} value={option.id} checked={row.answer === option.id} onChange={() => edit(option.id)} />{option.label}</label>)}</div> : exercise.kind === 'reorder' ? <>
                 <p lang="en" className="english-order" aria-label="Câu đã sắp xếp">{indices.map(i => exercise.tokens![i]).join(' ') || '…'}</p>

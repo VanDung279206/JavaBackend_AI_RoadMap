@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
-const { emptyEnglish, emptyTerm, emptyExercise, emptyWriting, parseEnglish, gradeExercise, orderedIndices, scheduleReview, dueTerms, nextEnglishUnit, englishStats } = require('../.test-dist/english-core.js');
+const { emptyEnglish, emptyTerm, emptyExercise, emptyWriting, parseEnglish, gradeExercise, orderedIndices, scheduleReview, dueTerms, nextEnglishUnit, englishUnitStatus, englishStats } = require('../.test-dist/english-core.js');
 const { selectEnglishVoice, speechAvailable } = require('../.test-dist/english-speech.js');
 const catalogue = JSON.parse(readFileSync('src/generated/english.json', 'utf8'));
 const now = '2026-10-09T10:00:00.000Z';
@@ -88,12 +88,47 @@ test('viewed, recalled, used and objective/self-assessed results remain distinct
 test('next lesson prioritizes the active coding phase, then skips a completed unit', () => {
     const p = emptyEnglish(), phase = '05_AI';
     assert.equal(nextEnglishUnit(catalogue, p, phase).phase, phase);
-    for (const e of catalogue.exercises.filter(e => e.phase === phase && ['practice', 'reading'].includes(e.section))) p.exercises[e.id] = { ...emptyExercise(), correct: true };
+    for (const e of catalogue.exercises.filter(e => e.phase === phase && e.section !== 'error')) p.exercises[e.id] = { ...emptyExercise(), correct: true };
     const r = catalogue.readings.find(r => r.phase === phase); p.readings[r.id] = { readAt: now };
     p.writing['WRITE-5'] = { ...emptyWriting(), text: 'I checked retries.', reviewedAt: now };
     assert.notEqual(nextEnglishUnit(catalogue, p, phase).phase, phase);
     assert.equal(nextEnglishUnit(catalogue, emptyEnglish(), '00_setup').phase, '00_setup');
     assert.equal(nextEnglishUnit(catalogue, emptyEnglish(), 'dsa').phase, 'dsa');
+});
+test('resume moves from vocabulary to reading to writing, including corrections, without counting optional errors', () => {
+    const p = emptyEnglish(), phase = '01_Java';
+    assert.equal(englishUnitStatus(catalogue, p, phase).nextSection, 'vocabulary');
+    const complete = sections => {
+        for (const e of catalogue.exercises.filter(e => e.phase === phase && sections.includes(e.section))) p.exercises[e.id] = { ...emptyExercise(), correct: true };
+    };
+    complete(['vocabulary']);
+    assert.equal(englishUnitStatus(catalogue, p, phase).nextSection, 'reading');
+    complete(['practice', 'reading']);
+    assert.equal(englishUnitStatus(catalogue, p, phase).nextSection, 'reading', 'questions do not mark the passage read');
+    for (const r of catalogue.readings.filter(r => r.phase === phase)) p.readings[r.id] = { readAt: now };
+    assert.equal(englishUnitStatus(catalogue, p, phase).nextSection, 'writing');
+    for (const w of catalogue.writers.filter(w => w.phase === phase && !catalogue.errors.some(error => w.id === `WRITE-${error.id}`))) p.writing[w.id] = { ...emptyWriting(), text: 'I checked the output.', reviewedAt: now };
+    assert.equal(englishUnitStatus(catalogue, p, phase).nextSection, 'writing', 'correction exercises remain incomplete');
+    complete(['writing']);
+    const done = englishUnitStatus(catalogue, p, phase);
+    assert.equal(done.nextSection, null); assert.equal(done.completed, done.total);
+    const vocabulary = catalogue.exercises.find(e => e.phase === phase && e.section === 'vocabulary');
+    p.exercises[vocabulary.id] = { ...emptyExercise(), answer: 'draft after an edit' };
+    assert.equal(englishUnitStatus(catalogue, p, phase).nextSection, 'vocabulary', 'edited answers must be completed again');
+});
+test('every task in setup, DSA and a phase with multiple readings/writers contributes to completion', () => {
+    const p = emptyEnglish();
+    assert.equal(englishUnitStatus(catalogue, p, '00_setup').nextSection, 'writing');
+    assert.equal(englishUnitStatus(catalogue, p, 'dsa').nextSection, 'vocabulary');
+    const multi = structuredClone(catalogue);
+    multi.readings.push({ ...multi.readings[0], id: 'READ-EXTRA' });
+    multi.writers.push({ ...multi.writers.find(w => w.id === 'WRITE-1'), id: 'WRITE-EXTRA' });
+    for (const e of multi.exercises.filter(e => e.phase === '01_Java' && e.section !== 'error')) p.exercises[e.id] = { ...emptyExercise(), correct: true };
+    p.readings['READ-1'] = { readAt: now };
+    p.writing['WRITE-1'] = { ...emptyWriting(), text: 'I checked the output.', reviewedAt: now };
+    assert.equal(englishUnitStatus(multi, p, '01_Java').nextSection, 'reading');
+    p.readings['READ-EXTRA'] = { readAt: now };
+    assert.equal(englishUnitStatus(multi, p, '01_Java').nextSection, 'writing');
 });
 test('speech selects English only and degrades safely when unsupported or voices are absent', () => {
     assert.equal(speechAvailable(null), false);

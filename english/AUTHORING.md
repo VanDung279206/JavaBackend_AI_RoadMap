@@ -13,6 +13,7 @@ Nguồn nội dung cũ vẫn là `GLOSSARY.md`, `READING_PRACTICE.md`, `CODING_T
 
 Mỗi unit cần `objective`, `prerequisite`, `explanation` tiếng Việt và `application` yêu cầu áp dụng vào code người học. Đi từ nhận diện từ, hiểu câu, điền có gợi ý, đọc đoạn đến tự viết và giải thích 3–5 câu. Câu mẫu phải nêu hành vi/đầu ra và kết quả đã kiểm; không mặc định một đề xuất sửa đã PASS.
 
+- `context` (tùy chọn): đoạn code/trace kèm input và output/expected; không gọi là kết quả thực chạy khi mới là hợp đồng minh họa. `hint` (tùy chọn): các bước tư duy, mở theo thao tác trước đáp án. Ví dụ trung gian SQL/Spring nằm trong `curriculum.json`, không sao chép sang một nguồn riêng.
 - `choice`: mỗi option có ID riêng, đáp án chứa ID option. Thêm lựa chọn sai có lý do; đừng luôn đặt đáp án đúng đầu tiên.
 - `fill`/`correct`: `answers` liệt kê những cách trả lời được hỗ trợ. So khớp bỏ khác biệt hoa/thường, khoảng trắng, dấu kết thúc `. ! ?`, apostrophe cong và chuẩn hóa Unicode NFKC. Không nhận mọi câu đồng nghĩa: câu khác cần tự đối chiếu.
 - `reorder`: mỗi phần tử `tokens` là một token; lời giải chứa đủ token. Chấm bằng chỉ số token để từ lặp không bị mất. Không bỏ `not` hoặc đảo điều kiện làm sai nghĩa.
@@ -45,6 +46,10 @@ npx playwright install chromium
 npm run test:browser
 ```
 
+Test input/output SQL cần Python 3 với sqlite3 đi kèm: Linux/macOS dùng `python3`, Windows dùng `py -3`. Kiểm SQL này chạy ví dụ bằng SQLite, không xác nhận PostgreSQL hoặc code Spring của người học.
+
 Build cần `NEXT_PUBLIC_SUPABASE_URL` và `NEXT_PUBLIC_SUPABASE_ANON_KEY` như website hiện có; dùng `.env.local` theo `.env.example`. Không ghi khóa vào repo. Kiểm giao diện mặc định dưới `/JavaBackend_AI_RoadMap`; nếu build với basePath khác, chạy browser test với cùng `NEXT_PUBLIC_BASE_PATH`.
 
 Browser test tự phục vụ `out/`, chặn request ra ngoài và kiểm tiến độ khách bằng localStorage/Web Locks thật. Có thể đặt `PLAYWRIGHT_CHROMIUM_EXECUTABLE` để dùng Chromium đã cài, `ENGLISH_SCREENSHOTS_DIR` để lưu ảnh. Không coi mô phỏng viewport là kiểm điện thoại vật lý, hay kiểm khách là kiểm đăng nhập Supabase thật.
+
+Gợi ý tiếp tục học đếm tất cả bài từ vựng, luyện câu/đọc, sửa câu, đoạn đã đọc và nhiệm vụ viết không thuộc log lỗi. Các bài viết lỗi được nhận diện bằng liên kết ID `WRITE-<error.id>`, không dựa vào tiền tố rộng. Khi thêm bài mới, giữ ID/đáp án bài cũ để bản JSON cũ vẫn nhập được; bài mới bắt đầu chưa làm.
