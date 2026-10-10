@@ -52,7 +52,9 @@ export default function SearchCommand() {
     if (href.startsWith('/english#') && window.location.pathname.replace(/\/$/, '').endsWith('/english')) {
       // Next's same-page pushState does not emit hashchange. Native hash navigation
       // also makes back/forward restore the selected English lesson.
-      window.location.hash = href.slice(href.indexOf('#'));
+      const hash = href.slice(href.indexOf('#'));
+      if (window.location.hash === hash) window.dispatchEvent(new HashChangeEvent('hashchange'));
+      else window.location.hash = hash;
     } else router.push(href);
   }, [router]);
 

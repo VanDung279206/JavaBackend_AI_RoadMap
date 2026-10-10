@@ -72,3 +72,15 @@ Xem [hướng dẫn review và áp dụng diff](REVIEW_ENGLISH.md) để kiểm 
 Đã sửa gợi ý luôn mở từ vựng, tránh bỏ qua bài sửa câu/từ vựng khi chọn chặng tiếp theo, tách ôn đến hạn với luyện thêm và khóa lượt đã đánh giá. Không suy ra mọi bài viết bắt đầu WRITE-E là bài viết lỗi; dùng đúng ID liên kết tới error. Nút tiếp tục chờ tải tiến độ. Các ID, đáp án và schema tiến độ cũ được giữ; sáu ID mới bắt đầu chưa làm.
 
 Ba query SQL trong context được thực chạy bằng sqlite3 trên chính fixture input ghi trong bài, đối chiếu output. Đây không phải kiểm PostgreSQL. Ba trace Spring là hợp đồng minh họa có giả định validation/transaction rõ ràng; chưa chạy ứng dụng Spring cho các ví dụ mới. Test component kiểm chống click đúp/lượt đã chấm; browser kiểm chế độ ôn và bài mới.
+
+## Review và sửa PR #10 ngày 2026-10-10
+
+Review trên Windows, Node 24.21.0 và Chrome 154.0.8037.99 phát hiện và sửa ba lỗi:
+
+- Hai tab mở cùng flashcard có thể ghi hai lượt ôn, làm giãn lịch hai lần. Lưu trạng thái lịch tại thời điểm mở đáp án và kiểm lại trong khóa ghi; lượt cũ bị từ chối ngay cả sau khi nhận storage event. Chỉnh câu tự viết ở tab khác vẫn được ghép vào tiến độ.
+- Chọn lại từ để ôn ngay giữ lịch ở tương lai, và nếu gán thời điểm hiện tại thì phải chờ đồng hồ giao diện cập nhật tối đa 30 giây. Yêu cầu thủ công dùng `reviewNeeded: true, dueAt: null` để vào hàng đợi ngay; giữ interval và lịch sử đến lượt đánh giá tiếp theo.
+- Bộ lọc chỉ từ cần ôn che từ vừa chọn trong tìm kiếm. Liên kết tới thuật ngữ bỏ bộ lọc này; tìm lại đúng hash hiện tại cũng mở lại từ.
+
+Test SQL cho phép đặt đường dẫn Python 3 qua biến `PYTHON`, dùng được trên Windows không có `py` launcher. Không đổi ID, đáp án hay schema bản lưu.
+
+Kiểm lại bản sửa: **84/84 test**, lint, TypeScript trong build, static export **37 trang**, **18/18 luồng Chrome** (desktop và viewport mobile), catalogue, **449 liên kết Markdown nội bộ**, E01–E08 diagnostic fixture và `git diff --check` đều đạt. Ba luồng browser bổ sung kiểm tìm từ với bộ lọc/hash cũ, xung đột lịch ôn qua hai tab thật và yêu cầu ôn ngay với lịch tương lai. Build dùng cấu hình Supabase placeholder; browser chặn request ngoài localhost. Chưa kiểm Supabase thật, Safari/Firefox hay âm thanh thật.

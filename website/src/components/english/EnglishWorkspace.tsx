@@ -45,6 +45,7 @@ function Workspace() {
                 if (nextPhase === 'all' || english.units.some(u => u.phase === nextPhase)) setPhase(nextPhase);
                 if (tabs.some(([id]) => id === nextSection)) setSection(nextSection as Section);
                 const term = english.terms.find(t => t.id === termId);
+                if (term) setNeededOnly(false);
                 setQuery(term?.term ?? ''); setPage(0); setReviewPage(0); setReviewMode('due');
             } catch { /* Keep a usable default when a pasted hash is malformed. */ }
         }

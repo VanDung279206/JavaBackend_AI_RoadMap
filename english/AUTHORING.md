@@ -46,7 +46,7 @@ npx playwright install chromium
 npm run test:browser
 ```
 
-Test input/output SQL cần Python 3 với sqlite3 đi kèm: Linux/macOS dùng `python3`, Windows dùng `py -3`. Kiểm SQL này chạy ví dụ bằng SQLite, không xác nhận PostgreSQL hoặc code Spring của người học.
+Test input/output SQL cần Python 3 với sqlite3 đi kèm: Linux/macOS dùng `python3`, Windows dùng `py -3`. Có thể đặt biến môi trường `PYTHON` thành đường dẫn Python 3 nếu máy không có launcher mặc định. Kiểm SQL này chạy ví dụ bằng SQLite, không xác nhận PostgreSQL hoặc code Spring của người học.
 
 Build cần `NEXT_PUBLIC_SUPABASE_URL` và `NEXT_PUBLIC_SUPABASE_ANON_KEY` như website hiện có; dùng `.env.local` theo `.env.example`. Không ghi khóa vào repo. Kiểm giao diện mặc định dưới `/JavaBackend_AI_RoadMap`; nếu build với basePath khác, chạy browser test với cùng `NEXT_PUBLIC_BASE_PATH`.
 

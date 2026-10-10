@@ -88,7 +88,7 @@ for task in json.load(sys.stdin):
     assert actual==expected,(task['id'],actual,expected)
     db.close()
 print('PASS SQL input/output')`;
-    const command = process.platform === 'win32' ? 'py' : 'python3';
-    const args = process.platform === 'win32' ? ['-3', '-c', script] : ['-c', script];
+    const command = process.env.PYTHON || (process.platform === 'win32' ? 'py' : 'python3');
+    const args = !process.env.PYTHON && process.platform === 'win32' ? ['-3', '-c', script] : ['-c', script];
     assert.match(execFileSync(command, args, { input: JSON.stringify(tasks), encoding: 'utf8' }), /PASS SQL input\/output/);
 });

@@ -67,6 +67,14 @@ try {
     const term = catalogue.terms.find(t => t.term === 'parameter');
     const card = page.locator(`article[id="${term.id}"]`);
     await expect(card).toBeVisible(); assert.ok(page.url().includes('/english#01_Java/vocabulary/'));
+    await page.getByLabel('Chỉ từ trong danh sách cần ôn').check();
+    await expect(card).toHaveCount(0);
+    await page.getByRole('button', { name: 'Tìm kiếm', exact: true }).click();
+    await page.getByPlaceholder('Tìm chặng, bài tập, từ tiếng Anh…').fill('parameter');
+    await page.getByRole('button', { name: /^Tiếng Anh: parameter —/ }).click();
+    await expect(page.getByLabel('Chỉ từ trong danh sách cần ôn')).not.toBeChecked();
+    await expect(card).toBeVisible();
+    pass('search reopens the selected term despite a restrictive filter and an unchanged URL hash');
     const quiz = card.locator('.english-practice').first();
     await quiz.locator(`input[value="${term.id}"]`).check();
     await quiz.getByRole('button', { name: 'Kiểm tra câu trả lời' }).click();
@@ -194,6 +202,37 @@ try {
     await expect(springBridge.getByText('Đúng theo đáp án của bài.', { exact: true })).toBeVisible();
     await saved(); await shot('desktop-intermediate');
     pass('SQL/Spring intermediate traces, on-demand hints and accepted answers work in the exported site');
+
+    const reviewContext = await browser.newContext();
+    await reviewContext.route('**/*', route => new URL(route.request().url()).origin === origin ? route.continue() : route.abort());
+    const reviewPages = await Promise.all([reviewContext.newPage(), reviewContext.newPage()]);
+    for (const tab of reviewPages) {
+        tab.on('pageerror', error => errors.push(error.message));
+        await tab.goto(origin + base + '/english#01_Java/review');
+        await tab.getByRole('button', { name: 'Luyện thêm tất cả từ', exact: true }).click();
+        const flashcard = tab.locator('.english-flashcard').first();
+        await flashcard.getByLabel('Nghĩa bạn nhớ').fill('my meaning');
+        await flashcard.getByRole('button', { name: 'Mở đáp án flashcard' }).click();
+    }
+    const [firstReview, staleReview] = reviewPages;
+    await firstReview.locator('.english-flashcard').first().getByRole('button', { name: 'Nhớ được', exact: true }).click();
+    await expect(firstReview.getByText('Đã lưu tiến độ tiếng Anh trên thiết bị.', { exact: true })).toBeVisible();
+    await expect(staleReview.locator('.english-flashcard').first()).toContainText('Ôn tiếp:');
+    await staleReview.locator('.english-flashcard').first().getByRole('button', { name: 'Nhớ dễ', exact: true }).click();
+    await expect(staleReview.locator('.english-flashcard').first()).toContainText('Lịch ôn đã thay đổi');
+    const reviewTerm = catalogue.terms.find(t => t.phase === '01_Java');
+    const reviewRow = await firstReview.evaluate(id => JSON.parse(localStorage.getItem('roadmap-v2:english:guest')).terms[id], reviewTerm.id);
+    assert.equal(reviewRow.reviews.length, 1); assert.equal(reviewRow.intervalDays, 1);
+    pass('two revealed flashcards cannot advance one review schedule twice, including after a storage event');
+    await firstReview.getByRole('button', { name: 'Từ vựng', exact: true }).click();
+    const scheduledCard = firstReview.locator(`article[id="${reviewTerm.id}"]`);
+    await scheduledCard.getByLabel('Thêm vào danh sách cần ôn').check();
+    await expect(firstReview.getByText('Đã lưu tiến độ tiếng Anh trên thiết bị.', { exact: true })).toBeVisible();
+    await firstReview.getByRole('button', { name: 'Ôn tập', exact: true }).click();
+    await expect(firstReview.locator('.english-flashcard')).toHaveCount(1);
+    await expect(firstReview.locator('.english-flashcard').getByRole('heading')).toHaveText(reviewTerm.term);
+    pass('manual review request brings a term with a future schedule back into the due queue');
+    await reviewContext.close();
 
     const resumeContext = await browser.newContext();
     await resumeContext.route('**/*', route => new URL(route.request().url()).origin === origin ? route.continue() : route.abort());

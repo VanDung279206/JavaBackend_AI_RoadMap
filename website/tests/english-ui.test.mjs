@@ -7,11 +7,11 @@ const require = createRequire(import.meta.url), ts = require('typescript');
 const core = require('../.test-dist/english-core.js');
 const catalogue = JSON.parse(readFileSync('src/generated/english.json', 'utf8'));
 const code = file => ts.transpileModule(readFileSync('src/components/english/' + file + '.tsx', 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020, jsx: ts.JsxEmit.ReactJSX } }).outputText;
-function render(file, props, states = []) {
+function render(file, props, states = [], refs = []) {
     const module = { exports: {} }, buttons = [], inputs = [];
-    let stateIndex = 0;
+    let stateIndex = 0, refIndex = 0;
     runInNewContext(code(file), { module, exports: module.exports, require(name) {
-        if (name === 'react') return { useId: () => 'test-label', useRef: value => ({ current: value }), useState: initial => [stateIndex < states.length ? states[stateIndex++] : initial, () => {}] };
+        if (name === 'react') return { useId: () => 'test-label', useRef: value => { const index = refIndex++; return refs[index] ?? (refs[index] = { current: value }); }, useState: initial => [stateIndex < states.length ? states[stateIndex++] : initial, () => {}] };
         if (name === 'react/jsx-runtime') { const runtime = require(name); return { ...runtime, ...Object.fromEntries(['jsx', 'jsxs'].map(method => [method, (type, props, key) => { if (type === 'button') buttons.push(props); if (type === 'input') inputs.push(props); return runtime[method](type, props, key); }])) }; }
         if (name === '@/lib/english-core') return core;
         if (name === '@/lib/english') return { english: catalogue };
@@ -65,8 +65,51 @@ test('a flashcard refuses duplicate clicks while saving and disables input durin
     let calls = 0, finish;
     const props = { term: catalogue.terms[0], progress: core.emptyEnglish(), disabled: false, save: () => { calls++; return new Promise(resolve => { finish = resolve; }); } };
     const ui = render('EnglishReview', props, ['my answer', true, false, '', false]);
+    ui.button('Mở đáp án flashcard').onClick();
     const first = ui.button('Nhớ được').onClick();
     await ui.button('Nhớ được').onClick();
     assert.equal(calls, 1); finish(true); await first;
     assert.equal(render('EnglishReview', props, ['my answer', true, false, '', true]).inputs[0].disabled, true);
+});
+
+test('a revealed flashcard rejects another tab review even after receiving its updated progress', async () => {
+    const term = catalogue.terms[0], progress = core.emptyEnglish();
+    const store = saving(progress), refs = [];
+    const props = { term, progress, disabled: false, save: store.save.bind(store) };
+    const stale = render('EnglishReview', props, ['my answer', true, false, '', false], refs);
+    stale.button('Mở đáp án flashcard').onClick();
+    const fresh = render('EnglishReview', props, ['my answer', true, false, '', false]);
+    fresh.button('Mở đáp án flashcard').onClick();
+    await fresh.button('Nhớ được').onClick();
+    const saved = structuredClone(store.value);
+    const updated = render('EnglishReview', { ...props, progress: store.value }, ['my answer', true, false, '', false], refs);
+    await updated.button('Nhớ dễ').onClick();
+    assert.equal(store.rejected, true);
+    assert.deepEqual(store.value, saved);
+    assert.equal(store.value.terms[term.id].reviews.length, 1);
+});
+
+test('rating merges unrelated sentence edits without treating them as a review conflict', async () => {
+    const term = catalogue.terms[0], progress = core.emptyEnglish();
+    const actual = core.emptyEnglish(); actual.terms[term.id] = { ...core.emptyTerm(), sentence: 'An independent edit.' };
+    const store = saving(actual);
+    const ui = render('EnglishReview', { term, progress, disabled: false, save: store.save.bind(store) }, ['my answer', true, false, '', false]);
+    ui.button('Mở đáp án flashcard').onClick();
+    await ui.button('Nhớ được').onClick();
+    assert.equal(store.rejected, false);
+    assert.equal(store.value.terms[term.id].sentence, 'An independent edit.');
+    assert.equal(store.value.terms[term.id].reviews.length, 1);
+});
+
+test('requesting review brings a previously scheduled term into the due queue immediately', () => {
+    const term = catalogue.terms[0];
+    const scheduled = core.scheduleReview(core.emptyTerm(), 'easy', '2099-01-01T00:00:00.000Z');
+    const progress = { ...core.emptyEnglish(), terms: { [term.id]: scheduled } };
+    const store = saving(progress);
+    const ui = render('EnglishTermCard', { term, progress, disabled: false, save: store.save.bind(store) });
+    assert.equal(core.dueTerms(catalogue, progress, new Date().toISOString()).length, 0);
+    ui.inputs.find(input => input.type === 'checkbox').onChange({ target: { checked: true } });
+    assert.deepEqual(core.dueTerms(catalogue, store.value, '2026-10-10T00:00:00.000Z').map(t => t.id), [term.id], 'manual requests must not wait for the 30-second UI clock tick');
+    assert.deepEqual(store.value.terms[term.id].reviews, scheduled.reviews);
+    assert.equal(store.value.terms[term.id].intervalDays, scheduled.intervalDays);
 });

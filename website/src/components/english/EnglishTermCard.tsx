@@ -24,8 +24,9 @@ export default function EnglishTermCard({ term, progress, save, disabled }: { te
         <button type="button" onClick={reveal}>Mở nghĩa và ví dụ</button>
         {revealed && <><p>{term.meaning}</p><p lang="en" className="english-example">{term.example}</p><p>{term.translation}</p><SpeakButton text={term.term} /><SpeakButton text={term.example} label="Nghe câu ví dụ" /></>}
         <label><input type="checkbox" disabled={disabled} checked={row.reviewNeeded} onChange={event => {
-            const checked = event.target.checked, now = new Date().toISOString();
-            void save(latest => ({ ...latest, terms: { ...latest.terms, [term.id]: { ...(latest.terms[term.id] ?? emptyTerm()), reviewNeeded: checked, dueAt: checked ? latest.terms[term.id]?.dueAt ?? now : latest.terms[term.id]?.dueAt ?? null } } }));
+            const checked = event.target.checked;
+            // A manual request is due immediately, even before the clock's next tick.
+            void save(latest => ({ ...latest, terms: { ...latest.terms, [term.id]: { ...(latest.terms[term.id] ?? emptyTerm()), reviewNeeded: checked, dueAt: checked ? null : latest.terms[term.id]?.dueAt ?? null } } }));
         }} />Thêm vào danh sách cần ôn</label>
         <EnglishPractice exercise={english.exercises.find(e => e.termId === term.id)!} progress={progress} save={save} disabled={disabled} />
         <EnglishPractice exercise={english.exercises.find(e => e.id === `FILL-${term.id}`)!} progress={progress} save={save} disabled={disabled} />
