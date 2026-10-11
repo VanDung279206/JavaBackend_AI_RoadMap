@@ -114,6 +114,20 @@ test('requesting review brings a previously scheduled term into the due queue im
     assert.equal(store.value.terms[term.id].intervalDays, scheduled.intervalDays);
 });
 
+test('cancelling a manual review request preserves the existing scheduled review', () => {
+    const term = catalogue.terms[0], scheduled = core.scheduleReview(core.emptyTerm(), 'easy', '2099-01-01T00:00:00.000Z');
+    const progress = { ...core.emptyEnglish(), terms: { [term.id]: scheduled } }, store = saving(progress);
+    const ui = render('EnglishTermCard', { term, progress, disabled: false, save: store.save.bind(store) });
+    const checkbox = ui.inputs.find(input => input.type === 'checkbox');
+    checkbox.onChange({ target: { checked: true } });
+    checkbox.onChange({ target: { checked: false } });
+    assert.equal(store.value.terms[term.id].dueAt, scheduled.dueAt);
+    assert.equal(store.value.terms[term.id].intervalDays, scheduled.intervalDays);
+    assert.deepEqual(store.value.terms[term.id].reviews, scheduled.reviews);
+    assert.equal(core.dueTerms(catalogue, store.value, '2026-10-11T00:00:00.000Z').length, 0);
+    assert.equal(core.dueTerms(catalogue, store.value, scheduled.dueAt).length, 1);
+});
+
 test('a flashcard remounted after pagination cannot rate a term already saved in the session', async () => {
     let calls = 0;
     const ui = render('EnglishReview', { term: catalogue.terms[0], progress: core.emptyEnglish(), disabled: false, ratedInSession: true, save: async () => { calls++; return true; } }, ['my answer', true, false, '', false]);

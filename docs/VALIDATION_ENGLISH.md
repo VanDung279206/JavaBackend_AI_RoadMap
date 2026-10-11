@@ -95,3 +95,11 @@ Hai workflow GitHub Actions của commit `8662761` đều đã đạt. Review ti
 Giữ nguyên schema JSON, ID và đáp án; trạng thái lượt luyện chỉ ở bộ nhớ giao diện. Khóa luyện thêm không chặn một từ đến hạn lại trong cùng khu Ôn tập. Kiểm thời gian dùng đồng hồ Playwright để tiến qua mốc 10 phút, không chờ thời gian thực.
 
 Kiểm bản cuối trên Windows, Node 24.21.0, Chrome 154.0.8037.99: **87/87 test**, lint, TypeScript/build, static export **37 trang**, **22/22 luồng browser**, catalogue và `git diff --check` đều đạt. Ba test component mới kiểm khóa kế thừa từ lượt luyện, ghi nhận lịch/câu trả lời sau khi lưu thành công, và retry sau lưu thất bại. Bốn luồng browser bổ sung kiểm checkpoint cùng tab/khác tab, lượt ôn đến hạn tiếp theo, và phân trang/chuyển chế độ/bắt đầu lượt luyện mới. Build dùng cấu hình Supabase placeholder; browser chặn request ngoài localhost. Các giới hạn kiểm Supabase thật, Safari/Firefox, thiết bị và âm thanh thật vẫn giữ như trên.
+
+## Chốt trước merge ngày 2026-10-12 (Asia/Bangkok)
+
+Xác nhận hai workflow của commit `8472376` đạt, PR không có xung đột hay review thread chưa xử lý. Review cuối tái hiện lỗi chọn ôn ngay rồi bỏ chọn làm mất `dueAt` đã có. Sửa bằng trường tùy chọn `reviewRequestedAt`, giữ lịch ôn và lịch sử riêng với yêu cầu thủ công. Bỏ chọn sau reload vẫn giữ ngày cũ; tất cả mức nhớ xóa yêu cầu và đặt lịch kế tiếp. Yêu cầu thủ công được ưu tiên trong hàng đợi và tham gia kiểm xung đột flashcard.
+
+Version JSON vẫn là 1; bản cũ thiếu trường mới vẫn hợp lệ và yêu cầu cũ với `reviewNeeded: true, dueAt: null` vẫn hoạt động. Test mới kiểm round-trip bản lưu cũ/mới, validation yêu cầu sai, ưu tiên hàng đợi, tiêu thụ yêu cầu ở mọi mức nhớ và giữ lịch sau hủy/reload.
+
+Kiểm bản chốt tại workspace: **90/90 test**, lint, TypeScript/build, static export **37 trang**, **23/23 luồng Chrome**, catalogue và `git diff --check` đạt. Không đổi ID, đáp án, nội dung curriculum hay lịch đã có khi bật/tắt yêu cầu mới. Chỉ kết luận CI đạt sau khi đọc Checks của đúng commit cuối trên GitHub; báo cáo local không thay cho CI.

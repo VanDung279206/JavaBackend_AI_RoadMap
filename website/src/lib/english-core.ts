@@ -10,18 +10,18 @@ export type EnglishCatalogue = {
     guides: { id: string; section: string; title: string; markdown: string; source: string }[];
 };
 export type Rating = 'again' | 'hard' | 'good' | 'easy';
-export type TermProgress = { seenAt: string | null; recalledAt: string | null; sentence: string; usedAt: string | null; reviewNeeded: boolean; dueAt: string | null; intervalDays: number; reviews: { at: string; rating: Rating }[] };
+export type TermProgress = { seenAt: string | null; recalledAt: string | null; sentence: string; usedAt: string | null; reviewNeeded: boolean; reviewRequestedAt?: string | null; dueAt: string | null; intervalDays: number; reviews: { at: string; rating: Rating }[] };
 export type ExerciseProgress = { answer: string; checkedAnswer: string | null; correct: boolean | null; checkedAt: string | null; attempts: number };
 export type WritingProgress = { text: string; commit: string; reviewedAt: string | null };
 export type EnglishProgress = { version: 1; terms: Record<string, TermProgress>; exercises: Record<string, ExerciseProgress>; readings: Record<string, { readAt: string | null }>; writing: Record<string, WritingProgress> };
 // Includes escaped UTF-8 text and duplicated answer/checkedAnswer in a full backup.
 export const ENGLISH_BACKUP_MAX_BYTES = 32 * 1024 * 1024;
 export const normalizeEnglishSearch = (value: string) => value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[đĐ]/g, 'd').toLowerCase();
-export const emptyTerm = (): TermProgress => ({ seenAt: null, recalledAt: null, sentence: '', usedAt: null, reviewNeeded: false, dueAt: null, intervalDays: 0, reviews: [] });
+export const emptyTerm = (): TermProgress => ({ seenAt: null, recalledAt: null, sentence: '', usedAt: null, reviewNeeded: false, reviewRequestedAt: null, dueAt: null, intervalDays: 0, reviews: [] });
 export const emptyExercise = (): ExerciseProgress => ({ answer: '', checkedAnswer: null, correct: null, checkedAt: null, attempts: 0 });
 export const emptyWriting = (): WritingProgress => ({ text: '', commit: '', reviewedAt: null });
 export const emptyEnglish = (): EnglishProgress => ({ version: 1, terms: {}, exercises: {}, readings: {}, writing: {} });
-export const englishReviewState = (row: TermProgress) => JSON.stringify([row.dueAt, row.intervalDays, row.reviews]);
+export const englishReviewState = (row: TermProgress) => JSON.stringify([row.dueAt, row.intervalDays, row.reviews, row.reviewRequestedAt ?? null]);
 const ratings: Rating[] = ['again', 'hard', 'good', 'easy'];
 const object = (value: unknown): Record<string, unknown> => {
     if (!value || typeof value !== 'object' || Array.isArray(value)) throw Error('Invalid English backup object');
@@ -59,7 +59,9 @@ export function parseEnglish(input: unknown, catalogue: EnglishCatalogue): Engli
         if (!Array.isArray(row.reviews) || row.reviews.length > 50) throw Error('Invalid English review history');
         const sentence = string(row.sentence, 2000), usedAt = date(row.usedAt);
         if (usedAt && !sentence.trim()) throw Error('Missing sentence evidence');
-        result.terms[id] = { seenAt: date(row.seenAt), recalledAt: date(row.recalledAt), sentence, usedAt, reviewNeeded: boolean(row.reviewNeeded), dueAt: date(row.dueAt), intervalDays: integer(row.intervalDays, 3650), reviews: row.reviews.map(value => {
+        const reviewNeeded = boolean(row.reviewNeeded), reviewRequestedAt = row.reviewRequestedAt === undefined ? null : date(row.reviewRequestedAt);
+        if (reviewRequestedAt && !reviewNeeded) throw Error('Invalid English review request');
+        result.terms[id] = { seenAt: date(row.seenAt), recalledAt: date(row.recalledAt), sentence, usedAt, reviewNeeded, reviewRequestedAt, dueAt: date(row.dueAt), intervalDays: integer(row.intervalDays, 3650), reviews: row.reviews.map(value => {
             const item = object(value), at = date(item.at);
             if (!at || !ratings.includes(item.rating as Rating)) throw Error('Invalid English rating');
             return { at, rating: item.rating as Rating };
@@ -103,13 +105,16 @@ export function scheduleReview(previous: TermProgress, rating: Rating, now: stri
     if (!ratings.includes(rating) || !date(now)) throw Error('Invalid review');
     const days = rating === 'again' ? 0 : rating === 'hard' ? Math.max(1, Math.round(previous.intervalDays * 1.2)) : rating === 'good' ? previous.intervalDays === 0 ? 1 : Math.max(3, previous.intervalDays * 2) : Math.max(4, Math.round(previous.intervalDays * 2.5));
     const intervalDays = Math.min(3650, days);
-    return { ...previous, seenAt: previous.seenAt ?? now, recalledAt: rating === 'good' || rating === 'easy' ? now : previous.recalledAt, reviewNeeded: rating === 'again' || rating === 'hard', intervalDays, dueAt: new Date(Date.parse(now) + (intervalDays === 0 ? 10 * 60000 : intervalDays * 86400000)).toISOString(), reviews: [...previous.reviews, { at: now, rating }].slice(-50) };
+    return { ...previous, seenAt: previous.seenAt ?? now, recalledAt: rating === 'good' || rating === 'easy' ? now : previous.recalledAt, reviewNeeded: rating === 'again' || rating === 'hard', reviewRequestedAt: null, intervalDays, dueAt: new Date(Date.parse(now) + (intervalDays === 0 ? 10 * 60000 : intervalDays * 86400000)).toISOString(), reviews: [...previous.reviews, { at: now, rating }].slice(-50) };
 }
 export function dueTerms(catalogue: EnglishCatalogue, progress: EnglishProgress, now: string): EnglishTerm[] {
     return catalogue.terms.filter(term => {
         const row = progress.terms[term.id];
-        return row && (row.dueAt ? row.dueAt <= now : row.reviewNeeded);
-    }).sort((a, b) => (progress.terms[a.id].dueAt ?? '').localeCompare(progress.terms[b.id].dueAt ?? '') || a.id.localeCompare(b.id));
+        return row && (row.reviewRequestedAt || (row.dueAt ? row.dueAt <= now : row.reviewNeeded));
+    }).sort((a, b) => {
+        const order = (row: TermProgress) => row.reviewRequestedAt ? '' : row.dueAt ?? '';
+        return order(progress.terms[a.id]).localeCompare(order(progress.terms[b.id])) || a.id.localeCompare(b.id);
+    });
 }
 export type EnglishLearningSection = 'vocabulary' | 'reading' | 'writing';
 export function englishUnitStatus(catalogue: EnglishCatalogue, progress: EnglishProgress, phase: string) {

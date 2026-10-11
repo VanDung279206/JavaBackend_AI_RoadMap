@@ -79,6 +79,30 @@ test('due selection includes immediate review requests but respects a future har
     assert.deepEqual(dueTerms(catalogue, p, now).map(t => t.id), [a.id, c.id]);
     assert.equal(dueTerms(catalogue, p, '2026-10-10T10:00:00.000Z').length, 3);
 });
+
+test('manual review requests round-trip without changing the schedule and legacy backups remain valid', () => {
+    const id = catalogue.terms[0].id, scheduled = scheduleReview(emptyTerm(), 'easy', now);
+    const legacy = { ...scheduled }; delete legacy.reviewRequestedAt;
+    const original = parse({ ...emptyEnglish(), terms: { [id]: legacy } }).terms[id];
+    assert.equal(original.dueAt, scheduled.dueAt);
+    assert.equal(original.reviewRequestedAt, null);
+    const requested = { ...scheduled, reviewNeeded: true, reviewRequestedAt: now };
+    assert.deepEqual(parse(JSON.parse(JSON.stringify({ ...emptyEnglish(), terms: { [id]: requested } }))).terms[id], requested);
+    for (const patch of [{ reviewRequestedAt: 'invalid' }, { reviewRequestedAt: now, reviewNeeded: false }]) assert.throws(() => parse({ ...emptyEnglish(), terms: { [id]: { ...requested, ...patch } } }));
+});
+
+test('manual requests precede scheduled reviews and every rating consumes the request', () => {
+    const [a, b] = catalogue.terms;
+    const requested = { ...scheduleReview(emptyTerm(), 'easy', now), reviewNeeded: true, reviewRequestedAt: now };
+    const progress = { ...emptyEnglish(), terms: { [a.id]: requested, [b.id]: { ...emptyTerm(), dueAt: now } } };
+    assert.deepEqual(dueTerms(catalogue, progress, now).map(t => t.id), [a.id, b.id]);
+    for (const rating of ['again', 'hard', 'good', 'easy']) {
+        const next = scheduleReview(requested, rating, now);
+        assert.equal(next.reviewRequestedAt, null);
+        assert.equal(next.reviews.length, requested.reviews.length + 1);
+        assert.equal(dueTerms(catalogue, { ...emptyEnglish(), terms: { [a.id]: next } }, now).length, 0, rating);
+    }
+});
 test('viewed, recalled, used and objective/self-assessed results remain distinct', () => {
     const [a, b, c] = catalogue.terms;
     const p = { ...emptyEnglish(), terms: { [a.id]: { ...emptyTerm(), seenAt: now }, [b.id]: { ...emptyTerm(), recalledAt: now }, [c.id]: { ...emptyTerm(), sentence: 'This method returns a list.', usedAt: now } }, exercises: { 'P1-FILL': { ...emptyExercise(), correct: true } }, writing: { 'WRITE-1': { ...emptyWriting(), text: 'I checked the output.', reviewedAt: now } } };
