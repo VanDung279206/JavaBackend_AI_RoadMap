@@ -4010,3 +4010,46 @@ a.phase-card:hover .phase-card-content {
 .learning-card button:disabled,.course-steps button:disabled { cursor:not-allowed; opacity:.5; }
 @media(max-width:800px) { .course-layout { grid-template-columns:1fr; } .course-index ol { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); } }
 @media(max-width:700px) { .learning-tools { min-width:0; } .learning-progress-row { align-items:stretch; flex-direction:column; } .learning-progress-row label { flex:0 1 auto; } }
+
+/* English learning uses the same cards and spacing as the coding courses. */
+.english-shell { overflow-wrap:anywhere; }
+.english-tabs button { flex:1 1 145px; }
+.english-tabs button[aria-current="page"] { border-color:var(--foreground); background:var(--muted); font-weight:700; }
+.english-toolbar { display:flex; gap:1rem; align-items:end; flex-wrap:wrap; margin:1rem 0; }
+.english-toolbar label { display:flex; gap:.5rem; align-items:center; flex-wrap:wrap; }
+.english-toolbar select,.english-toolbar input,.english-toolbar button { max-width:100%; min-height:42px; padding:.5rem; border:1px solid var(--border); border-radius:7px; background:var(--card); color:var(--foreground); }
+.english-toolbar select { width:100%; }
+.english-stats { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:.8rem; margin:1.5rem 0; }
+.english-stats p { padding:1rem; background:var(--muted); border:1px solid var(--border); border-radius:10px; }
+.english-stats strong { display:block; font-size:1.6rem; }
+.english-practice { margin:1rem 0; padding:1rem; border:1px solid var(--border); border-radius:9px; background:var(--card); }
+.english-shell fieldset { min-width:0; border:0; padding:0; margin:0; }
+.english-shell label { display:block; margin:.7rem 0; }
+.english-shell input:not([type=checkbox]):not([type=radio]),.english-shell textarea { display:block; width:100%; padding:.65rem; min-height:42px; border:1px solid var(--border); border-radius:6px; background:var(--background); color:var(--foreground); }
+.english-shell input[type=checkbox],.english-shell input[type=radio] { width:auto; margin-right:.6rem; }
+.english-shell button { min-height:42px; padding:.5rem .75rem; border:1px solid var(--border); border-radius:7px; cursor:pointer; }
+.english-shell button:disabled { opacity:.5; cursor:not-allowed; }
+.english-shell button:focus-visible,.english-shell input:focus-visible,.english-shell textarea:focus-visible,.english-shell select:focus-visible { outline:2px solid var(--foreground); outline-offset:3px; }
+.english-choices label { display:flex; gap:.5rem; align-items:flex-start; padding:.7rem; border:1px solid var(--border); border-radius:6px; }
+.english-choices input { flex:0 0 auto; margin-top:.25rem; }
+.english-order,.english-reading,.english-example { font-size:1.08rem; line-height:1.8; }
+.english-feedback { border-left:4px solid var(--foreground); padding:.8rem; margin-top:1rem; }
+.english-feedback.correct { background:#e9f1e8; color:#203b27; }
+.english-feedback.retry { background:#faf0dc; color:#604518; }
+.english-speech { display:flex; flex-wrap:wrap; align-items:center; gap:.5rem; margin:.6rem 0; }
+.english-speech label { display:flex; gap:.4rem; align-items:center; }
+.english-speech small { flex-basis:100%; }
+.english-table-scroll { overflow-x:auto; }
+.english-table-scroll table { min-width:600px; width:100%; border-collapse:collapse; }
+.english-table-scroll th,.english-table-scroll td { text-align:left; border-bottom:1px solid var(--border); padding:.65rem; }
+.english-inline-term button { display:inline; min-height:0; border:0; border-bottom:1px dotted currentColor; border-radius:0; padding:0; background:transparent; font:inherit; }
+.english-inline-term [popover] { max-width:min(90vw,400px); border:1px solid var(--border); border-radius:10px; padding:1rem; background:var(--card); color:var(--foreground); }
+.english-error-log { white-space:pre-wrap; overflow-wrap:anywhere; }
+.english-writing { margin:1rem 0; }
+@media(max-width:1100px) {
+ .nav-links { display:none; }
+ .mobile-nav-trigger { display:inline-flex; }
+ .mobile-nav-panel:not([hidden]) { display:grid; gap:.1rem; padding:.5rem 1rem .8rem; background:#f8f7f1; border-top:1px solid var(--border); }
+ .mobile-nav-panel .nav-link { padding:.6rem .55rem; border-radius:5px; }
+}
+@media(max-width:600px) { .english-stats { grid-template-columns:repeat(2,minmax(0,1fr)); } .english-toolbar { align-items:stretch; flex-direction:column; } .english-tabs button { flex-basis:120px; } }
