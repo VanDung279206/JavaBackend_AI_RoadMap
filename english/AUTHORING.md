@@ -53,3 +53,5 @@ Build cần `NEXT_PUBLIC_SUPABASE_URL` và `NEXT_PUBLIC_SUPABASE_ANON_KEY` như 
 Browser test tự phục vụ `out/`, chặn request ra ngoài và kiểm tiến độ khách bằng localStorage/Web Locks thật. Có thể đặt `PLAYWRIGHT_CHROMIUM_EXECUTABLE` để dùng Chromium đã cài, `ENGLISH_SCREENSHOTS_DIR` để lưu ảnh. Không coi mô phỏng viewport là kiểm điện thoại vật lý, hay kiểm khách là kiểm đăng nhập Supabase thật.
 
 Gợi ý tiếp tục học đếm tất cả bài từ vựng, luyện câu/đọc, sửa câu, đoạn đã đọc và nhiệm vụ viết không thuộc log lỗi. Các bài viết lỗi được nhận diện bằng liên kết ID `WRITE-<error.id>`, không dựa vào tiền tố rộng. Khi thêm bài mới, giữ ID/đáp án bài cũ để bản JSON cũ vẫn nhập được; bài mới bắt đầu chưa làm.
+
+Lượt luyện thêm giữ câu trả lời và trạng thái đã đánh giá qua phân trang và chuyển giữa ôn đến hạn/luyện thêm. Dùng “Bắt đầu lượt luyện mới” để chủ động đánh giá lại. Nếu nhập bản lưu thay đổi lịch ôn của từ đã đánh giá, flashcard bỏ câu trả lời/khóa cũ; nhập từ tab khác cũng áp dụng quy tắc này. Từ đến hạn lại sau “Chưa nhớ” vẫn được ôn trong cùng khu Ôn tập. Trạng thái lượt luyện chỉ ở bộ nhớ giao diện, không thêm trường vào JSON tiến độ.

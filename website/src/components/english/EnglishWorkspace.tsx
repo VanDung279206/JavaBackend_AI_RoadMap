@@ -11,7 +11,7 @@ import coding from '@/generated/catalogue.json';
 import EnglishTermCard from './EnglishTermCard';
 import EnglishPractice from './EnglishPractice';
 import EnglishWriting from './EnglishWriting';
-import EnglishReview from './EnglishReview';
+import EnglishReviewQueue from './EnglishReviewQueue';
 import SpeakButton from './SpeakButton';
 import EnglishGuide from './EnglishGuide';
 import { useEnglishClock } from '@/lib/useEnglishClock';
@@ -123,7 +123,7 @@ function Workspace() {
             {reviewMode === 'due' && phaseDue.length === 0 && <p role="status">Đã hết từ đến hạn trong chủ đề này. Chọn “Luyện thêm tất cả từ” nếu muốn ôn ngoài lịch.</p>}
             {reviewMode === 'all' && <p>Luyện thêm ngoài lịch: chọn mức nhớ vẫn cập nhật ngày ôn tiếp theo. Mỗi flashcard chỉ ghi một mức nhớ trong lượt này.</p>}
             {reviewMode === 'all' && terms.length === 0 && <p>Chủ đề này chưa có flashcard. Chọn một chủ đề có từ vựng hoặc tất cả chủ đề.</p>}
-            <div className="learning-grid">{reviewTerms.slice(currentReviewPage * 8, currentReviewPage * 8 + 8).map(term => <EnglishReview key={term.id} term={term} progress={progress} save={store.save} disabled={disabled} />)}</div>
+            <EnglishReviewQueue terms={reviewTerms} page={currentReviewPage} mode={reviewMode} progress={progress} save={store.save} disabled={disabled || store.saving} />
             {reviewTerms.length > 8 && <div className="learning-actions"><button type="button" disabled={currentReviewPage === 0} onClick={() => setReviewPage(currentReviewPage - 1)}>Nhóm flashcard trước</button><span>Nhóm {currentReviewPage + 1}/{Math.ceil(reviewTerms.length / 8)}</span><button type="button" disabled={(currentReviewPage + 1) * 8 >= reviewTerms.length} onClick={() => setReviewPage(currentReviewPage + 1)}>Nhóm flashcard tiếp</button></div>}
         </>}
         {english.guides.filter(guide => guide.section === section).map(guide => <section className="learning-card" key={guide.id}><h2>{guide.title}</h2><EnglishGuide markdown={guide.markdown} /></section>)}

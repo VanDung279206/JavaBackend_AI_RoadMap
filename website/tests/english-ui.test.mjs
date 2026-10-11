@@ -113,3 +113,36 @@ test('requesting review brings a previously scheduled term into the due queue im
     assert.deepEqual(store.value.terms[term.id].reviews, scheduled.reviews);
     assert.equal(store.value.terms[term.id].intervalDays, scheduled.intervalDays);
 });
+
+test('a flashcard remounted after pagination cannot rate a term already saved in the session', async () => {
+    let calls = 0;
+    const ui = render('EnglishReview', { term: catalogue.terms[0], progress: core.emptyEnglish(), disabled: false, ratedInSession: true, save: async () => { calls++; return true; } }, ['my answer', true, false, '', false]);
+    assert.equal(ui.inputs[0].disabled, true);
+    assert.equal(ui.button('Mở đáp án flashcard').disabled, true);
+    assert.equal(ui.button('Nhớ được').disabled, true);
+    ui.button('Mở đáp án flashcard').onClick();
+    await ui.button('Nhớ được').onClick();
+    assert.equal(calls, 0);
+});
+
+test('a successful rating records the committed schedule for the session', async () => {
+    const term = catalogue.terms[0], progress = core.emptyEnglish(), store = saving(progress), recorded = [];
+    const ui = render('EnglishReview', { term, progress, disabled: false, save: store.save.bind(store), onRated: (state, answer) => recorded.push({ state, answer }) }, ['my answer', true, false, '', false]);
+    ui.button('Mở đáp án flashcard').onClick();
+    await ui.button('Nhớ được').onClick();
+    assert.deepEqual(recorded, [{ state: core.englishReviewState(store.value.terms[term.id]), answer: 'my answer' }]);
+});
+
+test('a failed save never locks the term in the session and remains retryable', async () => {
+    const term = catalogue.terms[0], progress = core.emptyEnglish(), store = saving(progress), recorded = [];
+    let fail = true;
+    const ui = render('EnglishReview', { term, progress, disabled: false, save: change => fail ? Promise.resolve(false) : store.save(change), onRated: state => recorded.push(state) }, ['my answer', true, false, '', false]);
+    ui.button('Mở đáp án flashcard').onClick();
+    await ui.button('Nhớ được').onClick();
+    assert.deepEqual(recorded, []);
+    assert.deepEqual(store.value, progress);
+    fail = false;
+    await ui.button('Nhớ được').onClick();
+    assert.equal(recorded.length, 1);
+    assert.equal(store.value.terms[term.id].reviews.length, 1);
+});

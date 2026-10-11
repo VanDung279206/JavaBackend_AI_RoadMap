@@ -84,3 +84,14 @@ Review trên Windows, Node 24.21.0 và Chrome 154.0.8037.99 phát hiện và s�
 Test SQL cho phép đặt đường dẫn Python 3 qua biến `PYTHON`, dùng được trên Windows không có `py` launcher. Không đổi ID, đáp án hay schema bản lưu.
 
 Kiểm lại bản sửa: **84/84 test**, lint, TypeScript trong build, static export **37 trang**, **18/18 luồng Chrome** (desktop và viewport mobile), catalogue, **449 liên kết Markdown nội bộ**, E01–E08 diagnostic fixture và `git diff --check` đều đạt. Ba luồng browser bổ sung kiểm tìm từ với bộ lọc/hash cũ, xung đột lịch ôn qua hai tab thật và yêu cầu ôn ngay với lịch tương lai. Build dùng cấu hình Supabase placeholder; browser chặn request ngoài localhost. Chưa kiểm Supabase thật, Safari/Firefox hay âm thanh thật.
+
+## Review tiếp ngày 2026-10-11 (Asia/Bangkok)
+
+Hai workflow GitHub Actions của commit `8662761` đều đã đạt. Review tiếp tái hiện hai lỗi bằng Chrome trên bản static export trước sửa:
+
+- Chuyển sang nhóm flashcard khác rồi quay lại làm mất khóa của lượt đã đánh giá; có thể ghi thêm lịch ôn trong cùng lượt luyện. `EnglishReviewQueue` giữ câu trả lời và lịch đã ghi qua phân trang/chuyển chế độ. Chỉ lượt lưu thành công mới được khóa; nút “Bắt đầu lượt luyện mới” cho phép chủ động luyện lại.
+- Nhập checkpoint có lịch ôn cũ vẫn giữ câu trả lời và khóa của flashcard đã đánh giá. Flashcard đã chấm được tạo lại khi lịch hiện tại khác lịch đã ghi trong lượt luyện, áp dụng cả khi checkpoint được nhập từ tab khác. Thay đổi câu tự viết vẫn ghép bình thường và không làm mất khóa của lịch ôn chưa đổi.
+
+Giữ nguyên schema JSON, ID và đáp án; trạng thái lượt luyện chỉ ở bộ nhớ giao diện. Khóa luyện thêm không chặn một từ đến hạn lại trong cùng khu Ôn tập. Kiểm thời gian dùng đồng hồ Playwright để tiến qua mốc 10 phút, không chờ thời gian thực.
+
+Kiểm bản cuối trên Windows, Node 24.21.0, Chrome 154.0.8037.99: **87/87 test**, lint, TypeScript/build, static export **37 trang**, **22/22 luồng browser**, catalogue và `git diff --check` đều đạt. Ba test component mới kiểm khóa kế thừa từ lượt luyện, ghi nhận lịch/câu trả lời sau khi lưu thành công, và retry sau lưu thất bại. Bốn luồng browser bổ sung kiểm checkpoint cùng tab/khác tab, lượt ôn đến hạn tiếp theo, và phân trang/chuyển chế độ/bắt đầu lượt luyện mới. Build dùng cấu hình Supabase placeholder; browser chặn request ngoài localhost. Các giới hạn kiểm Supabase thật, Safari/Firefox, thiết bị và âm thanh thật vẫn giữ như trên.

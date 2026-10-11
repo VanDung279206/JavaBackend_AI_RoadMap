@@ -21,6 +21,7 @@ export const emptyTerm = (): TermProgress => ({ seenAt: null, recalledAt: null, 
 export const emptyExercise = (): ExerciseProgress => ({ answer: '', checkedAnswer: null, correct: null, checkedAt: null, attempts: 0 });
 export const emptyWriting = (): WritingProgress => ({ text: '', commit: '', reviewedAt: null });
 export const emptyEnglish = (): EnglishProgress => ({ version: 1, terms: {}, exercises: {}, readings: {}, writing: {} });
+export const englishReviewState = (row: TermProgress) => JSON.stringify([row.dueAt, row.intervalDays, row.reviews]);
 const ratings: Rating[] = ['again', 'hard', 'good', 'easy'];
 const object = (value: unknown): Record<string, unknown> => {
     if (!value || typeof value !== 'object' || Array.isArray(value)) throw Error('Invalid English backup object');
