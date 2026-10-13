@@ -518,5 +518,35 @@
     "Check và update phải là một thao tác nguyên tử.",
     "Khóa cùng monitor cho rename và getters; không chỉ volatile version.",
     "synchronized rename: validate, so version, đổi title và tăng; getters synchronized."
+  ],
+  "SQLB01": [
+    "Một tài liệu cần thỏa bao nhiêu điều kiện để được giữ?",
+    "201 cùng ngày nhưng khác owner phải bị loại; 102/104 ở đúng ngày biên phải được giữ.",
+    "Dùng d.owner_id=r.owner_id AND d.created_at>=r.since_at; đọc parameters thay vì ghi cứng."
+  ],
+  "SQLB02": [
+    "User không có tài liệu phải còn một hàng hay biến mất?",
+    "LEFT JOIN tạo hàng có d.id=NULL cho Chi; COUNT(*) sẽ đếm hàng đó thành 1.",
+    "LEFT JOIN theo owner_id; GROUP BY u.id; COUNT(d.id) bỏ null và trả 0 khi không khớp."
+  ],
+  "SQLB03": [
+    "Hai tài liệu có created_at giống nhau được phân biệt bằng khóa nào?",
+    "Sau (02/09,104), 102 vẫn phải được giữ; 104 không được lặp.",
+    "Lọc owner AND (created_at,id)<(cursor_at,cursor_id); ORDER BY created_at DESC,id DESC trước LIMIT page_size."
+  ],
+  "SPRB01": [
+    "Constraint nào từ chối title trắng nhưng vẫn cho content rỗng?",
+    "Title 120/content 20000 hợp lệ; thêm một ký tự phải lỗi. Size riêng lẻ không từ chối null.",
+    "WriteDocument: @NotBlank @Size(max=120) cho title; @NotNull @Size(max=20000) cho content."
+  ],
+  "SPRB02": [
+    "Tìm bằng ID có đủ để chứng minh tài liệu thuộc owner yêu cầu không?",
+    "Bình dùng ID của An phải Missing, giống ID chưa tồn tại; không được trả tài liệu khác của Bình.",
+    "Dùng findByIdAndOwnerId(id,owner).orElseThrow(AppErrors.Missing::new) ở requireOwned."
+  ],
+  "SPRB03": [
+    "saveAndFlush đã commit toàn bộ thao tác document và audit chưa?",
+    "Audit INSERT thật rồi ném runtime exception; sau create phải không còn hàng nào ở cả hai bảng.",
+    "Đặt @Transactional trên create của service; để runtime exception truyền ra caller. Cả JPA và JDBC tham gia transaction đó."
   ]
 }

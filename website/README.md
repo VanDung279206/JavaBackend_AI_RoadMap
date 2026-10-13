@@ -5,6 +5,7 @@ Website học tập tại **[VanDung279206.github.io/JavaBackend_AI_RoadMap](htt
 ## Tính năng
 
 - “Học chặng này” tại `/learn/<phase>` với bài học, luyện tập, áp dụng dự án và đề cuối chặng; 23 ví dụ có thể kiểm bằng `py scripts/check_lessons.py`.
+- Sáu bài SQL/Spring có hướng dẫn, nối từ bài học tới starter/test thật: SQLB01–SQLB03 và SPRB01–SPRB03. Spring tạo bản riêng chỉ khuyết một khái niệm; SQL mỗi bài có fixture/check độc lập. Xem [hướng dẫn SQL](../practice/sql/bridge/README.md), [Spring](../practice/spring-bridge/README.md).
 - Java thí điểm 20 bài tăng mức; nhánh thử thách cần đủ tiên quyết. Bài đọc/bằng chứng tự đối chiếu lưu trên thiết bị, tách tiến độ bài và verified từ worker.
 - `/projects/mine`: năm bước tự thiết kế, đề cương Markdown chỉnh sửa/xuất được, sáu mốc và checklist kỹ năng; hỗ trợ chọn RAG lab riêng. Đề cương lưu trên thiết bị theo tài khoản/khách, chưa đồng bộ máy chủ.
 - Nhập JSON đã tải ở trang bài học và dự án: kiểm định dạng/kích thước, xem trước, áp dụng hoặc hủy. Dự án thay thế toàn bộ bản hiện tại; bài học ghép các ID có trong file, giữ các bài khác. Nhập không cấp verified từ worker.
@@ -16,6 +17,8 @@ Xuất JSON bị khóa khi còn thay đổi chờ ghi. Nhập JSON kiểm bản 
 Mỗi trường dự án cho phép 50.000 ký tự. Đề cương và bản đề cương trước dùng giới hạn riêng đủ chứa tổng đầu vào và phần user stories sinh thêm; ô chỉnh Markdown dùng cùng giới hạn với bộ đọc dữ liệu.
 
 Khi đưa nhánh Java_Roadmap_V2 vào môi trường đang dùng V4–V6, áp dụng lại `database/catalogue_seed.sql` để đăng ký 20 ID JP01–JP20. Không cần migration mới cho dữ liệu chỉ lưu trên thiết bị.
+
+Đợt nâng cấp SQL/Spring cũng cần áp dụng lại seed để đăng ký sáu ID SQLB01–SQLB03/SPRB01–SPRB03 trên máy chủ. Chưa áp dụng seed thì tiến độ các ID mới chưa đồng bộ được; bài tập/test trên máy vẫn dùng được. Không đổi schema hay tự cấp kết quả verified.
 
 - 🗺️ Roadmap chính và các track mở rộng sinh từ `learning/catalogue.json`
 - 📚 Bài tập & lời giải ẩn/hiện theo từng phase

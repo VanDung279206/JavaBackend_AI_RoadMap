@@ -52,7 +52,8 @@ function Workspace({ phase }: { phase: string }) {
         const backup = store.backup();
         if (backup !== null) downloadText('lesson-progress.json', backup, 'application/json');
     }
-    const filtered = exercises.filter(item => level === 'all' || (level === 'pilot' ? item.track === 'java-pilot' : ('kind' in item && item.kind === level)));
+    const hasBridges = exercises.some(item => /^(SQLB|SPRB)/.test(item.id));
+    const filtered = exercises.filter(item => level === 'all' || (level === 'bridge' ? /^(SQLB|SPRB)/.test(item.id) : level === 'pilot' ? item.track === 'java-pilot' : ('kind' in item && item.kind === level)));
     return <>
         <nav className="course-steps" aria-label="Bốn phần học chặng">{steps.map((label, index) => <button type="button" key={label} aria-current={step === index ? 'step' : undefined} onClick={() => setStep(index)}><span>{index + 1}</span>{label}</button>)}</nav>
         <div className="learning-actions"><Link href={`/docs/${phase}`}>Tất cả bài tập & tiến độ</Link><Link href="/today">Lịch học và ôn lỗi</Link><Link href="/projects/mine">Dự án của tôi</Link></div>
@@ -76,6 +77,7 @@ function Workspace({ phase }: { phase: string }) {
         </>}
         {step === 1 && <section><h2>Luyện tập từ đọc hiểu đến thử thách</h2><p>{phase === '01_Java' ? 'Thí điểm 20 bài: 6 đọc hiểu/có hướng dẫn, 6 tự triển khai, 4 kết hợp, 2 debug và 2 thử thách. Nhánh nâng cao mở khi tự xác nhận đủ bài tiên quyết.' : 'Dùng bộ bài hiện có; đọc bài học nền trước khi tăng độ khó.'}</p>
             {phase === '01_Java' && <label>Lọc bài<select value={level} onChange={event => setLevel(event.target.value)}>{[['all', 'Tất cả'], ['pilot', '20 bài thí điểm'], ['read', '1. Đọc hiểu'], ['guided', '2. Có hướng dẫn'], ['implement', '3. Tự triển khai'], ['combine', '4. Kết hợp'], ['debug', 'Debug'], ['challenge', '5. Thử thách']].map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>}
+            {hasBridges && <><p>Bắt đầu với ba bài có hướng dẫn: dự đoán output → sửa một phần starter → chạy test → giải thích bằng tiếng Anh. Sau đó làm bài tổng hợp P2/P3; kết quả tham chiếu không xác nhận bài tự làm.</p><label>Lọc bài<select value={level} onChange={event => setLevel(event.target.value)}><option value="all">Tất cả</option><option value="bridge">Ba bài có hướng dẫn</option></select></label></>}
             <div className="learning-grid">{filtered.map(item => { const challenge = 'kind' in item && item.kind === 'challenge'; const ready = prerequisitesMet(item.prerequisites, state.entries); return <article className="learning-card" key={item.id}><h3>{item.id} — {item.title}</h3>{'level' in item && <p>{item.level} · {item.required ? 'Bắt buộc' : 'Mở rộng'}</p>}{'skill' in item && <p>Kỹ năng: {item.skill}</p>}<p>Tiên quyết: {item.prerequisites.join(', ') || 'không'}</p>{challenge && !ready ? <p>Nhánh mở rộng chưa mở: hoàn thành bài tiên quyết trong tiến độ.</p> : <Link href={`/docs/${phase}#${item.id}`}>Mở đề, gợi ý và kiểm tra →</Link>}</article>; })}</div>
         </section>}
         {step === 2 && <section className="learning-card"><CourseMarkdown>{course.applicationMarkdown}</CourseMarkdown><div className="learning-actions"><Link href="/projects">Xem dự án mẫu</Link><Link className="button-primary" href="/projects/mine">Tạo hoặc sửa đề cương của tôi →</Link></div></section>}

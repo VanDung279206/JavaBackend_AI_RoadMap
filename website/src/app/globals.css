@@ -2317,6 +2317,7 @@ a.phase-card:hover .phase-card-content {
   overflow-wrap: anywhere;
 }
 
+.exercise-phase-note pre,
 .exercise-prose pre,
 .exercise-solution-content pre,
 .phase-guide-command {
@@ -2330,6 +2331,7 @@ a.phase-card:hover .phase-card-content {
   line-height: 1.55;
 }
 
+.exercise-phase-note pre code,
 .exercise-prose pre code,
 .exercise-solution-content pre code {
   border: 0;
