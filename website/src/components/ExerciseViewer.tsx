@@ -15,7 +15,7 @@ type ExerciseLabel = { id: string; label: string };
 type ExerciseBlock = { id: string; title: string; markdown: string; solution: string };
 type Props = { phase: string; exercises: string; solutions: string; exerciseLabels: ExerciseLabel[] };
 
-const headingPattern = /^##\s+(P\d+\.\d+)\s*(?:[—-]\s*([^\n]+))?\s*$/gm;
+const headingPattern = /^##\s+([A-Z]+\d+(?:\.\d+)?)\s*(?:[—-]\s*([^\n]+))?\s*$/gm;
 
 function splitByExercise(source: string) {
   headingPattern.lastIndex = 0;

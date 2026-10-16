@@ -28,7 +28,8 @@ function Workspace({ phase }: { phase: string }) {
     const [step, setStep] = useState(0), [selected, setSelected] = useState(lessons[0].id), [level, setLevel] = useState('all');
     useEffect(() => {
         function selectHash() {
-            const hash = decodeURIComponent(window.location.hash.slice(1));
+            let hash: string;
+            try { hash = decodeURIComponent(window.location.hash.slice(1)); } catch { return; }
             if (lessons.some(item => item.id === hash)) { setSelected(hash); setStep(0); }
         }
         selectHash(); window.addEventListener('hashchange', selectHash);

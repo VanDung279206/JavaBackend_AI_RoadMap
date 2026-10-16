@@ -27,3 +27,13 @@ Docker daemon cục bộ chưa chạy; không coi cú pháp/đọc code là Post
 Catalogue tăng từ 104 lên 110 bài. Sau merge, website deploy và database phải dùng cùng seed mới (`database/catalogue_seed.sql`); seed chỉ upsert catalogue, không thay schema. Bài mới chưa đăng ký trên database sẽ chưa đồng bộ tiến độ tài khoản; bằng chứng tự đối chiếu không cấp verified.
 
 H2 kiểm service/transaction, không chứng nhận các hành vi riêng của PostgreSQL; workflow vẫn giữ suite PostgreSQL/Testcontainers đầy đủ. SQLB03 chỉ xử lý trang sau cursor không null, không hứa snapshot xuyên nhiều request. Không đổi nội dung bài cũ hoặc xóa tiến độ cũ.
+
+## Review bổ sung ngày 16/10/2026
+
+Review lại commit `3852c73`, PR #11 chưa có review thread mới. Đã tái hiện và sửa ba lỗi:
+
+- Bộ tách đề chỉ nhận ID dạng P3.1 nên 986 ký tự của đề SPRB01 bị đặt vào phần hướng dẫn chung. Nhận cả SQLB/SPRB và các ID không có dấu chấm; browser kiểm không có đề khác lặp trong hướng dẫn chung ở 1440px/390px.
+- Hash lỗi như `#%E0%A4` trên trang bài học ném `URI malformed` và thay nội dung bằng “This page couldn’t load”. Bỏ qua hash không giải mã được, giữ bài hiện tại; reload an toàn về bài đầu, chờ hydration trước khi xác nhận.
+- Contract SPRB02 chỉ có một tài liệu mỗi owner nên code kiểm ID hợp lệ nhưng trả tài liệu đầu tiên của cùng owner vẫn PASS. Thêm tài liệu thứ hai cùng owner và đối chiếu ID/title/content. Gate tích hợp cố ý tạo biến thể sai này trong bản tạm và yêu cầu test phải từ chối nó.
+
+Trước sửa: browser regression FAIL ở phần hướng dẫn bị lặp; probe URL lỗi ghi nhận `URI malformed`, không thấy bài học; biến thể repository sai vẫn PASS contract cũ. Sau sửa: ba starter Spring bị từ chối đúng lý do, ba bản sửa đạt bốn contract; biến thể repository sai bị từ chối. 90/90 test website, 34/34 Python, lint, TypeScript/build 37 route/110 bài và 29 luồng browser PASS. Log cục bộ `checks/review11-*.log` bị ignore. CI mới được liên kết trong mô tả PR; các kết quả CI của commit cũ không thay cho lượt chạy mới.

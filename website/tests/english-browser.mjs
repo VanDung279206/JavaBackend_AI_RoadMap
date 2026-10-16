@@ -439,6 +439,7 @@ try {
             await expect(page.locator('.exercise-active-id')).toHaveText(exercise.id);
             await expect(page.locator('.local-run-command')).toContainText(exercise.check.command);
             await expect(page.locator('.exercise-prompt')).toContainText('Giải thích');
+            await expect(page.locator('.exercise-phase-note')).toHaveCount(0);
             await expect(page.locator('.exercise-solution')).not.toHaveAttribute('open', '');
             await page.getByRole('button', { name: 'Gợi ý 1', exact: true }).click();
             await expect(page.locator('.learning-tools')).toContainText(exercise.hints[0]);
@@ -461,6 +462,17 @@ try {
     await page.evaluate(() => { window.location.hash = '#%E0%A4'; });
     await expect(page.locator('.exercise-active-id')).toHaveText('SPRB03');
     pass('hash changes and Back select the right exercise, hide the previous solution and tolerate malformed hashes');
+    await visit('/learn/03_Spring', '#SPRING02');
+    const lessons = JSON.parse(readFileSync(path.join(website, 'src/generated/catalogue.json'), 'utf8')).lessons;
+    await expect(page.locator('.course-index button[aria-current="page"]')).toContainText(lessons.find(item => item.id === 'SPRING02').title);
+    await page.evaluate(() => { window.location.hash = '#%E0%A4'; });
+    await expect(page.locator('.course-lesson')).toBeVisible();
+    await expect(page.locator('.course-index button[aria-current="page"]')).toContainText(lessons.find(item => item.id === 'SPRING02').title);
+    await page.reload();
+    await expect(page.locator('.course-lesson')).toBeVisible();
+    await expect(page.locator('.lesson-progress [role="status"]')).toHaveText('Đã lưu trên thiết bị.');
+    await expect(page.locator('.course-index button[aria-current="page"]')).toContainText(lessons.find(item => item.id === 'SPRING01').title);
+    pass('malformed lesson hashes keep the current lesson and reload safely with the first lesson');
     assert.deepEqual(errors, [], 'page exceptions');
     console.log(`PASS ${checks.length} browser workflows; Chromium ${browser.version()}`);
 } finally {

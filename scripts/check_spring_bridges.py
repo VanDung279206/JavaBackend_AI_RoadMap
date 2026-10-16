@@ -53,6 +53,20 @@ def main():
             relative = Path("src/main/java/vn/roadmap/knowledge") / source
             shutil.copyfile(REFERENCE / relative, destination / relative)
             run_contract(destination, "Bridge*Test")
+            if step == "repository":
+                # A faulty lookup can validate ID/owner yet return a different row from
+                # that owner's list. Keep this mutation to detect a weakened contract.
+                file = destination / relative
+                repaired = file.read_text(encoding="utf-8")
+                lookup = "return documents.findByIdAndOwnerId(id,owner).orElseThrow(AppErrors.Missing::new);"
+                wrong = 'return documents.findByIdAndOwnerId(id,owner).map(found -> documents.findByOwnerId(owner,PageRequest.of(0,1,Sort.by("id"))).getContent().get(0)).orElseThrow(AppErrors.Missing::new);'
+                if repaired.count(lookup) != 1:
+                    raise RuntimeError("Repository mutation target changed")
+                file.write_text(repaired.replace(lookup, wrong),encoding="utf-8")
+                run_contract(destination,test,expect_failure=True,
+                    marker="lookup must return the requested row, not another document from this owner")
+                file.write_text(repaired,encoding="utf-8")
+                print("PASS Spring repository rejects a different row from the same owner",flush=True)
             print("PASS Spring bridge:", step, "starter rejected; repaired contracts passed", flush=True)
     return 0
 

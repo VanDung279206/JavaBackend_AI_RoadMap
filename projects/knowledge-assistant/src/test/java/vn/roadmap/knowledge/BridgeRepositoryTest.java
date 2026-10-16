@@ -15,11 +15,16 @@ class BridgeRepositoryTest {
     @Test void lookupRequiresBothIdAndOwner() {
         var an = documents.saveAndFlush(new DocumentEntity("an","An notes","body"));
         var binh = documents.saveAndFlush(new DocumentEntity("binh","Binh notes","private"));
+        var later = documents.saveAndFlush(new DocumentEntity("an","Later notes","second body"));
         try {
             var found = service.requireOwned("an",an.id);
             assertEquals(an.id,found.id);
             assertEquals("an",found.ownerId);
             assertEquals("body",found.content);
+            var second = service.requireOwned("an",later.id);
+            assertEquals(later.id,second.id,"lookup must return the requested row, not another document from this owner");
+            assertEquals("Later notes",second.title);
+            assertEquals("second body",second.content);
             assertEquals(binh.id,service.requireOwned("binh",binh.id).id);
             assertThrows(AppErrors.Missing.class,() -> service.requireOwned("binh",an.id));
             assertThrows(AppErrors.Missing.class,() -> service.requireOwned("an",binh.id));
@@ -29,6 +34,7 @@ class BridgeRepositoryTest {
         } finally {
             documents.deleteById(an.id);
             documents.deleteById(binh.id);
+            documents.deleteById(later.id);
         }
     }
 }
