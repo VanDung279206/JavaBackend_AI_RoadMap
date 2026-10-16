@@ -44,3 +44,14 @@ Trước sửa: browser regression FAIL ở phần hướng dẫn bị lặp; pr
 - Các ID của fixture cursor ban đầu tăng cùng chiều ngày tạo nên chưa phân biệt truy vấn chỉ so/sort ID với cursor hai khóa. Thêm ID 10 có ngày mới hơn và ID 999 có ngày cũ hơn, kiểm cả trang kết quả và timestamp gốc. CI yêu cầu ba query cố ý sai (lọc chỉ ID, sort chỉ ID, thay timestamp) phải exit 3 với đúng assertion; bản tham chiếu vẫn phải PASS.
 
 Kiểm cục bộ: browser trước sửa FAIL vì URL SQLB03 vẫn hiển thị SQLB01; sau sửa 30/30 luồng browser PASS ở bản export. 90/90 test website, 34/34 Python, lint, TypeScript/export 37 route/110 bài, catalogue và 475 link Markdown nội bộ PASS. Docker cục bộ chưa hoạt động nên các ca PostgreSQL mới được kiểm trên CI; liên kết và kết quả cuối trong mô tả PR. Log `checks/review11-round3-*.log` bị ignore.
+
+
+## Review an toàn dữ liệu và tài liệu cộng đồng ngày 16/10/2026
+
+- Tái hiện mất bản nháp: trong lúc chờ tải tiến độ máy chủ, tab khác ghi một bài cần ôn; câu trả lời mạng cũ ghi đè bản lưu trước khi nhận storage event. Đọc lại bản lưu trước merge, giữ revision cục bộ mới hơn để người học chọn cách giải quyết xung đột. Bản lưu hỏng xuất hiện trong lúc chờ cũng được giữ nguyên và khóa ghi.
+- Tái hiện xóa nhầm tệp: cập nhật `pending` trả 0 hàng khi quản trị viên khác đã xử lý nhưng UI vẫn gọi xóa tệp. Chỉ tiếp tục sau khi conditional update trả hàng, dùng file_path từ hàng đã cập nhật. Chặn thao tác đồng thời/nhấp lặp; lỗi mạng luôn nhả trạng thái bận. Kết quả tải hàng chờ cũ không đưa hàng vừa duyệt trở lại; dọn tệp lỗi vẫn hiển thị đúng quyết định đã lưu.
+- Liên kết nguồn và preview chỉ hiển thị khi URL tuyệt đối HTTPS, không chứa thông tin đăng nhập. Áp dụng cho hàng chờ và thư viện công khai; kiểm browser dùng nguồn giả lập `javascript:` và HTTPS, không gọi Supabase production. Hàng chờ tạo signed URL theo lô thay vì gọi riêng từng tệp.
+- Xóa module đọc Markdown không còn caller để loại bỏ bộ đọc đường dẫn tùy ý. Không còn sử dụng đường đọc tệp đó trong bản export.
+- Promise lưu flashcard bị reject từng làm kẹt guard; thêm catch/finally, giữ lượt ôn retry được, không báo mất dữ liệu khi chỉ thông báo sau commit bị lỗi. Chỉ mục tìm kiếm được dựng/chuẩn hóa một lần cho catalogue bất biến; giữ tìm kiếm không dấu, bỏ khoảng trắng ngoài query.
+
+Các ca flashcard, ghi đè bản nháp, dữ liệu hỏng và hàng chờ đều FAIL trên mã trước sửa. Kiểm sau sửa: 105/105 test website, lint không warning, TypeScript/export 37 route/110 bài, catalogue --check và 31/31 luồng Chromium ở 1440px/390px PASS. Log cục bộ `checks/review11-round4-*.log` bị ignore; kết quả CI trên commit mới nằm trong mô tả PR. Luồng đăng nhập Supabase thật chưa được kiểm end-to-end trong vòng này; không thay cấu hình implicit/PKCE dựa trên giả định thiếu lệnh exchange thủ công.

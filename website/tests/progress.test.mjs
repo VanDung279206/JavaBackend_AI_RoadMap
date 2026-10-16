@@ -40,3 +40,14 @@ test('CLI import never grants verified status and rejects unknown IDs and malfor
  assert.throws(()=>parseReviewImport({P1:{...row,due:'2026-02-31'}},['P1'],[]));
  assert.throws(()=>parseReviewImport({P1:{...row,result:'tested_pass'}},['P1'],[]));
 });
+
+
+test('an older remote snapshot cannot discard a newer acknowledged local revision',()=>{
+ const newer={...emptyEntry(),status:'needs_review',revision:4,pending:false};
+ for(const remote of [{}, {'P0.1':{...emptyEntry(),revision:3}}]){
+  const merged=mergeRemote({'P0.1':newer},remote);
+  assert.equal(merged['P0.1'].status,'needs_review');
+  assert.equal(merged['P0.1'].revision,4);
+  assert.equal(merged['P0.1'].pending,true);assert.equal(merged['P0.1'].conflict,true);
+ }
+});

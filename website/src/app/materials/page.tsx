@@ -1,4 +1,5 @@
 "use client";
+import { safeResourceUrl } from "@/lib/resource-url";
 
 import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
 import Link from "next/link";
@@ -320,7 +321,7 @@ export default function MaterialsPage() {
           ) : (
             <div className="materials-grid">
               {visibleResources.map((item) => {
-                const destination = item.download_url || item.source_url;
+                const destination = safeResourceUrl(item.download_url) || safeResourceUrl(item.source_url);
                 return (
                   <article className="material-card" key={item.id}>
                     <div className="material-card-topline">

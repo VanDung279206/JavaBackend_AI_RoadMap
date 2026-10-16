@@ -23,6 +23,17 @@ const pages = [
   { label: "Bảng xếp hạng", href: "/leaderboard" },
 ];
 
+// Catalogue content is immutable for this build; normalize it once per module.
+const normalize = (s: string) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[đĐ]/g,"d").toLowerCase();
+const searchable = [
+  ...pages.map(p => ({ ...p, text: p.label })),
+  ...english.units.map(u => ({ label: `Tiếng Anh — ${u.title}`, href: `/english#${u.phase}/overview`, text: [u.title, u.objective, 'tiếng anh english'].join(' ') })),
+  ...english.terms.map(t => ({ label: `Tiếng Anh: ${t.term} — ${t.meaning}`, href: `/english#${t.phase}/vocabulary/${t.id}`, text: [t.term, t.meaning, t.example, t.phase, 'tiếng anh english'].join(' ') })),
+  ...english.errors.map(e => ({ label: `Tiếng Anh qua lỗi ${e.id}`, href: `/english#${e.phase}/errors`, text: [e.id, e.output, e.meaning, 'tiếng anh english lỗi'].join(' ') })),
+  ...catalogue.lessons.map(l => ({ label: `Bài học ${l.id} — ${l.title}`, href: `/learn/${l.phase}#${l.id}`, text: [l.id, l.title, l.objective, ...l.tags].join(' ') })),
+  ...catalogue.exercises.map(e => ({ label: `${e.id} — ${e.title}`, href: `/docs/${e.phase}#${e.id}`, text: [e.id, e.title, e.markdown, e.phase, ...e.tags, ...e.tags.map(tag => catalogue.tags[tag as keyof typeof catalogue.tags] || tag)].join(' ') })),
+].map(item => ({ ...item, text: normalize(item.text) }));
+
 export default function SearchCommand() {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -40,11 +51,10 @@ export default function SearchCommand() {
     return () => window.removeEventListener("keydown", handler);
   }, []);
 
-  const searchable = [...pages.map(p=>({...p, text:p.label})), ...english.units.map(u=>({label:`Tiếng Anh — ${u.title}`,href:`/english#${u.phase}/overview`,text:[u.title,u.objective,'tiếng anh english'].join(' ')})), ...english.terms.map(t=>({label:`Tiếng Anh: ${t.term} — ${t.meaning}`,href:`/english#${t.phase}/vocabulary/${t.id}`,text:[t.term,t.meaning,t.example,t.phase,'tiếng anh english'].join(' ')})), ...english.errors.map(e=>({label:`Tiếng Anh qua lỗi ${e.id}`,href:`/english#${e.phase}/errors`,text:[e.id,e.output,e.meaning,'tiếng anh english lỗi'].join(' ')})), ...catalogue.lessons.map(l=>({label:`Bài học ${l.id} — ${l.title}`,href:`/learn/${l.phase}#${l.id}`,text:[l.id,l.title,l.objective,...l.tags].join(' ')})), ...catalogue.exercises.map(e=>({label:`${e.id} — ${e.title}`,href:`/docs/${e.phase}#${e.id}`,text:[e.id,e.title,e.markdown,e.phase,...e.tags,...e.tags.map(tag=>catalogue.tags[tag as keyof typeof catalogue.tags]||tag)].join(" ")}))];
-  const normalize = (s: string) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[đĐ]/g,"d").toLowerCase();
-  const results = query.trim()
-    ? searchable.filter(p => normalize(p.text).includes(normalize(query))).slice(0,60)
-    : searchable.slice(0,20);
+  const normalizedQuery = normalize(query.trim());
+  const results = !open ? [] : normalizedQuery
+    ? searchable.filter(item => item.text.includes(normalizedQuery)).slice(0, 60)
+    : searchable.slice(0, 20);
 
   const go = useCallback((href: string) => {
     setOpen(false);

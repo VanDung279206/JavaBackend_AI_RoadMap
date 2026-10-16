@@ -406,6 +406,29 @@ try {
     await shot('mobile-intermediate');
     pass('390px mobile menu, all five areas, vocabulary grading, writing reload and intermediate trace');
 
+    const materialsContext = await browser.newContext();
+    const sourceRows = [
+        { id: 'unsafe', title: 'Unsafe source', purpose: 'reference', phase_slug: '01_Java', description: 'Unsafe external source.', resource_type: 'link', file_path: null, source_url: 'javascript:alert(1)', submitted_by: 'owner', status: 'approved', created_at: '2026-10-16T00:00:00Z' },
+        { id: 'safe', title: 'Safe source', purpose: 'reference', phase_slug: '01_Java', description: 'HTTPS external source.', resource_type: 'link', file_path: null, source_url: 'https://docs.example/guide', submitted_by: 'owner', status: 'approved', created_at: '2026-10-16T00:00:00Z' },
+    ];
+    await materialsContext.route('**/*', route => {
+        const url = new URL(route.request().url());
+        if (url.origin === origin) return route.continue();
+        if (url.pathname.endsWith('/rest/v1/community_resources')) return route.fulfill({ status: 200,
+            headers: { 'Content-Type': 'application/json', 'Content-Range': '0-1/2' }, body: JSON.stringify(sourceRows) });
+        return route.abort();
+    });
+    const materials = await materialsContext.newPage();
+    materials.on('pageerror', error => errors.push(error.message));
+    await materials.goto(origin + base + '/materials');
+    const unsafeCard = materials.locator('.material-card').filter({ has: materials.getByRole('heading', { name: 'Unsafe source', exact: true }) });
+    await expect(unsafeCard).toBeVisible();
+    await expect(unsafeCard.locator('a')).toHaveCount(0);
+    const safeCard = materials.locator('.material-card').filter({ has: materials.getByRole('heading', { name: 'Safe source', exact: true }) });
+    await expect(safeCard.getByRole('link', { name: 'Mở nguồn' })).toHaveAttribute('href', 'https://docs.example/guide');
+    await materialsContext.close();
+    pass('community library blocks unsafe source URLs while preserving valid HTTPS links');
+
     const unsupported = await context.newPage();
     await unsupported.addInitScript(() => Object.defineProperty(window, 'speechSynthesis', { value: undefined, configurable: true }));
     await unsupported.goto(origin + base + '/english#01_Java/vocabulary/01_Java-parameter');
