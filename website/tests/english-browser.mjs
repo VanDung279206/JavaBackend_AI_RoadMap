@@ -291,7 +291,7 @@ try {
     await reviewContext.route('**/*', route => new URL(route.request().url()).origin === origin ? route.continue() : route.abort());
     const reviewPages = await Promise.all([reviewContext.newPage(), reviewContext.newPage()]);
     for (const tab of reviewPages) {
-        tab.on('pageerror', error => errors.push(error.message));
+        tab.on('pageerror', error => { errors.push(error.message); console.error('Project browser error:', error.message); });
         await tab.goto(origin + base + '/english#01_Java/review');
         await tab.getByRole('button', { name: 'Luyện thêm tất cả từ', exact: true }).click();
         const flashcard = tab.locator('.english-flashcard').first();
@@ -406,6 +406,7 @@ try {
     await shot('mobile-intermediate');
     pass('390px mobile menu, all five areas, vocabulary grading, writing reload and intermediate trace');
 
+    let supabaseOrigin;
     const materialsContext = await browser.newContext();
     const sourceRows = [
         { id: 'unsafe', title: 'Unsafe source', purpose: 'reference', phase_slug: '01_Java', description: 'Unsafe external source.', resource_type: 'link', file_path: null, source_url: 'javascript:alert(1)', submitted_by: 'owner', status: 'approved', created_at: '2026-10-16T00:00:00Z' },
@@ -414,8 +415,8 @@ try {
     await materialsContext.route('**/*', route => {
         const url = new URL(route.request().url());
         if (url.origin === origin) return route.continue();
-        if (url.pathname.endsWith('/rest/v1/community_resources')) return route.fulfill({ status: 200,
-            headers: { 'Content-Type': 'application/json', 'Content-Range': '0-1/2' }, body: JSON.stringify(sourceRows) });
+        if (url.pathname.endsWith('/rest/v1/community_resources')) { supabaseOrigin = url.origin; return route.fulfill({ status: 200,
+            headers: { 'Content-Type': 'application/json', 'Content-Range': '0-1/2' }, body: JSON.stringify(sourceRows) }); }
         return route.abort();
     });
     const materials = await materialsContext.newPage();
@@ -428,6 +429,71 @@ try {
     await expect(safeCard.getByRole('link', { name: 'Mở nguồn' })).toHaveAttribute('href', 'https://docs.example/guide');
     await materialsContext.close();
     pass('community library blocks unsafe source URLs while preserving valid HTTPS links');
+
+    assert.ok(supabaseOrigin, 'the library request identifies the configured Supabase origin');
+    const owner = '00000000-0000-0000-0000-000000000021';
+    const user = { id: owner, aud: 'authenticated', role: 'authenticated', email: 'project-test@example.test', app_metadata: { provider: 'email' }, user_metadata: {} };
+    const expires = Math.floor(Date.now() / 1000) + 3600;
+    const jwt = [Buffer.from(JSON.stringify({ alg: 'HS256', typ: 'JWT' })).toString('base64url'), Buffer.from(JSON.stringify({ sub: owner, exp: expires, role: 'authenticated' })).toString('base64url'), 'test-signature'].join('.');
+    let projectRow = null;
+    async function projectDevice() {
+        const device = await browser.newContext();
+        const state = { offline: false };
+        const authKey = `sb-${new URL(supabaseOrigin).hostname.split('.')[0]}-auth-token`;
+        await device.addInitScript(({ key, session }) => localStorage.setItem(key, JSON.stringify(session)), { key: authKey, session: { access_token: jwt, refresh_token: 'test-refresh', expires_at: expires, expires_in: 3600, token_type: 'bearer', user } });
+        await device.route('**/*', async route => {
+            const request = route.request(), url = new URL(request.url());
+            if (url.origin === origin) return route.continue();
+            if (url.origin !== supabaseOrigin || state.offline) return route.abort();
+            const headers = { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': '*', 'Access-Control-Allow-Methods': '*' };
+            if (request.method() === 'OPTIONS') return route.fulfill({ status: 204, headers });
+            if (url.pathname.endsWith('/auth/v1/user')) return route.fulfill({ status: 200, headers, body: JSON.stringify(user) });
+            if (url.pathname.endsWith('/rest/v1/project_drafts')) return route.fulfill({ status: 200, headers, body: JSON.stringify(projectRow) });
+            if (url.pathname.endsWith('/rest/v1/rpc/save_project_draft')) {
+                const args = request.postDataJSON();
+                assert.equal(args.p_owner, owner);
+                if (args.p_revision !== (projectRow?.revision ?? 0)) return route.fulfill({ status: 409, headers, body: JSON.stringify({ message: 'PROJECT_CONFLICT', code: 'P0001' }) });
+                projectRow = { content: args.p_content, revision: args.p_revision + 1, user_id: owner };
+                return route.fulfill({ status: 200, headers, body: JSON.stringify(projectRow) });
+            }
+            return route.fulfill({ status: 200, headers, body: '[]' });
+        });
+        const tab = await device.newPage();
+        tab.on('pageerror', error => { errors.push(error.message); console.error('Project browser error:', error.message); });
+        await tab.goto(origin + base + '/projects/mine');
+        await expect(tab.getByRole('textbox', { name: 'Tên dự án', exact: true })).toBeEnabled();
+        return { context: device, tab, state };
+    }
+    const deviceA = await projectDevice();
+    const projectStatus = tab => tab.locator('.project-cloud-sync [role="status"]');
+    await deviceA.tab.getByRole('textbox', { name: 'Tên dự án', exact: true }).fill('My synced project');
+    await expect(projectStatus(deviceA.tab)).toHaveText('Đã đồng bộ dự án với máy chủ.', { timeout: 15000 });
+    assert.equal(projectRow.content.name, 'My synced project');
+    const deviceB = await projectDevice();
+    await expect(deviceB.tab.getByRole('textbox', { name: 'Tên dự án', exact: true })).toHaveValue('My synced project');
+    await expect(projectStatus(deviceB.tab)).toHaveText('Đã đồng bộ dự án với máy chủ.', { timeout: 15000 });
+    pass('project drafts upload and restore on a separate browser device using account-scoped revisions');
+    deviceA.state.offline = true;
+    await deviceA.tab.getByRole('textbox', { name: 'Tên dự án', exact: true }).fill('Offline device edit');
+    await expect(projectStatus(deviceA.tab)).toContainText('Chưa xác nhận đồng bộ', { timeout: 20000 });
+    await deviceA.tab.reload();
+    await expect(deviceA.tab.getByRole('textbox', { name: 'Tên dự án', exact: true })).toHaveValue('Offline device edit');
+    await deviceB.tab.getByRole('textbox', { name: 'Tên dự án', exact: true }).fill('New server edit');
+    await expect(projectStatus(deviceB.tab)).toHaveText('Đã đồng bộ dự án với máy chủ.', { timeout: 15000 });
+    deviceA.state.offline = false;
+    await deviceA.tab.getByRole('button', { name: 'Đồng bộ lại dự án', exact: true }).click();
+    await expect(deviceA.tab.getByRole('heading', { name: 'Chọn bản dự án muốn giữ' })).toBeVisible();
+    const conflictDownload = deviceA.tab.waitForEvent('download');
+    await deviceA.tab.getByRole('button', { name: 'Tải bản thiết bị', exact: true }).click();
+    const conflictFile = await conflictDownload;
+    assert.equal(JSON.parse(readFileSync(await conflictFile.path(), 'utf8')).name, 'Offline device edit');
+    await deviceA.tab.getByRole('button', { name: 'Dùng bản máy chủ trên thiết bị này', exact: true }).click();
+    await expect(deviceA.tab.getByRole('textbox', { name: 'Tên dự án', exact: true })).toHaveValue('New server edit');
+    await expect(projectStatus(deviceA.tab)).toHaveText('Đã đồng bộ dự án với máy chủ.', { timeout: 15000 });
+    const archived = await deviceA.tab.evaluate(key => JSON.parse(localStorage.getItem(key)), `roadmap-v2:project-conflict:user:${owner}`);
+    assert.equal(archived.local.name, 'Offline device edit');assert.equal(archived.remote.name, 'New server edit');
+    await deviceA.context.close();await deviceB.context.close();
+    pass('offline project edits survive reload, require a conflict choice and preserve both copies before applying the server draft');
 
     const unsupported = await context.newPage();
     await unsupported.addInitScript(() => Object.defineProperty(window, 'speechSynthesis', { value: undefined, configurable: true }));

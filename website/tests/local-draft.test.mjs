@@ -23,7 +23,7 @@ function renderWorkspace(area, store, downloads = []) {
                     return runtime[method](type, props, key);
                 }])) };
             }
-            if (name === 'next/link' || name === 'react-markdown' || name === './CourseMarkdown' || name === './DraftBackup') return { default: () => null };
+            if (name === 'next/link' || name === 'react-markdown' || name === './CourseMarkdown' || name === './DraftBackup' || name === './ProjectCloudSync') return { default: () => null };
             if (name === '@/generated/catalogue.json') return { default: JSON.parse(readFileSync('src/generated/catalogue.json', 'utf8')) };
             if (name === '@/lib/learning-store') return { useLearning: () => ({ owner: null, entries: {}, verified: [] }) };
             if (name === '@/lib/useLocalDraft') return { useLocalDraft: () => store };

@@ -8,6 +8,7 @@ import { useLocalDraft } from '@/lib/useLocalDraft';
 import { criteria, emptyProject, generateOutline, parseProject, projectIdeas, scopeReady, PROJECT_FIELD_LIMIT, PROJECT_OUTLINE_LIMIT, type ProjectDraft, type ProjectField } from '@/lib/project-core';
 import { downloadText } from '@/lib/download';
 import DraftBackup from './DraftBackup';
+import ProjectCloudSync from './ProjectCloudSync';
 
 const empty = emptyProject();
 const describeBackup = (draft: ProjectDraft) => `Dự án: ${draft.name.slice(0, 120) || '(chưa đặt tên)'}. ${draft.outline ? 'Có đề cương và bản trước nếu đã lưu.' : 'Chưa có đề cương.'} Không cấp kết quả kiểm chứng kỹ năng.`;
@@ -42,7 +43,7 @@ function Planner() {
     const locked = !store.ready || store.blocked;
     return <>
         <nav className="course-steps planner-steps" aria-label="Năm bước tạo dự án">{steps.map((label, index) => <button key={label} aria-current={step === index ? 'step' : undefined} onClick={() => setStep(index)}><span>{index + 1}</span>{label}</button>)}</nav>
-        <p>Dữ liệu lưu trên thiết bị, tách tài khoản và khách, chưa đồng bộ máy chủ. Tải đề cương và bản JSON để giữ bản sao hoặc chuyển thiết bị.</p>
+        <ProjectCloudSync owner={state.owner} store={store} />
         <p role="status">{store.error || (!store.ready ? 'Đang tải bản lưu…' : store.saving ? 'Đang lưu… Chờ lưu xong để tải bản sao JSON.' : message)}</p>
         {step === 0 && <div className="learning-grid">{projectIdeas.map(idea => <article className="learning-card" key={idea.title}><h2>{idea.title}</h2><p>Quy tắc: {idea.rule}</p><p>Sáng tạo: {idea.direction}</p><button disabled={locked} onClick={() => update({ name: idea.title })}>Dùng tên gợi mở</button></article>)}</div>}
         <section className="learning-card planner-form"><h2>{step + 1}. {steps[step]}</h2><p>{step === 3 ? 'Để trống mốc để đề cương dùng gợi ý theo kỹ năng; sửa lại theo sản phẩm của bạn.' : 'Điền theo nhu cầu của bạn. Có thể chuyển bước và sửa bất kỳ phần nào.'}</p>

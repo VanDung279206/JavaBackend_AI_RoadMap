@@ -1,10 +1,13 @@
 # Java Backend + AI Roadmap
 
+Nâng cấp tiếp theo: [đồng bộ bản nháp dự án giữa thiết bị](docs/PROJECT_SYNC.md), có lưu offline, revision và lựa chọn khi xung đột. Cần migration V7 trước khi deploy website; bài học và tiếng Anh vẫn dùng bản lưu riêng trên thiết bị.
+
+
 ## Bài lập trình SQL/Spring có hướng dẫn
 
 Sáu bài mới nối phần đọc trace với bài tổng hợp: [SQLB01–SQLB03](practice/sql/bridge/README.md) luyện WHERE theo owner/ngày → LEFT JOIN/COUNT → cursor trùng thời gian; [SPRB01–SPRB03](practice/spring-bridge/README.md) luyện validation DTO → service/repository theo owner → rollback document và audit. Mỗi bài có starter, ca biên, ba gợi ý, lời giải chạy được và nhiệm vụ giải thích bằng tiếng Anh. Trên website, mở Luyện tập ở chặng HTTP & SQL hoặc Spring; các bài học liên quan cũng dẫn thẳng tới bài mới.
 
-Spring tạo bản học riêng chỉ khuyết một phần bằng `new_spring_lab.py --phase 3 --step …`; test dùng Bean Validation/JPA/H2 thật. SQL dùng PostgreSQL và TEMP fixture trong một connection mới. CI kiểm starter bị từ chối và lời giải đạt; kết quả tham chiếu không cấp tiến độ người học. Khi triển khai, áp dụng lại `database/catalogue_seed.sql` để đăng ký sáu ID mới; không có migration schema mới. Xem [bằng chứng kiểm chứng](docs/VALIDATION_BRIDGES.md).
+Spring tạo bản học riêng chỉ khuyết một phần bằng `new_spring_lab.py --phase 3 --step …`; test dùng Bean Validation/JPA/H2 thật. SQL dùng PostgreSQL và TEMP fixture trong một connection mới. CI kiểm starter bị từ chối và lời giải đạt; kết quả tham chiếu không cấp tiến độ người học. Khi triển khai, áp dụng lại `database/catalogue_seed.sql` để đăng ký sáu ID mới; riêng sáu bài này không cần migration schema mới. Xem [bằng chứng kiểm chứng](docs/VALIDATION_BRIDGES.md).
 
 ## Tiếng Anh cho lập trình viên trên website
 
