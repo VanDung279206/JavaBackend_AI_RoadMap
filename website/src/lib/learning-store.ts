@@ -46,6 +46,14 @@ async function load(owner:string|null) {
   if(version!==epoch)return;
   if(error)throw error;
   const remote:Entries=Object.fromEntries((data||[]).filter(r=>valid.get(r.exercise_id)?.phase===r.phase).map(r=>[r.exercise_id,{status:r.status,revision:r.revision,due_at:r.due_at,hint_level:r.hint_level,error_tags:r.error_tags}]));
+  // A different tab may have saved while the request was in flight, before
+  // its storage event reached this tab. Re-read immediately before merging.
+  try {local=read(owner);}
+  catch {
+   unreadable.add(storageKey(owner));
+   publish({loading:false,message:'Không đọc được bản dự phòng. Đã khóa ghi để giữ dữ liệu; xuất bản dự phòng trong bộ nhớ trình duyệt trước khi sửa.'});
+   return;
+  }
   const entries=mergeRemote(local,remote);persist(owner,entries);
   publish({entries,verified:(passed||[]).map(r=>r.exercise_id),loading:false,message:proofError?'Không tải được kết quả kiểm chứng.':Object.values(entries).some(e=>e.conflict)?'Có xung đột. Chọn bản máy chủ hoặc giữ bản trên thiết bị.':''});
   void sync();

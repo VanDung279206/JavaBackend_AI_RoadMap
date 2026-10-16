@@ -1,5 +1,7 @@
 # Thực hành PostgreSQL P2.2–P2.4
 
+Nếu chưa tự tin với WHERE/JOIN/cursor, làm [ba bài SQL có hướng dẫn](bridge/README.md) trước: SQLB01 lọc theo owner và ngày, SQLB02 LEFT JOIN/COUNT, SQLB03 cursor trùng thời gian. Mỗi bài có starter và test riêng, không cần hoàn thành transaction để kiểm truy vấn.
+
 Cần PostgreSQL và `psql`. `DATABASE_URL` trỏ tới database học tập; không chạy trên database công việc.
 
 ```bash

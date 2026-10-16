@@ -22,7 +22,10 @@ export function parseStoredEntries(input:unknown,ids:string[]):Entries {
 export function mergeRemote(local: Entries, remote: Entries): Entries {
  const result = {...remote};
  for (const [id,e] of Object.entries(local)) {
-  if (e.pending) result[id] = {...e,conflict:e.revision !== (remote[id]?.revision ?? 0)};
+  // A request can return an older snapshot than another tab has already saved.
+  // Preserve the newer local revision for explicit conflict resolution.
+  if (e.revision > (remote[id]?.revision ?? 0)) result[id] = {...e,pending:true,conflict:true};
+  else if (e.pending) result[id] = {...e,conflict:e.revision !== (remote[id]?.revision ?? 0)};
  }
  return result;
 }

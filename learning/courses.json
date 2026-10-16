@@ -284,6 +284,8 @@
       "expected": "[('An', 2), ('Binh', 0)]\nduplicate rejected",
       "answer": "1 vì LEFT JOIN vẫn tạo một hàng có các cột docs null.",
       "exercise_ids": [
+        "SQLB01",
+        "SQLB02",
         "P2.2",
         "P2.3"
       ],
@@ -306,6 +308,7 @@
       "expected": "rollback\n[(10,), (5,)]",
       "answer": "Có. Exception không thoát khối thì context có thể commit bước trừ tiền.",
       "exercise_ids": [
+        "SQLB03",
         "P2.4",
         "JP14"
       ],
@@ -327,6 +330,7 @@
       "expected": "Controller\nRepository: Java",
       "answer": "Inject fake repository ghi số lần gọi; blank phải bị từ chối trước save nên số lần là 0.",
       "exercise_ids": [
+        "SPRB01",
         "P3.1"
       ],
       "tags": [
@@ -347,6 +351,7 @@
       "expected": "an\nResponseDto[id=1, title=Java]",
       "answer": "Không. DTO giới hạn payload; authentication và authorization cần kiểm riêng ở security/service.",
       "exercise_ids": [
+        "SPRB02",
         "P3.2",
         "P4.2"
       ],
@@ -368,6 +373,7 @@
       "expected": "Row[title=SQL, version=1]\n409 conflict",
       "answer": "Không. Mô phỏng một luồng; cần synchronized ở JVM hoặc optimistic locking/transaction tại database.",
       "exercise_ids": [
+        "SPRB03",
         "P3.3",
         "P3.4",
         "F01"

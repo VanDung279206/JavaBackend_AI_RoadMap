@@ -8,10 +8,10 @@ const core = require('../.test-dist/english-core.js');
 const catalogue = JSON.parse(readFileSync('src/generated/english.json', 'utf8'));
 const code = file => ts.transpileModule(readFileSync('src/components/english/' + file + '.tsx', 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020, jsx: ts.JsxEmit.ReactJSX } }).outputText;
 function render(file, props, states = [], refs = []) {
-    const module = { exports: {} }, buttons = [], inputs = [];
+    const module = { exports: {} }, buttons = [], inputs = [], updates = [];
     let stateIndex = 0, refIndex = 0;
     runInNewContext(code(file), { module, exports: module.exports, require(name) {
-        if (name === 'react') return { useId: () => 'test-label', useRef: value => { const index = refIndex++; return refs[index] ?? (refs[index] = { current: value }); }, useState: initial => [stateIndex < states.length ? states[stateIndex++] : initial, () => {}] };
+        if (name === 'react') return { useId: () => 'test-label', useRef: value => { const index = refIndex++; return refs[index] ?? (refs[index] = { current: value }); }, useState: initial => [stateIndex < states.length ? states[stateIndex++] : initial, value => updates.push(value)] };
         if (name === 'react/jsx-runtime') { const runtime = require(name); return { ...runtime, ...Object.fromEntries(['jsx', 'jsxs'].map(method => [method, (type, props, key) => { if (type === 'button') buttons.push(props); if (type === 'input') inputs.push(props); return runtime[method](type, props, key); }])) }; }
         if (name === '@/lib/english-core') return core;
         if (name === '@/lib/english') return { english: catalogue };
@@ -19,7 +19,7 @@ function render(file, props, states = [], refs = []) {
         throw Error('Unexpected ' + name);
     } });
     const html = require('react-dom/server').renderToStaticMarkup(require('react').createElement(module.exports.default, props));
-    return { html, inputs, button: label => buttons.find(b => b.children === label) };
+    return { html, inputs, updates, button: label => buttons.find(b => b.children === label) };
 }
 function saving(actual) {
     return { rejected: false, value: actual, async save(change) { try { this.value = core.parseEnglish(change(this.value), catalogue); return true; } catch { this.rejected = true; return false; } } };
@@ -159,4 +159,31 @@ test('a failed save never locks the term in the session and remains retryable', 
     await ui.button('Nhớ được').onClick();
     assert.equal(recorded.length, 1);
     assert.equal(store.value.terms[term.id].reviews.length, 1);
+});
+
+
+test('a rejected flashcard save releases the write guard and permits retry', async () => {
+    const term = catalogue.terms[0], store = saving(core.emptyEnglish());
+    let fail = true;
+    const ui = render('EnglishReview', { term, progress: store.value, disabled: false,
+        save: change => fail ? Promise.reject(Error('Unexpected storage failure')) : store.save(change),
+    }, ['my answer', true, false, '', false]);
+    ui.button('Mở đáp án flashcard').onClick();
+    await ui.button('Nhớ được').onClick();
+    fail = false;
+    await ui.button('Nhớ được').onClick();
+    assert.equal(store.value.terms[term.id].reviews.length, 1);
+});
+
+
+test('a notification failure after saving does not report a committed review as lost', async () => {
+    const store = saving(core.emptyEnglish());
+    const ui = render('EnglishReview', { term: catalogue.terms[0], progress: store.value, disabled: false,
+        save: change => store.save(change), onRated: () => { throw Error('notification failed'); },
+    }, ['my answer', true, false, '', false]);
+    ui.button('Mở đáp án flashcard').onClick();
+    await ui.button('Nhớ được').onClick();
+    assert.equal(store.value.terms[catalogue.terms[0].id].reviews.length, 1);
+    assert.ok(ui.updates.includes('Đã lưu lượt ôn và ngày ôn tiếp theo.'));
+    assert.equal(ui.updates.at(-1), false, 'busy must always be cleared');
 });

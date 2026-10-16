@@ -41,7 +41,7 @@ function browserLinks(text, file) {
  return text.replace(/\]\(([^)]+)\)/g,(all,target)=>{
   if(/^(https?:|mailto:|#)/.test(target))return all;
   const resolved=path.posix.normalize(path.posix.join(path.posix.dirname(file),target));
-  return ']('+ 'https://github.com/VanDung279206/JavaBackend_AI_RoadMap/blob/Java_Roadmap_V2/' +resolved+')';
+  return ']('+ 'https://github.com/VanDung279206/JavaBackend_AI_RoadMap/blob/main/' +resolved+')';
  });
 }
 for(const e of exercises){e.markdown=browserLinks(e.markdown,e.reading);e.solution=browserLinks(e.solution,e.solution?catalogue.exercises[e.id].solution||e.reading:e.reading);}

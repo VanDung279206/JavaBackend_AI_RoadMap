@@ -15,7 +15,7 @@ type ExerciseLabel = { id: string; label: string };
 type ExerciseBlock = { id: string; title: string; markdown: string; solution: string };
 type Props = { phase: string; exercises: string; solutions: string; exerciseLabels: ExerciseLabel[] };
 
-const headingPattern = /^##\s+(P\d+\.\d+)\s*(?:[—-]\s*([^\n]+))?\s*$/gm;
+const headingPattern = /^##\s+([A-Z]+\d+(?:\.\d+)?)\s*(?:[—-]\s*([^\n]+))?\s*$/gm;
 
 function splitByExercise(source: string) {
   headingPattern.lastIndex = 0;
@@ -87,12 +87,21 @@ export default function ExerciseViewer({ phase, exercises, solutions, exerciseLa
   const active = exerciseBlocks.find((item) => item.id === activeId) ?? exerciseBlocks[0];
 
   useEffect(() => {
-    const frame = window.requestAnimationFrame(() => {
-      const hashId = decodeURIComponent(window.location.hash.slice(1));
-      if (exerciseBlocks.some((exercise) => exercise.id === hashId)) setActiveId(hashId);
-    });
-    return () => window.cancelAnimationFrame(frame);
-  }, [exerciseBlocks]);
+    function selectHash() {
+      let hashId: string;
+      try { hashId = decodeURIComponent(window.location.hash.slice(1)); } catch { return; }
+      if (exerciseLabels.some((exercise) => exercise.id === hashId)) {
+        setActiveId(hashId);
+        setSolutionOpen(false);
+      }
+    }
+    const frame = window.requestAnimationFrame(selectHash);
+    window.addEventListener("hashchange", selectHash);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener("hashchange", selectHash);
+    };
+  }, [exerciseLabels]);
 
   const selectExercise = (id: string) => {
     setActiveId(id);
@@ -178,7 +187,7 @@ export default function ExerciseViewer({ phase, exercises, solutions, exerciseLa
                     <p className="local-run-note">{local.note}</p>
                     <div className="local-run-file"><span>File</span><code>{local.file}</code></div>
                     <div className="local-run-command"><span>Lệnh kiểm tra</span><pre><code>{local.command}</code></pre></div>
-                    {!local.file.startsWith("work/") && <a className="local-run-link" href={`https://github.com/VanDung279206/JavaBackend_AI_RoadMap/blob/Java_Roadmap_V2/${local.file}`} target="_blank" rel="noreferrer">
+                    {!local.file.startsWith("work/") && <a className="local-run-link" href={`https://github.com/VanDung279206/JavaBackend_AI_RoadMap/blob/main/${local.file}`} target="_blank" rel="noreferrer">
                       Mở file trên GitHub <ExternalLink size={14} aria-hidden="true" />
                     </a>}
                   </>

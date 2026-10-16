@@ -79,6 +79,16 @@ def containers(r):
   sql='\n'.join((ROOT/'practice/sql'/p).read_text() for p in ['fixture.sql','solution.sql','tests.sql'])
   okay,_=r.command('sql-postgres-fixture',[docker,'exec','-i',db,'psql','-v','ON_ERROR_STOP=1','-U','knowledge','-d','knowledge'],input_text=sql,marker='PASS P2.2 P2.3 P2.4')
   if not okay:raise RuntimeError('SQL fixture assertions failed')
+  for id in ['SQLB01','SQLB02','SQLB03']:
+   for mode in ['solution','starter']:
+    sql='\n'.join((ROOT/'practice/sql/bridge'/p).read_text(encoding='utf-8') for p in ['fixture.sql',id+'.'+mode+'.sql',id+'.tests.sql'])
+    okay,_=r.command('sql-bridge-'+id+'-'+mode,[docker,'exec','-i',db,'psql','-v','ON_ERROR_STOP=1','-U','knowledge','-d','knowledge'],input_text=sql,expected=0 if mode=='solution' else 3,marker='PASS '+id if mode=='solution' else id+':')
+    if not okay:raise RuntimeError('SQL bridge contract failed: '+id+' '+mode)
+  for mutation,marker in [('id-only','SQLB03: cursor time must take precedence over ID'),('sort-id-only','SQLB03: cursor time must take precedence over ID'),('wrong-timestamp','SQLB03: return each document timestamp unchanged')]:
+   sql='\n'.join((ROOT/'practice/sql/bridge'/p).read_text(encoding='utf-8') for p in ['fixture.sql','mutations/SQLB03.'+mutation+'.sql','SQLB03.tests.sql'])
+   okay,_=r.command('sql-bridge-SQLB03-rejects-'+mutation,[docker,'exec','-i',db,'psql','-v','ON_ERROR_STOP=1','-U','knowledge','-d','knowledge'],input_text=sql,expected=3,marker=marker)
+   if not okay:raise RuntimeError('SQL bridge accepted incorrect cursor implementation: '+mutation)
+  r.add('sql-bridge-contracts','PASS','Three PostgreSQL solutions pass; all unfinished starters and three incorrect cursor queries rejected by their assertions')
   okay,_=r.command('docker-build',[docker,'build','-t',tag,'projects/knowledge-assistant'],timeout=1200)
   if not okay:raise RuntimeError('Docker build failed')
   image_created=True
@@ -110,13 +120,14 @@ def integration(r):
  runtime_missing=[x['name'] for x in checks if x['status']=='BLOCKED' and x['name'] not in ['Docker CLI','Docker daemon']]
  bootstrap,_=r.command('maven-wrapper-bootstrap',[sys.executable,'scripts/maven.py','-version'],timeout=120)
  if runtime_missing or not bootstrap:
-  for name in ['maven-junit','spring-postgres-tests','real-ai-adapter-build','sql-postgres-fixture','docker-build','docker-http-postgres']:r.add(name,'BLOCKED','Prerequisite check failed; this gate was not run')
+  for name in ['maven-junit','spring-postgres-tests','real-ai-adapter-build','spring-bridge-starters-and-repairs','sql-postgres-fixture','sql-bridge-contracts','docker-build','docker-http-postgres']:r.add(name,'BLOCKED','Prerequisite check failed; this gate was not run')
   return
  commands=[('maven-junit',['-f','practice/pom.xml','clean','test','-Dcode.mode=solution']),('real-ai-adapter-build',['-f','projects/knowledge-assistant/pom.xml','-Preal-ai','clean','verify'])]
  for name,args in commands:r.command(name,[sys.executable,'scripts/maven.py','-B',*args],timeout=1200)
+ r.command('spring-bridge-starters-and-repairs',[sys.executable,'scripts/check_spring_bridges.py'],timeout=1200,marker='PASS Spring bridge: transaction')
  if docker_missing:
   detail='Docker prerequisites unavailable: '+', '.join(docker_missing)+'; this gate was not run'
-  for name in ['spring-postgres-tests','sql-postgres-fixture','docker-build','docker-http-postgres']:r.add(name,'BLOCKED',detail)
+  for name in ['spring-postgres-tests','sql-postgres-fixture','sql-bridge-contracts','docker-build','docker-http-postgres']:r.add(name,'BLOCKED',detail)
   return
  r.command('spring-postgres-tests',[sys.executable,'scripts/maven.py','-B','-f','projects/knowledge-assistant/pom.xml','-Pintegration','clean','verify'],timeout=1200)
  containers(r)

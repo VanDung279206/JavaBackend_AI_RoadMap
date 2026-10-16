@@ -14,23 +14,30 @@ export default function EnglishReview({ term, progress, save, disabled, ratedInS
     async function rate(rating: Rating) {
         if (!revealed || !answer.trim() || locked || saving.current || baseline.current === null) return;
         saving.current = true; setBusy(true);
-        const now = new Date().toISOString();
-        const expected = baseline.current;
-        let conflict = false;
-        let savedState = '';
-        const saved = await save(latest => {
-            const previous = latest.terms[term.id] ?? emptyTerm();
-            if (englishReviewState(previous) !== expected) { conflict = true; throw Error('Review changed after reveal'); }
-            const next = scheduleReview(previous, rating, now);
-            savedState = englishReviewState(next);
-            return { ...latest, terms: { ...latest.terms, [term.id]: next } };
-        });
-        if (saved) { setRated(true); onRated?.(savedState, answer); setMessage('Đã lưu lượt ôn và ngày ôn tiếp theo.'); }
-        else {
-            if (conflict) { baseline.current = null; setRevealed(false); }
-            setMessage(conflict ? 'Lịch ôn đã thay đổi ở tab khác hoặc sau khi nhập bản lưu. Mở lại đáp án để bắt đầu lượt mới.' : 'Chưa lưu được lượt ôn. Kiểm tra trạng thái lưu và thử lại.');
+        let committed = false;
+        try {
+            const now = new Date().toISOString();
+            const expected = baseline.current;
+            let conflict = false;
+            let savedState = '';
+            const saved = await save(latest => {
+                const previous = latest.terms[term.id] ?? emptyTerm();
+                if (englishReviewState(previous) !== expected) { conflict = true; throw Error('Review changed after reveal'); }
+                const next = scheduleReview(previous, rating, now);
+                savedState = englishReviewState(next);
+                return { ...latest, terms: { ...latest.terms, [term.id]: next } };
+            });
+            committed = saved;
+            if (saved) { setRated(true); onRated?.(savedState, answer); setMessage('Đã lưu lượt ôn và ngày ôn tiếp theo.'); }
+            else {
+                if (conflict) { baseline.current = null; setRevealed(false); }
+                setMessage(conflict ? 'Lịch ôn đã thay đổi ở tab khác hoặc sau khi nhập bản lưu. Mở lại đáp án để bắt đầu lượt mới.' : 'Chưa lưu được lượt ôn. Kiểm tra trạng thái lưu và thử lại.');
+            }
+        } catch {
+            setMessage(committed ? 'Đã lưu lượt ôn và ngày ôn tiếp theo.' : 'Chưa lưu được lượt ôn. Kiểm tra trạng thái lưu và thử lại.');
+        } finally {
+            saving.current = false; setBusy(false);
         }
-        saving.current = false; setBusy(false);
     }
     return <article className="learning-card english-flashcard"><h2 lang="en">{term.term}</h2><p>Tự giải thích nghĩa trước khi mở đáp án. Đánh giá dưới đây là mức nhớ bạn tự chọn.</p>
         <label>Nghĩa bạn nhớ<input disabled={disabled || busy || locked} maxLength={2000} value={answer} onChange={event => { setAnswer(event.target.value); baseline.current = null; setRevealed(false); setMessage(''); }} /></label><button type="button" disabled={disabled || busy || locked || !answer.trim()} onClick={() => { baseline.current = englishReviewState(row); setRevealed(true); }}>Mở đáp án flashcard</button>

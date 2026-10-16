@@ -1,13 +1,32 @@
 # Copy the reference app to a NEW learning directory; never overwrite a prior attempt.
 from pathlib import Path
 import argparse,shutil
-p=argparse.ArgumentParser();p.add_argument('--phase',choices=['3','4'],required=True);p.add_argument('--destination',required=True);a=p.parse_args()
+p=argparse.ArgumentParser();p.add_argument('--phase',choices=['3','4'],required=True);p.add_argument('--destination',required=True)
+p.add_argument('--step',choices=['validation','repository','transaction'],help='Phase 3 only: isolate one bridge exercise; omit for the complete phase lab')
+a=p.parse_args()
+if a.step and a.phase!='3':p.error('--step requires --phase 3')
 r=Path(__file__).resolve().parents[1];dest=Path(a.destination).resolve();source=r/'projects/knowledge-assistant'
 if dest.exists():p.error('Destination already exists. Choose a new directory to preserve your work.')
 if source==dest or source in dest.parents:p.error('Choose a destination outside the reference app.')
 shutil.copytree(source,dest,ignore=shutil.ignore_patterns('target','.env','.git','data'))
 base=dest/'src/main/java/vn/roadmap/knowledge'
-if a.phase=='3':
+if a.step:
+ # Keep the rest of the reference working so learners fix one concept at a time.
+ if a.step=='validation':
+  f=base/'ApiTypes.java';old='public record WriteDocument(@NotBlank @Size(max=120) String title,@NotNull @Size(max=20000) String content) {}'
+  new='public record WriteDocument(String title,String content) {} // TODO SPRB01: DTO constraints'
+ else:
+  f=base/'DocumentService.java'
+  if a.step=='repository':
+   old='return documents.findByIdAndOwnerId(id,owner).orElseThrow(AppErrors.Missing::new);'
+   new='throw new UnsupportedOperationException("TODO SPRB02: owned lookup");'
+  else:
+   old='    @Transactional\n    public DocumentView create'
+   new='    // TODO SPRB03: transaction boundary\n    public DocumentView create'
+ s=f.read_text(encoding='utf-8')
+ if s.count(old)!=1:raise SystemExit('Reference changed; expected exactly one bridge target in '+f.name)
+ f.write_text(s.replace(old,new),encoding='utf-8')
+elif a.phase=='3':
  f=base/'DocumentService.java';s=f.read_text(encoding='utf-8')
  s=s.replace('var d=documents.saveAndFlush(new DocumentEntity(owner,TextRules.title(request.title()),content(request.content())));','var d=unfinishedCreate(owner,request); // TODO P3.1')
  s=s.replace('return documents.findByIdAndOwnerId(id,owner).orElseThrow(AppErrors.Missing::new);','throw new UnsupportedOperationException("TODO P3.2");')
@@ -47,5 +66,6 @@ class OwnershipLearnerTest {
 ''')
  (dest/'Dockerfile').write_text('# TODO P4.3: multi-stage build, JRE 21, non-root user, runtime config\n')
  (dest/'LEARNER_CI.yml').write_text('# TODO P4.4: checkout, JDK 21, mvn test + integration verify + package; fail on errors\n')
-(dest/'LEARNER.md').write_text('Read docs/EXERCISE_MAP.md in the roadmap root. Work only in this copy. Run mvn test here; phase 3 starts red. Compare with the reference app after your attempt.\n')
+(dest/'LEARNER.md').write_text('Read docs/EXERCISE_MAP.md in the roadmap root. Work only in this copy. '+
+ ('Isolated bridge: '+a.step+'. Run the selected Bridge test from the catalogue before running all tests.\n' if a.step else 'Run mvn test here; phase 3 starts red. Compare with the reference app after your attempt.\n'),encoding='utf-8')
 print('Created learning copy:',dest)

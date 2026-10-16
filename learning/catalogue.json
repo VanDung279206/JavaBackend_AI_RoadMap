@@ -124,6 +124,46 @@
       },
       "playground": null
     },
+    "SQLB01": {
+      "title": "Lọc đúng owner và biên ngày",
+      "tags": [
+        "owner",
+        "off-by-one"
+      ],
+      "reading": "practice/sql/bridge/README.md",
+      "phase": "02_Http-Sql",
+      "track": "practice",
+      "prerequisites": [
+        "P2.1"
+      ],
+      "solution": "practice/sql/bridge/SOLUTIONS.md",
+      "check": {
+        "kind": "project",
+        "file": "practice/sql/bridge/SQLB01.starter.sql",
+        "command": "psql \"$DATABASE_URL\" -v ON_ERROR_STOP=1 -f practice/sql/bridge/fixture.sql -f practice/sql/bridge/SQLB01.starter.sql -f practice/sql/bridge/SQLB01.tests.sql",
+        "note": "PostgreSQL 17; PowerShell dùng $env:DATABASE_URL. Chạy ba file trong một connection mới; starter ban đầu phải FAIL. Lưu output bài tự làm và lời giải thích tiếng Anh."
+      }
+    },
+    "SQLB02": {
+      "title": "Đếm và giữ người có 0 tài liệu",
+      "tags": [
+        "duplicates",
+        "owner"
+      ],
+      "reading": "practice/sql/bridge/README.md",
+      "phase": "02_Http-Sql",
+      "track": "practice",
+      "prerequisites": [
+        "SQLB01"
+      ],
+      "solution": "practice/sql/bridge/SOLUTIONS.md",
+      "check": {
+        "kind": "project",
+        "file": "practice/sql/bridge/SQLB02.starter.sql",
+        "command": "psql \"$DATABASE_URL\" -v ON_ERROR_STOP=1 -f practice/sql/bridge/fixture.sql -f practice/sql/bridge/SQLB02.starter.sql -f practice/sql/bridge/SQLB02.tests.sql",
+        "note": "PostgreSQL 17; PowerShell dùng $env:DATABASE_URL. Chạy ba file trong một connection mới; starter ban đầu phải FAIL. Lưu output bài tự làm và lời giải thích tiếng Anh."
+      }
+    },
     "P2.2": {
       "title": "Schema và đếm tài liệu",
       "tags": [
@@ -143,6 +183,27 @@
         "note": "Dùng database thực hành riêng; fixture đặt lại dữ liệu thực hành."
       },
       "playground": "postgresql"
+    },
+    "SQLB03": {
+      "title": "Cursor có hai khóa",
+      "tags": [
+        "ordering",
+        "off-by-one",
+        "owner"
+      ],
+      "reading": "practice/sql/bridge/README.md",
+      "phase": "02_Http-Sql",
+      "track": "practice",
+      "prerequisites": [
+        "SQLB02"
+      ],
+      "solution": "practice/sql/bridge/SOLUTIONS.md",
+      "check": {
+        "kind": "project",
+        "file": "practice/sql/bridge/SQLB03.starter.sql",
+        "command": "psql \"$DATABASE_URL\" -v ON_ERROR_STOP=1 -f practice/sql/bridge/fixture.sql -f practice/sql/bridge/SQLB03.starter.sql -f practice/sql/bridge/SQLB03.tests.sql",
+        "note": "PostgreSQL 17; PowerShell dùng $env:DATABASE_URL. Chạy ba file trong một connection mới; starter ban đầu phải FAIL. Lưu output bài tự làm và lời giải thích tiếng Anh."
+      }
     },
     "P2.3": {
       "title": "Phân trang và index",
@@ -185,6 +246,25 @@
       },
       "playground": "postgresql"
     },
+    "SPRB01": {
+      "title": "Điền validation trên DTO",
+      "tags": [
+        "validation"
+      ],
+      "reading": "practice/spring-bridge/README.md",
+      "phase": "03_Spring",
+      "track": "practice",
+      "prerequisites": [
+        "P2.1"
+      ],
+      "solution": "practice/spring-bridge/SOLUTIONS.md",
+      "check": {
+        "kind": "project",
+        "file": "work/spring-bridge-validation/src/main/java/vn/roadmap/knowledge/ApiTypes.java",
+        "command": "py scripts/new_spring_lab.py --phase 3 --step validation --destination work/spring-bridge-validation\npy scripts/maven.py -f work/spring-bridge-validation/pom.xml -Dtest=BridgeValidationTest test",
+        "note": "Tạo bản học riêng một lần; các lần sau chỉ chạy dòng Maven. Mỗi bản khuyết một phần, test dùng Bean Validation hoặc JPA/H2 thật. Lưu output bài tự làm; không tự cấp verified từ tham chiếu."
+      }
+    },
     "P3.1": {
       "title": "DTO và validation",
       "tags": [
@@ -205,6 +285,25 @@
         "note": "Tạo bản một lần, sau đó chỉ chạy Maven trên bản đó. Test theo bài; phải hoàn thiện bài tiên quyết trước. Hết phase chạy toàn bộ test. Không cấp tiến độ từ bản tham chiếu."
       },
       "playground": null
+    },
+    "SPRB02": {
+      "title": "Nối service với repository theo owner",
+      "tags": [
+        "owner"
+      ],
+      "reading": "practice/spring-bridge/README.md",
+      "phase": "03_Spring",
+      "track": "practice",
+      "prerequisites": [
+        "SPRB01"
+      ],
+      "solution": "practice/spring-bridge/SOLUTIONS.md",
+      "check": {
+        "kind": "project",
+        "file": "work/spring-bridge-repository/src/main/java/vn/roadmap/knowledge/DocumentService.java",
+        "command": "py scripts/new_spring_lab.py --phase 3 --step repository --destination work/spring-bridge-repository\npy scripts/maven.py -f work/spring-bridge-repository/pom.xml -Dtest=BridgeRepositoryTest test",
+        "note": "Tạo bản học riêng một lần; các lần sau chỉ chạy dòng Maven. Mỗi bản khuyết một phần, test dùng Bean Validation hoặc JPA/H2 thật. Lưu output bài tự làm; không tự cấp verified từ tham chiếu."
+      }
     },
     "P3.2": {
       "title": "Repository có phạm vi người dùng",
@@ -246,6 +345,26 @@
         "note": "Tạo bản một lần, sau đó chỉ chạy Maven trên bản đó. Test theo bài; phải hoàn thiện bài tiên quyết trước. Hết phase chạy toàn bộ test. Không cấp tiến độ từ bản tham chiếu."
       },
       "playground": null
+    },
+    "SPRB03": {
+      "title": "Một transaction cho document và audit",
+      "tags": [
+        "transaction"
+      ],
+      "reading": "practice/spring-bridge/README.md",
+      "phase": "03_Spring",
+      "track": "practice",
+      "prerequisites": [
+        "SPRB02",
+        "P2.4"
+      ],
+      "solution": "practice/spring-bridge/SOLUTIONS.md",
+      "check": {
+        "kind": "project",
+        "file": "work/spring-bridge-transaction/src/main/java/vn/roadmap/knowledge/DocumentService.java",
+        "command": "py scripts/new_spring_lab.py --phase 3 --step transaction --destination work/spring-bridge-transaction\npy scripts/maven.py -f work/spring-bridge-transaction/pom.xml -Dtest=BridgeTransactionTest test",
+        "note": "Tạo bản học riêng một lần; các lần sau chỉ chạy dòng Maven. Mỗi bản khuyết một phần, test dùng Bean Validation hoặc JPA/H2 thật. Lưu output bài tự làm; không tự cấp verified từ tham chiếu."
+      }
     },
     "P3.4": {
       "title": "Giao dịch nghiệp vụ",

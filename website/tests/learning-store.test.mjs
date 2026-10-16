@@ -17,7 +17,7 @@ async function until(predicate){
  for(let i=0;i<30;i++){if(predicate())return;await tick();}
  assert.ok(predicate(),'store did not reach the expected state');
 }
-function harness(remoteIds=[]){
+function harness(remoteIds=[], options={}){
  const storage=new Map(),calls=[],observations=[];
  let authChange,getSnapshot,subscribed=false;
  const module={exports:{}};
@@ -27,7 +27,7 @@ function harness(remoteIds=[]){
   from(table){
    let owner;
    const query={select(){return this;},eq(key,value){if(key==='user_id')owner=value;return this;},not(){return this;},
-    then(resolve,reject){return Promise.resolve({data:table==='progress'&&owner==='account-a'?rows:[],error:null}).then(resolve,reject);}};
+    then(resolve,reject){return (table==='progress' && options.progress ? options.progress() : Promise.resolve({data:table==='progress'&&owner==='account-a'?rows:[],error:null})).then(resolve,reject);}};
    return query;
   },
   rpc(name,args){
@@ -110,4 +110,31 @@ test('switching account during an RPC never sends the old queue as the new owner
  assert.equal(h.calls.length,1);assert.equal(h.state().owner,'account-b');
  assert.equal(Object.keys(h.state().entries).length,0);
  assert.equal(JSON.parse(h.storage.get(core.storageKey('account-a')))['P0.2'].pending,true);
+});
+
+
+test('a remote reload preserves a draft written by another tab while the request is in flight', async () => {
+ let finish;
+ const h=harness([], {progress:()=>new Promise(resolve=>{finish=resolve;})});
+ await until(()=>Boolean(finish));
+ const key=core.storageKey('account-a');
+ h.storage.set(key,JSON.stringify({'P0.1':{...core.emptyEntry(),status:'needs_review',pending:true}}));
+ // The other tab's storage event has not been delivered yet.
+ finish({data:[],error:null});
+ await ready(h);
+ assert.equal(h.state().entries['P0.1']?.status,'needs_review');
+ assert.equal(JSON.parse(h.storage.get(key))['P0.1']?.status,'needs_review');
+ await until(()=>h.calls.length===1);h.answer(0);
+ await until(()=>!h.state().entries['P0.1'].pending);
+});
+
+test('a corrupt draft appearing during remote load is preserved and blocks subsequent writes', async () => {
+ let finish;
+ const h=harness([], {progress:()=>new Promise(resolve=>{finish=resolve;})});
+ await until(()=>Boolean(finish));
+ const key=core.storageKey('account-a');h.storage.set(key,'{broken');
+ finish({data:[],error:null});await ready(h);
+ assert.equal(h.storage.get(key),'{broken');
+ assert.equal(h.store.updateEntry('P0.1',{status:'in_progress'}),false);
+ assert.equal(h.calls.length,0);
 });

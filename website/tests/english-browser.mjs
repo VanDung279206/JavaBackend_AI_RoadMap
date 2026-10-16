@@ -406,6 +406,29 @@ try {
     await shot('mobile-intermediate');
     pass('390px mobile menu, all five areas, vocabulary grading, writing reload and intermediate trace');
 
+    const materialsContext = await browser.newContext();
+    const sourceRows = [
+        { id: 'unsafe', title: 'Unsafe source', purpose: 'reference', phase_slug: '01_Java', description: 'Unsafe external source.', resource_type: 'link', file_path: null, source_url: 'javascript:alert(1)', submitted_by: 'owner', status: 'approved', created_at: '2026-10-16T00:00:00Z' },
+        { id: 'safe', title: 'Safe source', purpose: 'reference', phase_slug: '01_Java', description: 'HTTPS external source.', resource_type: 'link', file_path: null, source_url: 'https://docs.example/guide', submitted_by: 'owner', status: 'approved', created_at: '2026-10-16T00:00:00Z' },
+    ];
+    await materialsContext.route('**/*', route => {
+        const url = new URL(route.request().url());
+        if (url.origin === origin) return route.continue();
+        if (url.pathname.endsWith('/rest/v1/community_resources')) return route.fulfill({ status: 200,
+            headers: { 'Content-Type': 'application/json', 'Content-Range': '0-1/2' }, body: JSON.stringify(sourceRows) });
+        return route.abort();
+    });
+    const materials = await materialsContext.newPage();
+    materials.on('pageerror', error => errors.push(error.message));
+    await materials.goto(origin + base + '/materials');
+    const unsafeCard = materials.locator('.material-card').filter({ has: materials.getByRole('heading', { name: 'Unsafe source', exact: true }) });
+    await expect(unsafeCard).toBeVisible();
+    await expect(unsafeCard.locator('a')).toHaveCount(0);
+    const safeCard = materials.locator('.material-card').filter({ has: materials.getByRole('heading', { name: 'Safe source', exact: true }) });
+    await expect(safeCard.getByRole('link', { name: 'Mở nguồn' })).toHaveAttribute('href', 'https://docs.example/guide');
+    await materialsContext.close();
+    pass('community library blocks unsafe source URLs while preserving valid HTTPS links');
+
     const unsupported = await context.newPage();
     await unsupported.addInitScript(() => Object.defineProperty(window, 'speechSynthesis', { value: undefined, configurable: true }));
     await unsupported.goto(origin + base + '/english#01_Java/vocabulary/01_Java-parameter');
@@ -413,6 +436,88 @@ try {
     await expect(unsupported.getByText('Thiết bị chưa hỗ trợ phát âm. Bạn vẫn có thể học bằng văn bản.').first()).toBeVisible();
     await expect(unsupported.getByRole('button', { name: 'Nghe phát âm', exact: true })).toBeDisabled();
     await unsupported.close(); pass('unsupported pronunciation displays a readable fallback');
+    const searchFor = async (query, label) => {
+        await page.getByRole('button', { name: 'Tìm kiếm', exact: true }).click();
+        await page.getByPlaceholder('Tìm chặng, bài tập, từ tiếng Anh…').fill(query);
+        await page.getByRole('button', { name: label }).click();
+    };
+    await visit('/docs/02_Http-Sql', '#SQLB01');
+    await expect(page.locator('.exercise-active-id')).toHaveText('SQLB01');
+    await searchFor('SQLB03', /^SQLB03 —/);
+    await expect(page).toHaveURL(/#SQLB03$/);
+    await expect(page.locator('.exercise-active-id')).toHaveText('SQLB03');
+    await page.goBack();
+    await expect(page.locator('.exercise-active-id')).toHaveText('SQLB01');
+    const springLessonTitle = JSON.parse(readFileSync(path.join(website, 'src/generated/catalogue.json'), 'utf8')).lessons.find(item => item.id === 'SPRING03').title;
+    await visit('/learn/03_Spring', '#SPRING01');
+    await expect(page.locator('.lesson-progress [role="status"]')).toHaveText('Đã lưu trên thiết bị.');
+    await searchFor('SPRING03', /^Bài học SPRING03 —/);
+    await expect(page.locator('.course-index button[aria-current="page"]')).toContainText(springLessonTitle);
+    await page.getByRole('button', { name: /Luyện tập/ }).click();
+    await searchFor('SPRING03', /^Bài học SPRING03 —/);
+    await expect(page.locator('.course-lesson')).toBeVisible();
+    await expect(page.locator('.course-index button[aria-current="page"]')).toContainText(springLessonTitle);
+    pass('same-page search selects SQL exercises and Spring lessons, supports Back and reopens the lesson for the same hash');
+    // The SQL/Spring coding bridges connect the English traces to real local contracts.
+    for (const [phase, lesson, id] of [
+        ['02_Http-Sql', 'SQL01', 'SQLB01'], ['02_Http-Sql', 'SQL02', 'SQLB03'],
+        ['03_Spring', 'SPRING01', 'SPRB01'], ['03_Spring', 'SPRING02', 'SPRB02'], ['03_Spring', 'SPRING03', 'SPRB03'],
+    ]) {
+        await visit('/learn/' + phase, '#' + lesson);
+        await expect(page.getByRole('link', { name: 'Làm ' + id, exact: true })).toHaveAttribute('href', base + '/docs/' + phase + '#' + id);
+    }
+    pass('SQL/Spring lessons link directly to their coding bridge exercises');
+    for (const phase of ['02_Http-Sql', '03_Spring']) {
+        await visit('/learn/' + phase);
+        await page.getByRole('button', { name: /Luyện tập/ }).click();
+        await page.getByLabel('Lọc bài').selectOption('bridge');
+        await expect(page.locator('.learning-grid article')).toHaveCount(3);
+        await page.locator('.learning-grid article').first().getByRole('link').click();
+        await expect(page.locator('.exercise-active-id')).toHaveText(phase === '02_Http-Sql' ? 'SQLB01' : 'SPRB01');
+    }
+    pass('course filter shows three guided exercises and opens the selected prompt');
+    const bridges = JSON.parse(readFileSync(path.join(website, 'src/generated/catalogue.json'), 'utf8')).exercises.filter(item => /^(SQLB|SPRB)/.test(item.id));
+    for (const width of [1440, 390]) {
+        await page.setViewportSize({ width, height: 1000 });
+        for (const exercise of bridges) {
+            await visit('/docs/' + exercise.phase, '#' + exercise.id);
+            await expect(page.locator('.exercise-active-id')).toHaveText(exercise.id);
+            await expect(page.locator('.local-run-command')).toContainText(exercise.check.command);
+            await expect(page.locator('.exercise-prompt')).toContainText('Giải thích');
+            await expect(page.locator('.exercise-phase-note')).toHaveCount(0);
+            await expect(page.locator('.exercise-solution')).not.toHaveAttribute('open', '');
+            await page.getByRole('button', { name: 'Gợi ý 1', exact: true }).click();
+            await expect(page.locator('.learning-tools')).toContainText(exercise.hints[0]);
+            await page.locator('.exercise-solution summary').click();
+            await expect(page.locator('.exercise-solution-content')).toBeVisible();
+            if (exercise.id.startsWith('SQLB')) {
+                await expect(page.getByRole('link', { name: 'Mở file trên GitHub', exact: true })).toHaveAttribute('href',
+                    'https://github.com/VanDung279206/JavaBackend_AI_RoadMap/blob/main/' + exercise.check.file);
+            }
+            assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true, exercise.id + ' overflows at ' + width);
+        }
+        pass('six coding bridge prompts, commands, hints and solutions at ' + width + 'px');
+    }
+    await page.evaluate(() => { window.location.hash = '#SPRB02'; });
+    await expect(page.locator('.exercise-active-id')).toHaveText('SPRB02');
+    await expect(page.locator('.exercise-solution-content')).not.toBeVisible();
+    await page.goBack();
+    await expect(page.locator('.exercise-active-id')).toHaveText('SPRB03');
+    await expect(page.locator('.exercise-solution-content')).not.toBeVisible();
+    await page.evaluate(() => { window.location.hash = '#%E0%A4'; });
+    await expect(page.locator('.exercise-active-id')).toHaveText('SPRB03');
+    pass('hash changes and Back select the right exercise, hide the previous solution and tolerate malformed hashes');
+    await visit('/learn/03_Spring', '#SPRING02');
+    const lessons = JSON.parse(readFileSync(path.join(website, 'src/generated/catalogue.json'), 'utf8')).lessons;
+    await expect(page.locator('.course-index button[aria-current="page"]')).toContainText(lessons.find(item => item.id === 'SPRING02').title);
+    await page.evaluate(() => { window.location.hash = '#%E0%A4'; });
+    await expect(page.locator('.course-lesson')).toBeVisible();
+    await expect(page.locator('.course-index button[aria-current="page"]')).toContainText(lessons.find(item => item.id === 'SPRING02').title);
+    await page.reload();
+    await expect(page.locator('.course-lesson')).toBeVisible();
+    await expect(page.locator('.lesson-progress [role="status"]')).toHaveText('Đã lưu trên thiết bị.');
+    await expect(page.locator('.course-index button[aria-current="page"]')).toContainText(lessons.find(item => item.id === 'SPRING01').title);
+    pass('malformed lesson hashes keep the current lesson and reload safely with the first lesson');
     assert.deepEqual(errors, [], 'page exceptions');
     console.log(`PASS ${checks.length} browser workflows; Chromium ${browser.version()}`);
 } finally {
