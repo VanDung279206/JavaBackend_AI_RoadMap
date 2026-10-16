@@ -121,3 +121,11 @@ test('two devices cannot silently overwrite a concurrent first upload',async()=>
  const states=await Promise.all([a.sync(),b.sync()]);assert.ok(states.some(result=>result.state==='synced'));assert.equal(cloud.writes,1);
  const loser=cloud.row.content.name==='A'?b:a;assert.equal((await loser.sync()).state,'conflict');assert.equal(cloud.writes,1);
 });
+
+
+test('legacy drafts with PostgreSQL-incompatible text are preserved without attempting an upload', async () => {
+ for (const name of ['broken\u0000text', 'broken\uD800text', 'broken\uDC00text']) {
+  const cloud=server(),d=device(cloud,draft(name)),raw=d.raw();
+  assert.equal((await d.sync()).state,'error');assert.equal(d.raw(),raw);assert.equal(cloud.writes,0);assert.equal(d.meta(),null);
+ }
+});

@@ -492,6 +492,41 @@ try {
     await expect(projectStatus(deviceA.tab)).toHaveText('Đã đồng bộ dự án với máy chủ.', { timeout: 15000 });
     const archived = await deviceA.tab.evaluate(key => JSON.parse(localStorage.getItem(key)), `roadmap-v2:project-conflict:user:${owner}`);
     assert.equal(archived.local.name, 'Offline device edit');assert.equal(archived.remote.name, 'New server edit');
+    // Long imported names are valid draft data; the conflict panel must fit mobile.
+    deviceA.state.offline = true;
+    await deviceA.tab.getByRole('textbox', { name: 'Tên dự án', exact: true }).fill('A'.repeat(5000));
+    await expect.poll(() => deviceA.tab.evaluate(key => JSON.parse(localStorage.getItem(key)).name.length, `roadmap-v2:project:user:${owner}`)).toBe(5000);
+    projectRow = { ...projectRow, revision: projectRow.revision + 1, content: { ...projectRow.content, name: 'B'.repeat(5000) } };
+    await expect(projectStatus(deviceA.tab)).toContainText('Chưa xác nhận đồng bộ', { timeout: 20000 });
+    deviceA.state.offline = false;
+    await deviceA.tab.getByRole('button', { name: 'Đồng bộ lại dự án', exact: true }).click();
+    await expect(deviceA.tab.getByRole('heading', { name: 'Chọn bản dự án muốn giữ' })).toBeVisible();
+    await deviceA.tab.setViewportSize({ width: 390, height: 1000 });
+    assert.equal(await deviceA.tab.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true, 'long project names overflow the mobile conflict panel');
+    const longNameDownload = deviceA.tab.waitForEvent('download');
+    await deviceA.tab.getByRole('button', { name: 'Tải bản thiết bị', exact: true }).click();
+    assert.equal(JSON.parse(readFileSync(await (await longNameDownload).path(), 'utf8')).name.length, 5000);
+    pass('long project names fit the mobile conflict panel without truncating downloaded drafts');
+
+    await deviceA.tab.goto(origin + base + '/projects');
+    await deviceA.tab.evaluate(async name => {
+        await new Promise(resolve => { void navigator.locks.request(name, { mode: 'exclusive' }, () => {
+            resolve(); return new Promise(release => { window.releaseProjectReviewLock = release; });
+        }); });
+    }, `project-cloud:${owner}`);
+    const waitingTab = await deviceA.context.newPage();
+    waitingTab.on('pageerror', error => errors.push(error.message));
+    try {
+        await waitingTab.goto(origin + base + '/projects/mine');
+        await expect.poll(() => deviceA.tab.evaluate(async name => (await navigator.locks.query()).pending.filter(lock => lock.name === name).length, `project-cloud:${owner}`)).toBe(1);
+        await waitingTab.getByRole('button', { name: 'Đăng xuất', exact: true }).click();
+        await expect(waitingTab.getByText('Khách lưu dự án trên thiết bị.', { exact: false })).toBeVisible();
+        await expect.poll(() => deviceA.tab.evaluate(async name => (await navigator.locks.query()).pending.filter(lock => lock.name === name).length, `project-cloud:${owner}`)).toBe(0);
+    } finally {
+        await deviceA.tab.evaluate(() => window.releaseProjectReviewLock());
+        await waitingTab.close();
+    }
+    pass('signing out unmounts project sync and cancels pending cloud lock requests');
     await deviceA.context.close();await deviceB.context.close();
     pass('offline project edits survive reload, require a conflict choice and preserve both copies before applying the server draft');
 

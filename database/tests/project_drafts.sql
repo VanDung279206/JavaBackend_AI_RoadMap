@@ -21,7 +21,7 @@ DO $$ DECLARE payload jsonb; result public.project_drafts; invalid jsonb; BEGIN
  EXCEPTION WHEN raise_exception THEN IF SQLERRM<>'ACCOUNT_CHANGED' THEN RAISE; END IF; END;
  BEGIN PERFORM public.save_project_draft(NULL,2,payload);RAISE EXCEPTION 'null owner accepted';
  EXCEPTION WHEN raise_exception THEN IF SQLERRM<>'ACCOUNT_CHANGED' THEN RAISE; END IF; END;
- FOREACH invalid IN ARRAY ARRAY['null'::jsonb,'[]'::jsonb,'{}'::jsonb,payload-'name',payload||'{"verified":true}',payload||'{"ragMode":"invalid"}',payload||'{"checklist":[true]}',payload||'{"checklist":[false,false,false,false,false,"yes"]}',jsonb_set(payload,'{name}',to_jsonb(repeat('x',50001))),jsonb_set(payload,'{outline}',to_jsonb(repeat('x',1710001)))] LOOP
+ FOREACH invalid IN ARRAY ARRAY['null'::jsonb,'[]'::jsonb,'{}'::jsonb,payload-'name',payload||'{"verified":true}',payload||'{"ragMode":"invalid"}',payload||'{"checklist":[true]}',payload||'{"checklist":[false,false,false,false,false,"yes"]}',jsonb_set(payload,'{name}',to_jsonb(repeat('x',50001))),jsonb_set(payload,'{name}',to_jsonb(repeat(chr(128512),25001))),jsonb_set(payload,'{outline}',to_jsonb(repeat('x',1710001))),jsonb_set(payload,'{outline}',to_jsonb(repeat(chr(128512),855001))),jsonb_set(payload,'{previousOutline}',to_jsonb(repeat(chr(128512),855001)))] LOOP
   BEGIN PERFORM public.save_project_draft(auth.uid(),2,invalid);RAISE EXCEPTION 'invalid project accepted';
   EXCEPTION WHEN raise_exception THEN IF SQLERRM<>'INVALID_PROJECT' THEN RAISE; END IF; END;
  END LOOP;
@@ -38,7 +38,7 @@ DO $$ DECLARE payload jsonb; result public.project_drafts; invalid jsonb; BEGIN
 END $$;
 SELECT set_config('request.jwt.claim.sub','00000000-0000-0000-0000-000000000012',true);
 DO $$ BEGIN IF EXISTS(SELECT 1 FROM public.project_drafts) THEN RAISE EXCEPTION 'cross-account project read'; END IF; END $$;
-SELECT public.save_project_draft(auth.uid(),0,(SELECT content FROM project_fixture));
+SELECT public.save_project_draft(auth.uid(),0,(SELECT jsonb_set(content,'{name}',to_jsonb(repeat(chr(128512),25000))) FROM project_fixture));
 SELECT set_config('request.jwt.claim.sub','',true);
 DO $$ BEGIN
  BEGIN PERFORM public.save_project_draft(NULL,0,(SELECT content FROM project_fixture));RAISE EXCEPTION 'unauthenticated save accepted';

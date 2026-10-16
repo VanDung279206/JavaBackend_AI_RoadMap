@@ -1,6 +1,6 @@
 # Java Backend + AI Roadmap
 
-Nâng cấp tiếp theo: [đồng bộ bản nháp dự án giữa thiết bị](docs/PROJECT_SYNC.md), có lưu offline, revision và lựa chọn khi xung đột. Cần migration V7 trước khi deploy website; bài học và tiếng Anh vẫn dùng bản lưu riêng trên thiết bị.
+Nâng cấp tiếp theo: [đồng bộ bản nháp dự án giữa thiết bị](docs/PROJECT_SYNC.md), có lưu offline, revision và lựa chọn khi xung đột. Cần migration V7 → V8 trước khi deploy website; bài học và tiếng Anh vẫn dùng bản lưu riêng trên thiết bị.
 
 
 ## Bài lập trình SQL/Spring có hướng dẫn

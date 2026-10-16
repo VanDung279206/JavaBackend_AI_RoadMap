@@ -9,11 +9,16 @@ export type ProjectDraft = Record<ProjectField, string> & { ragMode: 'project' |
 export function emptyProject(): ProjectDraft {
     return { ...Object.fromEntries(projectFields.map(field => [field, ''])) as Record<ProjectField, string>, ragMode: 'lab', outline: '', previousOutline: '', checklist: criteria.map(() => false) };
 }
+// PostgreSQL JSONB cannot represent NUL or an unpaired UTF-16 surrogate.
+// The Unicode flag treats a valid surrogate pair as one astral code point.
+function validProjectText(value: unknown, limit: number): value is string {
+    return typeof value === 'string' && value.length <= limit && !/[\u0000\uD800-\uDFFF]/u.test(value);
+}
 export function parseProject(value: unknown): ProjectDraft {
     if (!value || typeof value !== 'object' || Array.isArray(value)) throw Error('Invalid project backup');
     const draft = value as ProjectDraft;
-    for (const field of projectFields) if (typeof draft[field] !== 'string' || draft[field].length > PROJECT_FIELD_LIMIT) throw Error('Invalid project field');
-    for (const field of ['outline', 'previousOutline'] as const) if (typeof draft[field] !== 'string' || draft[field].length > PROJECT_OUTLINE_LIMIT) throw Error('Invalid project outline');
+    for (const field of projectFields) if (!validProjectText(draft[field], PROJECT_FIELD_LIMIT)) throw Error('Invalid project field');
+    for (const field of ['outline', 'previousOutline'] as const) if (!validProjectText(draft[field], PROJECT_OUTLINE_LIMIT)) throw Error('Invalid project outline');
     if (!['lab', 'project'].includes(draft.ragMode) || !Array.isArray(draft.checklist) || draft.checklist.length !== criteria.length || draft.checklist.some(item => typeof item !== 'boolean')) throw Error('Invalid project checklist');
     return { ...Object.fromEntries(projectFields.map(field => [field, draft[field]])) as Record<ProjectField, string>, ragMode: draft.ragMode, outline: draft.outline, previousOutline: draft.previousOutline, checklist: [...draft.checklist] };
 }
