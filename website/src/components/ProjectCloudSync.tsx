@@ -5,6 +5,7 @@ import { localKey } from '@/lib/course-core';
 import { downloadText } from '@/lib/download';
 import { projectConflictKey, projectSyncKey, syncProject, type ProjectDecision, type ProjectSyncResult } from '@/lib/project-sync';
 import type { ProjectDraft } from '@/lib/project-core';
+import { projectRequest } from '@/lib/project-request';
 
 type Store = { value: ProjectDraft; ready: boolean; saving: boolean; blocked: boolean; raw: () => string | null; restore: (value: unknown, baseline: string | null) => Promise<boolean> };
 const initial: ProjectSyncResult = { state: 'pending', message: 'Đã lưu trên thiết bị; đang chờ đồng bộ dự án.' };
@@ -36,11 +37,11 @@ export default function ProjectCloudSync({ owner, store }: { owner: string | nul
                     storage: localStorage,
                     remote: {
                         async load(id) {
-                            const { data, error } = await supabase.from('project_drafts').select('content,revision').eq('user_id', id).abortSignal(AbortSignal.any([lifetime.signal, AbortSignal.timeout(15000)])).maybeSingle();
+                            const { data, error } = await projectRequest(lifetime.signal, signal => supabase.from('project_drafts').select('content,revision').eq('user_id', id).abortSignal(signal).maybeSingle());
                             if (error) throw error; return data;
                         },
                         async save(id, revision, content) {
-                            const { data, error } = await supabase.rpc('save_project_draft', { p_owner: id, p_revision: revision, p_content: content }).abortSignal(AbortSignal.any([lifetime.signal, AbortSignal.timeout(15000)]));
+                            const { data, error } = await projectRequest(lifetime.signal, signal => supabase.rpc('save_project_draft', { p_owner: id, p_revision: revision, p_content: content }).abortSignal(signal));
                             if (error) throw error;
                             return Array.isArray(data) ? data[0] : data;
                         },

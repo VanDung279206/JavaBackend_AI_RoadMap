@@ -440,7 +440,12 @@ try {
         const device = await browser.newContext();
         const state = { offline: false };
         const authKey = `sb-${new URL(supabaseOrigin).hostname.split('.')[0]}-auth-token`;
-        await device.addInitScript(({ key, session }) => localStorage.setItem(key, JSON.stringify(session)), { key: authKey, session: { access_token: jwt, refresh_token: 'test-refresh', expires_at: expires, expires_in: 3600, token_type: 'bearer', user } });
+        await device.addInitScript(({ key, session }) => {
+            // Exercise the same flow on browsers without newer signal helpers.
+            Object.defineProperty(AbortSignal, 'any', { value: undefined, configurable: true });
+            Object.defineProperty(AbortSignal, 'timeout', { value: undefined, configurable: true });
+            localStorage.setItem(key, JSON.stringify(session));
+        }, { key: authKey, session: { access_token: jwt, refresh_token: 'test-refresh', expires_at: expires, expires_in: 3600, token_type: 'bearer', user } });
         await device.route('**/*', async route => {
             const request = route.request(), url = new URL(request.url());
             if (url.origin === origin) return route.continue();
