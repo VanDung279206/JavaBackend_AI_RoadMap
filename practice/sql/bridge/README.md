@@ -44,6 +44,8 @@ Tiên quyết: SQLB02. Sửa `SQLB03.starter.sql`, tạo view `bridge_page(id,cr
 
 Input: owner 1, cursor (02/09,104), size 2 → `[102,101]`. Thêm 103 cùng ngày và 106 ngày 04/09 → `[103,102]`; thêm hàng trước cursor không làm dịch trang. Size 1 ở cùng cursor → `[103]`. Cursor (02/09,102) → `[101]`, không lặp lại 102. Owner chưa có dữ liệu và bảng rỗng → `[]`.
 
+Test còn thêm ID 10 ngày 06/09 và ID 999 ngày 01/09: ID không đại diện cho thời gian tạo. Cursor (07/09,1), size 1 phải trả `[10]`; cursor (02/09,104), size 3 phải trả `[103,102,999]`. Cột `created_at` trả đúng timestamp gốc của từng tài liệu.
+
 Điền điều kiện cặp khóa hoặc phép OR tương đương, giữ owner áp dụng cho cả hai nhánh. Thứ tự phải ổn định **trước LIMIT**, không chỉ sort lại kết quả đã cắt. Sau bài này làm P2.3 với hợp đồng API của bạn.
 
 Giải thích bằng tiếng Anh: “The cursor contains … . The ID breaks ties when … . A strict comparison prevents … .”

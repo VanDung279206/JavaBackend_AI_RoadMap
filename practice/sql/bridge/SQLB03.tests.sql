@@ -22,6 +22,22 @@ DO $$ BEGIN
     IF ARRAY(SELECT id FROM bridge_page) <> ARRAY[106]::bigint[] THEN
         RAISE EXCEPTION 'SQLB03: choose newest row before applying LIMIT';
     END IF;
+    -- IDs can be imported/backfilled and need not increase with creation time.
+    INSERT INTO bridge_document VALUES(10,1,'New low ID','2026-09-06 00:00:00+00'),(999,1,'Old high ID','2026-09-01 00:00:00+00');
+    UPDATE bridge_request SET owner_id=1,cursor_at='2026-09-07 00:00:00+00',cursor_id=1,page_size=1;
+    IF ARRAY(SELECT id FROM bridge_page) <> ARRAY[10]::bigint[] THEN
+        RAISE EXCEPTION 'SQLB03: cursor time must take precedence over ID';
+    END IF;
+    IF EXISTS(SELECT 1 FROM bridge_page p JOIN bridge_document d ON d.id=p.id WHERE p.created_at IS DISTINCT FROM d.created_at) THEN
+        RAISE EXCEPTION 'SQLB03: return each document timestamp unchanged';
+    END IF;
+    UPDATE bridge_request SET cursor_at='2026-09-02 00:00:00+00',cursor_id=104,page_size=3;
+    IF ARRAY(SELECT id FROM bridge_page ORDER BY created_at DESC,id DESC) <> ARRAY[103,102,999]::bigint[] THEN
+        RAISE EXCEPTION 'SQLB03: keep older high IDs and exclude newer low IDs after the cursor';
+    END IF;
+    IF EXISTS(SELECT 1 FROM bridge_page p JOIN bridge_document d ON d.id=p.id WHERE p.created_at IS DISTINCT FROM d.created_at) THEN
+        RAISE EXCEPTION 'SQLB03: return each document timestamp unchanged';
+    END IF;
     UPDATE bridge_request SET owner_id=3;
     IF EXISTS(SELECT 1 FROM bridge_page) THEN RAISE EXCEPTION 'SQLB03: empty owner must return no rows'; END IF;
     DELETE FROM bridge_document;

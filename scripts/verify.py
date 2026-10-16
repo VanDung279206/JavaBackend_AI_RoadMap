@@ -84,7 +84,11 @@ def containers(r):
     sql='\n'.join((ROOT/'practice/sql/bridge'/p).read_text(encoding='utf-8') for p in ['fixture.sql',id+'.'+mode+'.sql',id+'.tests.sql'])
     okay,_=r.command('sql-bridge-'+id+'-'+mode,[docker,'exec','-i',db,'psql','-v','ON_ERROR_STOP=1','-U','knowledge','-d','knowledge'],input_text=sql,expected=0 if mode=='solution' else 3,marker='PASS '+id if mode=='solution' else id+':')
     if not okay:raise RuntimeError('SQL bridge contract failed: '+id+' '+mode)
-  r.add('sql-bridge-contracts','PASS','Three PostgreSQL solutions pass; all three unfinished starters rejected by their assertions')
+  for mutation,marker in [('id-only','SQLB03: cursor time must take precedence over ID'),('sort-id-only','SQLB03: cursor time must take precedence over ID'),('wrong-timestamp','SQLB03: return each document timestamp unchanged')]:
+   sql='\n'.join((ROOT/'practice/sql/bridge'/p).read_text(encoding='utf-8') for p in ['fixture.sql','mutations/SQLB03.'+mutation+'.sql','SQLB03.tests.sql'])
+   okay,_=r.command('sql-bridge-SQLB03-rejects-'+mutation,[docker,'exec','-i',db,'psql','-v','ON_ERROR_STOP=1','-U','knowledge','-d','knowledge'],input_text=sql,expected=3,marker=marker)
+   if not okay:raise RuntimeError('SQL bridge accepted incorrect cursor implementation: '+mutation)
+  r.add('sql-bridge-contracts','PASS','Three PostgreSQL solutions pass; all unfinished starters and three incorrect cursor queries rejected by their assertions')
   okay,_=r.command('docker-build',[docker,'build','-t',tag,'projects/knowledge-assistant'],timeout=1200)
   if not okay:raise RuntimeError('Docker build failed')
   image_created=True

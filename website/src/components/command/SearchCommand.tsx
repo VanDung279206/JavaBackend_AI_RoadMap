@@ -49,10 +49,12 @@ export default function SearchCommand() {
   const go = useCallback((href: string) => {
     setOpen(false);
     setQuery("");
-    if (href.startsWith('/english#') && window.location.pathname.replace(/\/$/, '').endsWith('/english')) {
+    const hashIndex = href.indexOf('#');
+    const targetPath = hashIndex >= 0 ? href.slice(0, hashIndex) : '';
+    if (targetPath && window.location.pathname.replace(/\/$/, '').endsWith(targetPath)) {
       // Next's same-page pushState does not emit hashchange. Native hash navigation
-      // also makes back/forward restore the selected English lesson.
-      const hash = href.slice(href.indexOf('#'));
+      // also lets each learning workspace restore its selection with Back/Forward.
+      const hash = href.slice(hashIndex);
       if (window.location.hash === hash) window.dispatchEvent(new HashChangeEvent('hashchange'));
       else window.location.hash = hash;
     } else router.push(href);

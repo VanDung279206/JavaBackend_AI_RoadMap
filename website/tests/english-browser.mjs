@@ -413,6 +413,28 @@ try {
     await expect(unsupported.getByText('Thiết bị chưa hỗ trợ phát âm. Bạn vẫn có thể học bằng văn bản.').first()).toBeVisible();
     await expect(unsupported.getByRole('button', { name: 'Nghe phát âm', exact: true })).toBeDisabled();
     await unsupported.close(); pass('unsupported pronunciation displays a readable fallback');
+    const searchFor = async (query, label) => {
+        await page.getByRole('button', { name: 'Tìm kiếm', exact: true }).click();
+        await page.getByPlaceholder('Tìm chặng, bài tập, từ tiếng Anh…').fill(query);
+        await page.getByRole('button', { name: label }).click();
+    };
+    await visit('/docs/02_Http-Sql', '#SQLB01');
+    await expect(page.locator('.exercise-active-id')).toHaveText('SQLB01');
+    await searchFor('SQLB03', /^SQLB03 —/);
+    await expect(page).toHaveURL(/#SQLB03$/);
+    await expect(page.locator('.exercise-active-id')).toHaveText('SQLB03');
+    await page.goBack();
+    await expect(page.locator('.exercise-active-id')).toHaveText('SQLB01');
+    const springLessonTitle = JSON.parse(readFileSync(path.join(website, 'src/generated/catalogue.json'), 'utf8')).lessons.find(item => item.id === 'SPRING03').title;
+    await visit('/learn/03_Spring', '#SPRING01');
+    await expect(page.locator('.lesson-progress [role="status"]')).toHaveText('Đã lưu trên thiết bị.');
+    await searchFor('SPRING03', /^Bài học SPRING03 —/);
+    await expect(page.locator('.course-index button[aria-current="page"]')).toContainText(springLessonTitle);
+    await page.getByRole('button', { name: /Luyện tập/ }).click();
+    await searchFor('SPRING03', /^Bài học SPRING03 —/);
+    await expect(page.locator('.course-lesson')).toBeVisible();
+    await expect(page.locator('.course-index button[aria-current="page"]')).toContainText(springLessonTitle);
+    pass('same-page search selects SQL exercises and Spring lessons, supports Back and reopens the lesson for the same hash');
     // The SQL/Spring coding bridges connect the English traces to real local contracts.
     for (const [phase, lesson, id] of [
         ['02_Http-Sql', 'SQL01', 'SQLB01'], ['02_Http-Sql', 'SQL02', 'SQLB03'],

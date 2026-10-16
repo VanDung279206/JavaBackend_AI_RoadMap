@@ -37,3 +37,10 @@ Review lại commit `3852c73`, PR #11 chưa có review thread mới. Đã tái h
 - Contract SPRB02 chỉ có một tài liệu mỗi owner nên code kiểm ID hợp lệ nhưng trả tài liệu đầu tiên của cùng owner vẫn PASS. Thêm tài liệu thứ hai cùng owner và đối chiếu ID/title/content. Gate tích hợp cố ý tạo biến thể sai này trong bản tạm và yêu cầu test phải từ chối nó.
 
 Trước sửa: browser regression FAIL ở phần hướng dẫn bị lặp; probe URL lỗi ghi nhận `URI malformed`, không thấy bài học; biến thể repository sai vẫn PASS contract cũ. Sau sửa: ba starter Spring bị từ chối đúng lý do, ba bản sửa đạt bốn contract; biến thể repository sai bị từ chối. 90/90 test website, 34/34 Python, lint, TypeScript/build 37 route/110 bài và 29 luồng browser PASS. Log cục bộ `checks/review11-*.log` bị ignore. CI mới được liên kết trong mô tả PR; các kết quả CI của commit cũ không thay cho lượt chạy mới.
+
+## Review tìm kiếm và cursor ngày 16/10/2026
+
+- Tìm kiếm một bài khác trong cùng chặng dùng router push nên URL đổi sang SQLB03 nhưng nội dung vẫn ở SQLB01. Chuyển tìm kiếm có hash trong cùng trang sang điều hướng hash gốc của trình duyệt; chọn lại cùng hash phát sự kiện để mở lại bài học nếu đang ở tab luyện tập. Regression kiểm SQL/Spring, Back và chọn lại cùng bài; các luồng tiếng Anh cũ vẫn được giữ.
+- Các ID của fixture cursor ban đầu tăng cùng chiều ngày tạo nên chưa phân biệt truy vấn chỉ so/sort ID với cursor hai khóa. Thêm ID 10 có ngày mới hơn và ID 999 có ngày cũ hơn, kiểm cả trang kết quả và timestamp gốc. CI yêu cầu ba query cố ý sai (lọc chỉ ID, sort chỉ ID, thay timestamp) phải exit 3 với đúng assertion; bản tham chiếu vẫn phải PASS.
+
+Kiểm cục bộ: browser trước sửa FAIL vì URL SQLB03 vẫn hiển thị SQLB01; sau sửa 30/30 luồng browser PASS ở bản export. 90/90 test website, 34/34 Python, lint, TypeScript/export 37 route/110 bài, catalogue và 475 link Markdown nội bộ PASS. Docker cục bộ chưa hoạt động nên các ca PostgreSQL mới được kiểm trên CI; liên kết và kết quả cuối trong mô tả PR. Log `checks/review11-round3-*.log` bị ignore.
