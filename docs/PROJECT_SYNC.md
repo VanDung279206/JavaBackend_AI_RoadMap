@@ -34,3 +34,9 @@ Rollback vận hành bằng deploy lại website cũ: bản trên thiết bị v
 - Khi component bị gỡ, hủy request mạng cùng yêu cầu chờ Web Lock. Regression giữ khóa bằng tab khác, đăng xuất ngay trong trang rồi yêu cầu hàng chờ khóa về 0; không dựa vào việc đóng tài liệu vốn đã tự hủy khóa.
 
 Trước sửa: parser không ném lỗi với ký tự không lưu được; khung xung đột tràn 390px; sau đăng xuất vẫn còn một request chờ khóa. Các log `checks/review12-*-before.log` là kết quả tái hiện, không phải kiểm PASS. Kiểm sau sửa và CI được cập nhật trong mô tả PR; không dùng kết quả commit cũ thay cho commit mới.
+
+## Review tiến độ bài tập ngày 17/10/2026
+
+Phạm vi review bổ sung gồm store tiến độ dùng chung với khu dự án. Tái hiện được mất thay đổi của tab khác khi phản hồi RPC hoặc thao tác giải quyết xung đột hoàn thành trước sự kiện `storage`. Các đường nhận phản hồi RPC, chọn bản xung đột, sửa trạng thái và nhập lịch ôn nay đọc lại hàng đợi đã lưu trước khi cập nhật: giữ bài khác, giữ nội dung mới của cùng bài, không hạ revision hoặc tạo lại bài đã bị bỏ. Chỉ gỡ cờ chờ khi nội dung gửi vẫn khớp; nội dung sửa trong lúc chờ tiếp tục đồng bộ với revision đã xác nhận. ACK sai revision không được coi là thành công.
+
+Lựa chọn xung đột cũ bị từ chối nếu bài đã đổi trong lúc tải; lỗi mạng, hàng máy chủ sai cấu trúc và bản lưu hỏng không ghi đè dữ liệu. Chuỗi lưu rỗng được coi là dữ liệu hỏng, khác với key chưa tồn tại. Kiểm thử dùng store production, trì hoãn phản hồi và cố ý chưa phát sự kiện storage; không dựa vào thời gian mạng thật. Các ca này bảo vệ thay đổi đã lưu trước khi đọc lại; store tiến độ vẫn chưa dùng khóa cho toàn bộ chuỗi đọc–sửa–ghi giữa các tab.

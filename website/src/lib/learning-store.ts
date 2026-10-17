@@ -14,7 +14,7 @@ const valid=new Map(catalogue.exercises.map(e=>[e.id,e]));
 function publish(patch:Partial<Snapshot>) { snapshot={...snapshot,...patch}; listeners.forEach(fn=>fn()); }
 function read(owner:string|null):Entries {
  const raw=localStorage.getItem(storageKey(owner));
- if (!raw) {
+ if (raw===null) {
   if(owner) return {};
   const legacy:Entries={};
   for(const phase of catalogue.phases) {
@@ -26,6 +26,14 @@ function read(owner:string|null):Entries {
  return parseStoredEntries(JSON.parse(raw),[...valid.keys()]);
 }
 function persist(owner:string|null,entries:Entries) { localStorage.setItem(storageKey(owner),JSON.stringify(entries)); }
+function readForWrite(owner:string|null):Entries|null {
+ try {return read(owner);}
+ catch {
+  unreadable.add(storageKey(owner));
+  publish({message:'Không đọc được bản dự phòng. Đã khóa ghi để giữ dữ liệu; xuất bản dự phòng trong bộ nhớ trình duyệt trước khi sửa.'});
+  return null;
+ }
+}
 function syncMessage(entries:Entries) {
  const waiting=Object.values(entries).filter(e=>e.pending);
  if(waiting.some(e=>e.conflict))return 'Có xung đột. Chọn bản máy chủ hoặc giữ bản trên thiết bị.';
@@ -68,21 +76,31 @@ export async function sync() {
   for(const id of Object.keys(snapshot.entries)) {
    if(version!==epoch)return;
    const entry=snapshot.entries[id];
-   if(!entry.pending||entry.conflict)continue;
+   if(!entry?.pending||entry.conflict)continue;
    const e=valid.get(id)!;
    const {data,error}=await supabase.rpc('save_learning_progress',{p_owner:owner,p_phase:e.phase,p_exercise_id:id,p_status:entry.status,p_revision:entry.revision,p_due_at:entry.due_at,p_hint_level:entry.hint_level,p_error_tags:entry.error_tags});
    if(version!==epoch)return;
+   // Storage events can arrive after this response. Merge the acknowledgement
+   // into the persisted queue, never the snapshot captured before the RPC.
+   let entries=readForWrite(owner);if(!entries)return;
+   const current=entries[id];
    if(error){
     if(error.message.includes('PROGRESS_CONFLICT')) {
-     const entries={...snapshot.entries,[id]:{...snapshot.entries[id],conflict:true}};persist(owner,entries);publish({entries,message:'Xung đột: một phiên khác đã sửa bài này.'});
-    } else publish({message:'Đã lưu trên thiết bị; chưa đồng bộ. Sẽ thử lại khi có mạng.'});
+     if(current?.pending&&current.revision===entry.revision) {
+      entries={...entries,[id]:{...current,conflict:true}};persist(owner,entries);
+     }
+     publish({entries,message:syncMessage(entries)});
+    } else publish({entries,message:'Đã lưu trên thiết bị; chưa đồng bộ. Sẽ thử lại khi có mạng.'});
     return;
    }
    const row=Array.isArray(data)?data[0]:data;
-   const current=snapshot.entries[id];
-   // Do not discard an edit made while the network request was in flight.
-   const next=current===entry?{...entry,revision:row.revision,pending:false,conflict:false}:{...current,revision:row.revision};
-   const entries={...snapshot.entries,[id]:next};persist(owner,entries);publish({entries,message:syncMessage(entries)});
+   if(!row||!Number.isSafeInteger(row.revision)||row.revision!==entry.revision+1)throw Error('Invalid progress acknowledgement');
+   // Another tab may already have acknowledged a later revision or removed
+   // this entry. An older response must not recreate or downgrade it.
+   if(!current||current.revision!==entry.revision) {publish({entries,message:syncMessage(entries)});continue;}
+   const unchanged=JSON.stringify(current)===JSON.stringify(entry);
+   const next={...current,revision:row.revision,pending:!unchanged,conflict:unchanged?false:current.conflict};
+   entries={...entries,[id]:next};persist(owner,entries);publish({entries,message:syncMessage(entries)});
   }
   if(version!==epoch)return;
   completed=true;
@@ -98,36 +116,48 @@ export async function sync() {
 }
 export function updateEntry(id:string,patch:Partial<Entry>) {
  if(snapshot.owner===undefined||snapshot.loading||unreadable.has(storageKey(snapshot.owner))||!valid.has(id))return false;
- const entry={...(snapshot.entries[id]||emptyEntry()),...patch,pending:true};
- entry.hint_level=Math.max(snapshot.entries[id]?.hint_level||0,entry.hint_level);
+ const latest=readForWrite(snapshot.owner);if(!latest)return false;
+ const entry={...(latest[id]||emptyEntry()),...patch,pending:true};
+ entry.hint_level=Math.max(latest[id]?.hint_level||0,entry.hint_level);
  if(!['not_started','in_progress','self_completed','needs_review'].includes(entry.status))return false;
- const entries={...snapshot.entries,[id]:entry};
+ const entries={...latest,[id]:entry};
  try {persist(snapshot.owner,entries);publish({entries,message:'Đã lưu trên thiết bị.'});void sync();return true;}
  catch {publish({message:'Lưu thất bại: bộ nhớ thiết bị không khả dụng. Thay đổi chưa được lưu.'});return false;}
 }
 export function importGuestProgress() {
  if(!snapshot.owner||snapshot.loading||unreadable.has(storageKey(snapshot.owner)))return;
- try {const entries=importGuest(snapshot.entries,read(null));persist(snapshot.owner,entries);publish({entries,message:'Đã nhập bài chưa có trong tài khoản; giữ nguyên các bài đã có.'});void sync();}
+ const latest=readForWrite(snapshot.owner);if(!latest)return;
+ try {const entries=importGuest(latest,read(null));persist(snapshot.owner,entries);publish({entries,message:'Đã nhập bài chưa có trong tài khoản; giữ nguyên các bài đã có.'});void sync();}
  catch {publish({message:'Không nhập được dữ liệu khách.'});}
 }
 export function importReviewProgress(entries:Entries,expectedOwner:string|null,original:string) {
  if(snapshot.owner!==expectedOwner||snapshot.loading||unreadable.has(storageKey(expectedOwner)))return false;
  try {
-  const merged=importGuest(snapshot.entries,entries);
+  const latest=readForWrite(expectedOwner);if(!latest)return false;
+  const merged=importGuest(latest,entries);
   localStorage.setItem(storageKey(expectedOwner)+':review-import:'+Date.now(),original);
   persist(expectedOwner,merged);publish({entries:merged,message:'Đã nhập lịch ôn; giữ bài đã có. Pass từ CLI chỉ là tự khai báo.'});void sync();return true;
  }catch {publish({message:'Không lưu được lịch ôn; dữ liệu trên file gốc không thay đổi.'});return false;}
 }
 export async function resolveConflict(id:string,keepLocal:boolean) {
- const owner=snapshot.owner,version=epoch;if(!owner||unreadable.has(storageKey(owner)))return;
- const {data,error}=await supabase.from('progress').select('status,revision,due_at,hint_level,error_tags').eq('user_id',owner).eq('exercise_id',id).maybeSingle();
- if(version!==epoch)return;
- if(error){publish({message:'Chưa tải được bản máy chủ để giải quyết xung đột.'});return;}
- const remote:Entry=data?{status:data.status,revision:data.revision,due_at:data.due_at,hint_level:data.hint_level,error_tags:data.error_tags}:emptyEntry();
- const next=keepLocal?{...snapshot.entries[id],revision:remote.revision,pending:true,conflict:false}:remote;
- try {const entries={...snapshot.entries,[id]:next};persist(owner,entries);publish({entries,message:'Đã chọn bản dữ liệu.'});void sync();}
- catch {publish({message:'Không lưu được lựa chọn.'});}
+ const owner=snapshot.owner,version=epoch;
+ if(!owner||snapshot.loading||!valid.has(id)||unreadable.has(storageKey(owner)))return;
+ const baseline=JSON.stringify(snapshot.entries[id]);
+ try {
+  const {data,error}=await supabase.from('progress').select('status,revision,due_at,hint_level,error_tags').eq('user_id',owner).eq('exercise_id',id).maybeSingle();
+  if(version!==epoch)return;
+  if(error){publish({message:'Chưa tải được bản máy chủ để giải quyết xung đột.'});return;}
+  const entries=readForWrite(owner);if(!entries)return;
+  if(!entries[id]||JSON.stringify(entries[id])!==baseline) {
+   publish({entries,message:'Bài đã thay đổi trong khi tải bản máy chủ. Xem lại dữ liệu rồi chọn lại để tránh ghi đè.'});
+   return;
+  }
+  const remote:Entry=data?parseStoredEntries({[id]:data},[id])[id]:emptyEntry();
+  const next=keepLocal?{...entries[id],revision:remote.revision,pending:true,conflict:false}:remote;
+  const merged={...entries,[id]:next};persist(owner,merged);publish({entries:merged,message:'Đã chọn bản dữ liệu.'});void sync();
+ }catch {if(version===epoch)publish({message:'Không lưu được lựa chọn. Dữ liệu hiện tại được giữ nguyên.'});}
 }
+
 function start() {
  if(started)return;started=true;
  let authSeen=false;

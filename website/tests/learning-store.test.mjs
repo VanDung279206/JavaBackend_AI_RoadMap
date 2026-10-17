@@ -26,7 +26,7 @@ function harness(remoteIds=[], options={}){
   auth:{onAuthStateChange(fn){authChange=fn;},getSession:async()=>({data:{session:{user:{id:'account-a'}}},error:null})},
   from(table){
    let owner;
-   const query={select(){return this;},eq(key,value){if(key==='user_id')owner=value;return this;},not(){return this;},
+   const query={select(){return this;},maybeSingle(){return options.single?options.single():Promise.resolve({data:null,error:null});},eq(key,value){if(key==='user_id')owner=value;return this;},not(){return this;},
     then(resolve,reject){return (table==='progress' && options.progress ? options.progress() : Promise.resolve({data:table==='progress'&&owner==='account-a'?rows:[],error:null})).then(resolve,reject);}};
    return query;
   },
@@ -137,4 +137,119 @@ test('a corrupt draft appearing during remote load is preserved and blocks subse
  assert.equal(h.storage.get(key),'{broken');
  assert.equal(h.store.updateEntry('P0.1',{status:'in_progress'}),false);
  assert.equal(h.calls.length,0);
+});
+
+for (const response of ['success', 'conflict']) test(`an RPC ${response} preserves a different exercise edited in another tab before its storage event`, async () => {
+ const h=harness();await ready(h);h.store.updateEntry('P0.1',{status:'in_progress'});
+ const key=core.storageKey('account-a'),entries=JSON.parse(h.storage.get(key));
+ entries['P0.2']={...core.emptyEntry(),status:'needs_review',pending:true};
+ h.storage.set(key,JSON.stringify(entries));
+ h.answer(0,response==='conflict'?{message:'PROGRESS_CONFLICT'}:null);
+ await until(()=>response==='conflict'?h.state().entries['P0.1'].conflict:h.calls.length===2);
+ assert.equal(JSON.parse(h.storage.get(key))['P0.2']?.status,'needs_review');
+ assert.equal(h.state().entries['P0.2']?.status,'needs_review');
+ if(response==='success'){assert.equal(h.calls[1].args.p_exercise_id,'P0.2');h.answer(1);await until(()=>!h.state().entries['P0.2'].pending);}
+});
+
+test('an RPC acknowledgement rebases an unseen edit to the same exercise instead of clearing it', async () => {
+ const h=harness();await ready(h);h.store.updateEntry('P0.1',{status:'in_progress'});
+ const key=core.storageKey('account-a'),entries=JSON.parse(h.storage.get(key));
+ entries['P0.1'].status='needs_review';h.storage.set(key,JSON.stringify(entries));h.answer(0);
+ await until(()=>h.calls.length===2);
+ assert.equal(h.calls[1].args.p_status,'needs_review');assert.equal(h.calls[1].args.p_revision,1);
+ h.answer(1);await until(()=>!h.state().entries['P0.1'].pending);
+ assert.equal(JSON.parse(h.storage.get(key))['P0.1'].status,'needs_review');
+});
+
+for (const response of ['success', 'conflict']) test(`an old RPC ${response} cannot downgrade a newer revision saved by another tab`, async () => {
+ const h=harness();await ready(h);h.store.updateEntry('P0.1',{status:'in_progress'});
+ const key=core.storageKey('account-a'),entries=JSON.parse(h.storage.get(key));
+ entries['P0.1']={...entries['P0.1'],status:'self_completed',revision:5,pending:false,conflict:false};
+ const raw=JSON.stringify(entries);h.storage.set(key,raw);h.answer(0,response==='conflict'?{message:'PROGRESS_CONFLICT'}:null);
+ await until(()=>h.state().entries['P0.1'].revision===5);
+ assert.equal(h.storage.get(key),raw);assert.equal(h.state().entries['P0.1'].pending,false);
+ assert.equal(h.state().entries['P0.1'].conflict,false);assert.equal(h.calls.length,1);
+});
+
+for(const raw of ['{broken',''])test(`an RPC acknowledgement preserves corrupt storage (${JSON.stringify(raw)}) and blocks further writes`,async()=>{
+ const h=harness();await ready(h);h.store.updateEntry('P0.1',{status:'in_progress'});
+ const key=core.storageKey('account-a');h.storage.set(key,raw);h.answer(0);await tick();await tick();
+ assert.equal(h.storage.get(key),raw);assert.equal(h.store.updateEntry('P0.2',{status:'needs_review'}),false);
+ assert.equal(h.calls.length,1);
+});
+
+for(const keepLocal of [true,false])test(`conflict resolution (${keepLocal?'local':'remote'}) keeps a same-exercise edit made while fetching`,async()=>{
+ let finish;const h=harness([],{single:()=>new Promise(resolve=>{finish=resolve;})});
+ await ready(h);h.store.updateEntry('P0.1',{status:'in_progress'});h.answer(0,{message:'PROGRESS_CONFLICT'});
+ await until(()=>h.state().entries['P0.1'].conflict);
+ const selection=h.store.resolveConflict('P0.1',keepLocal),key=core.storageKey('account-a');
+ const entries=JSON.parse(h.storage.get(key));entries['P0.1'].status='needs_review';
+ const raw=JSON.stringify(entries);h.storage.set(key,raw);
+ finish({data:{...core.emptyEntry(),revision:3,status:'self_completed'},error:null});await selection;
+ assert.equal(h.storage.get(key),raw);assert.equal(h.state().entries['P0.1'].status,'needs_review');
+ assert.match(h.state().message,/đã thay đổi/);assert.equal(h.calls.length,1);
+});
+
+test('conflict resolution merges its selection into other exercises freshly saved by another tab',async()=>{
+ let finish;const h=harness([],{single:()=>new Promise(resolve=>{finish=resolve;})});
+ await ready(h);h.store.updateEntry('P0.1',{status:'in_progress'});h.answer(0,{message:'PROGRESS_CONFLICT'});
+ await until(()=>h.state().entries['P0.1'].conflict);
+ const selection=h.store.resolveConflict('P0.1',false),key=core.storageKey('account-a');
+ const entries=JSON.parse(h.storage.get(key));entries['P0.2']={...core.emptyEntry(),status:'needs_review',pending:true};
+ h.storage.set(key,JSON.stringify(entries));finish({data:{...core.emptyEntry(),revision:3,status:'self_completed'},error:null});await selection;
+ assert.equal(JSON.parse(h.storage.get(key))['P0.2']?.status,'needs_review');
+ await until(()=>h.calls.length===2);h.answer(1);await until(()=>!h.state().entries['P0.2'].pending);
+ assert.equal(h.state().entries['P0.1'].revision,3);
+});
+
+test('an old RPC acknowledgement never recreates an entry removed in another tab',async()=>{
+ const h=harness();await ready(h);h.store.updateEntry('P0.1',{status:'in_progress'});
+ const key=core.storageKey('account-a');h.storage.set(key,'{}');h.answer(0);await tick();await tick();
+ assert.equal(h.storage.get(key),'{}');assert.equal(h.state().entries['P0.1'],undefined);assert.equal(h.calls.length,1);
+});
+
+test('an invalid server acknowledgement cannot mark progress as synchronized',async()=>{
+ for(const data of [null,{revision:0},{revision:5},{revision:1.5}]){
+  const h=harness();await ready(h);h.store.updateEntry('P0.1',{status:'in_progress'});
+  const key=core.storageKey('account-a'),raw=h.storage.get(key);h.calls[0].resolve({data,error:null});await tick();await tick();
+  assert.equal(h.storage.get(key),raw);assert.equal(h.state().entries['P0.1'].pending,true);assertNoFalseCompletion(h);assert.equal(h.calls.length,1);
+ }
+});
+
+test('a rejected conflict lookup and an invalid remote row leave persisted progress unchanged',async()=>{
+ for(const lookup of [()=>Promise.reject(Error('offline')),()=>Promise.resolve({data:{revision:3},error:null})]){
+  const h=harness([],{single:lookup});await ready(h);h.store.updateEntry('P0.1',{status:'in_progress'});
+  h.answer(0,{message:'PROGRESS_CONFLICT'});await until(()=>h.state().entries['P0.1'].conflict);
+  const key=core.storageKey('account-a'),raw=h.storage.get(key);
+  await h.store.resolveConflict('P0.1',false);assert.equal(h.storage.get(key),raw);assert.equal(h.calls.length,1);
+ }
+});
+
+test('corrupt storage discovered while resolving a conflict remains intact and blocks writes',async()=>{
+ let finish;const h=harness([],{single:()=>new Promise(resolve=>{finish=resolve;})});await ready(h);
+ h.store.updateEntry('P0.1',{status:'in_progress'});h.answer(0,{message:'PROGRESS_CONFLICT'});
+ await until(()=>h.state().entries['P0.1'].conflict);
+ const selection=h.store.resolveConflict('P0.1',false),key=core.storageKey('account-a');h.storage.set(key,'{broken');
+ finish({data:{...core.emptyEntry(),revision:3},error:null});await selection;
+ assert.equal(h.storage.get(key),'{broken');assert.equal(h.store.updateEntry('P0.2',{status:'needs_review'}),false);
+});
+
+test('a local status change keeps unseen fields and other exercises from the persisted queue',async()=>{
+ const h=harness();await ready(h);const key=core.storageKey('account-a');
+ const entries={'P0.1':{...core.emptyEntry(),revision:4,hint_level:3,error_tags:['validation']},'P0.2':{...core.emptyEntry(),status:'self_completed',revision:2}};
+ h.storage.set(key,JSON.stringify(entries));
+ assert.equal(h.store.updateEntry('P0.1',{status:'needs_review',hint_level:1}),true);
+ const saved=JSON.parse(h.storage.get(key));assert.equal(saved['P0.1'].revision,4);assert.equal(saved['P0.1'].hint_level,3);
+ assert.deepEqual(saved['P0.1'].error_tags,['validation']);assert.equal(saved['P0.2'].status,'self_completed');
+ h.answer(0);await until(()=>!h.state().entries['P0.1'].pending);
+});
+
+for(const kind of ['guest','review'])test(`${kind} import preserves account progress not yet delivered by a storage event`,async()=>{
+ const h=harness();await ready(h);const key=core.storageKey('account-a');
+ h.storage.set(key,JSON.stringify({'P0.1':{...core.emptyEntry(),status:'self_completed',revision:4}}));
+ const imported={'P0.1':{...core.emptyEntry(),status:'needs_review'},'P0.2':{...core.emptyEntry(),status:'in_progress'}};
+ if(kind==='guest'){h.storage.set(core.storageKey(null),JSON.stringify(imported));h.store.importGuestProgress();}
+ else assert.equal(h.store.importReviewProgress(imported,'account-a','original review file'),true);
+ const saved=JSON.parse(h.storage.get(key));assert.equal(saved['P0.1'].status,'self_completed');assert.equal(saved['P0.1'].revision,4);
+ assert.equal(saved['P0.2'].status,'in_progress');h.answer(0);await until(()=>!h.state().entries['P0.2'].pending);
 });
