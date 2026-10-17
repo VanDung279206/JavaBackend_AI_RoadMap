@@ -291,7 +291,7 @@ try {
     await reviewContext.route('**/*', route => new URL(route.request().url()).origin === origin ? route.continue() : route.abort());
     const reviewPages = await Promise.all([reviewContext.newPage(), reviewContext.newPage()]);
     for (const tab of reviewPages) {
-        tab.on('pageerror', error => errors.push(error.message));
+        tab.on('pageerror', error => { errors.push(error.message); console.error('Project browser error:', error.message); });
         await tab.goto(origin + base + '/english#01_Java/review');
         await tab.getByRole('button', { name: 'Luyện thêm tất cả từ', exact: true }).click();
         const flashcard = tab.locator('.english-flashcard').first();
@@ -406,6 +406,7 @@ try {
     await shot('mobile-intermediate');
     pass('390px mobile menu, all five areas, vocabulary grading, writing reload and intermediate trace');
 
+    let supabaseOrigin;
     const materialsContext = await browser.newContext();
     const sourceRows = [
         { id: 'unsafe', title: 'Unsafe source', purpose: 'reference', phase_slug: '01_Java', description: 'Unsafe external source.', resource_type: 'link', file_path: null, source_url: 'javascript:alert(1)', submitted_by: 'owner', status: 'approved', created_at: '2026-10-16T00:00:00Z' },
@@ -414,8 +415,8 @@ try {
     await materialsContext.route('**/*', route => {
         const url = new URL(route.request().url());
         if (url.origin === origin) return route.continue();
-        if (url.pathname.endsWith('/rest/v1/community_resources')) return route.fulfill({ status: 200,
-            headers: { 'Content-Type': 'application/json', 'Content-Range': '0-1/2' }, body: JSON.stringify(sourceRows) });
+        if (url.pathname.endsWith('/rest/v1/community_resources')) { supabaseOrigin = url.origin; return route.fulfill({ status: 200,
+            headers: { 'Content-Type': 'application/json', 'Content-Range': '0-1/2' }, body: JSON.stringify(sourceRows) }); }
         return route.abort();
     });
     const materials = await materialsContext.newPage();
@@ -428,6 +429,278 @@ try {
     await expect(safeCard.getByRole('link', { name: 'Mở nguồn' })).toHaveAttribute('href', 'https://docs.example/guide');
     await materialsContext.close();
     pass('community library blocks unsafe source URLs while preserving valid HTTPS links');
+
+    const progressContext=await browser.newContext();
+    await progressContext.route('**/*',route=>new URL(route.request().url()).origin===origin?route.continue():route.abort());
+    const progressA=await progressContext.newPage(),progressB=await progressContext.newPage();
+    for(const tab of [progressA,progressB]){tab.on('pageerror',error=>errors.push(error.message));await tab.goto(origin+base+'/docs/00_setup');await expect(tab.locator('#status-P0\\.1')).toBeEnabled();}
+    const holdProgress=async()=>progressA.evaluate(async()=>{
+        await new Promise(resolve=>{void navigator.locks.request('progress:roadmap-v3:guest',{mode:'exclusive'},()=>{
+            resolve();return new Promise(release=>{window.releaseProgressLock=release;});
+        });});
+    });
+    await holdProgress();
+    try{
+        await Promise.all([progressA.locator('#status-P0\\.1').selectOption('needs_review'),progressB.locator('#status-P0\\.2').selectOption('in_progress')]);
+        for(const tab of [progressA,progressB])await expect(tab.getByText('Đang lưu tiến độ trên thiết bị…',{exact:true})).toBeVisible();
+        await expect.poll(()=>progressA.evaluate(async()=>(await navigator.locks.query()).pending.filter(lock=>lock.name==='progress:roadmap-v3:guest').length)).toBe(2);
+    }finally{await progressA.evaluate(()=>window.releaseProgressLock());}
+    await expect.poll(()=>progressA.evaluate(()=>{
+        const saved=JSON.parse(localStorage.getItem('roadmap-v3:guest')??'{}');return [saved['P0.1']?.status,saved['P0.2']?.status];
+    })).toEqual(['needs_review','in_progress']);
+    await progressB.reload();await expect(progressB.locator('#status-P0\\.1')).toHaveValue('needs_review');await expect(progressB.locator('#status-P0\\.2')).toHaveValue('in_progress');
+    pass('native progress locks serialize simultaneous tab edits and preserve both after reload');
+    await progressB.goto(origin+base+'/today');
+    await progressB.getByText('Nhập lịch ôn từ CLI',{exact:true}).click();
+    const progressReviewRow={result:'pass',due:'2026-10-18',hint:0,active_tags:[]};
+    await progressB.evaluate(()=>{Date.now=()=>123456;});
+    const firstProgressSource=JSON.stringify({'P0.1':progressReviewRow,'P0.3':progressReviewRow});
+    await progressB.getByLabel('File lịch ôn').setInputFiles({name:'review-state.json',mimeType:'application/json',buffer:Buffer.from(firstProgressSource)});
+    await holdProgress();
+    try{
+        await progressB.getByRole('button',{name:'Nhập 2 bài (giữ bài đã có)',exact:true}).click();
+        await expect(progressB.getByText('Đang nhập lịch ôn…',{exact:true})).toBeVisible();
+        await expect(progressB.getByRole('button',{name:'Nhập 2 bài (giữ bài đã có)',exact:true})).toBeDisabled();
+        assert.equal(await progressB.evaluate(()=>JSON.parse(localStorage.getItem('roadmap-v3:guest'))['P0.3']),undefined);
+        await expect(progressB.getByText('Đã nhập lịch ôn vào đúng phạm vi đã chọn.',{exact:true})).toHaveCount(0);
+    }finally{await progressA.evaluate(()=>window.releaseProgressLock());}
+    await expect(progressB.getByText('Đã nhập lịch ôn vào đúng phạm vi đã chọn.',{exact:true})).toBeVisible();
+    const importedProgress=await progressB.evaluate(()=>JSON.parse(localStorage.getItem('roadmap-v3:guest')));
+    assert.equal(importedProgress['P0.1'].status,'needs_review');assert.equal(importedProgress['P0.3'].status,'self_completed');
+    pass('CLI progress import waits for durable storage and preserves existing exercises');
+    const secondProgressSource=JSON.stringify({'P0.4':progressReviewRow});
+    await progressB.getByLabel('File lịch ôn').setInputFiles({name:'review-second.json',mimeType:'application/json',buffer:Buffer.from(secondProgressSource)});
+    await progressB.getByRole('button',{name:'Nhập 1 bài (giữ bài đã có)',exact:true}).click();
+    await expect(progressB.getByText('Đã nhập lịch ôn vào đúng phạm vi đã chọn.',{exact:true})).toBeVisible();
+    const originalImports=await progressB.evaluate(()=>Object.keys(localStorage).filter(key=>key.startsWith('roadmap-v3:guest:review-import:')).map(key=>localStorage.getItem(key)));
+    assert.deepEqual(originalImports.sort(),[firstProgressSource,secondProgressSource].sort());
+    await progressContext.close();pass('imports in the same clock tick preserve both original JSON sources');
+
+    const reviewRaceContext=await browser.newContext();
+    await reviewRaceContext.route('**/*',route=>new URL(route.request().url()).origin===origin?route.continue():route.abort());
+    const reviewRaceTab=await reviewRaceContext.newPage();
+    reviewRaceTab.on('pageerror',error=>errors.push(error.message));
+    await reviewRaceTab.goto(origin+base+'/today');
+    await reviewRaceTab.getByText('Nhập lịch ôn từ CLI',{exact:true}).click();
+    await reviewRaceTab.getByLabel('File lịch ôn').setInputFiles({name:'initial-review.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify({'P0.3':progressReviewRow}))});
+    await expect(reviewRaceTab.getByRole('button',{name:'Nhập 1 bài (giữ bài đã có)',exact:true})).toBeEnabled();
+    await reviewRaceTab.evaluate(()=>{
+        const original=File.prototype.text;
+        File.prototype.text=function(){
+            if(this.name!=='slow-review.json')return original.call(this);
+            return new Promise(resolve=>{window.releaseReviewRead=()=>resolve(original.call(this));});
+        };
+    });
+    await reviewRaceTab.getByLabel('File lịch ôn').setInputFiles({name:'slow-review.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify({'P0.1':progressReviewRow}))});
+    await expect(reviewRaceTab.getByText('Đang đọc file lịch ôn…',{exact:true})).toBeVisible();
+    await expect(reviewRaceTab.getByRole('button',{name:'Nhập 1 bài (giữ bài đã có)',exact:true})).toHaveCount(0);
+    const reviewRaceLatest=JSON.stringify({'P0.2':progressReviewRow});
+    await reviewRaceTab.getByLabel('File lịch ôn').setInputFiles({name:'latest-review.json',mimeType:'application/json',buffer:Buffer.from(reviewRaceLatest)});
+    await expect(reviewRaceTab.getByText('File đã chọn: latest-review.json',{exact:true})).toBeVisible();
+    await reviewRaceTab.evaluate(()=>window.releaseReviewRead());
+    await reviewRaceTab.getByRole('button',{name:'Nhập 1 bài (giữ bài đã có)',exact:true}).click();
+    await expect(reviewRaceTab.getByText('Đã nhập lịch ôn vào đúng phạm vi đã chọn.',{exact:true})).toBeVisible();
+    const reviewRaceSaved=await reviewRaceTab.evaluate(()=>({
+        ids:Object.keys(JSON.parse(localStorage.getItem('roadmap-v3:guest'))),
+        originals:Object.keys(localStorage).filter(key=>key.startsWith('roadmap-v3:guest:review-import:')).map(key=>localStorage.getItem(key))
+    }));
+    assert.deepEqual(reviewRaceSaved.ids,['P0.2']);assert.deepEqual(reviewRaceSaved.originals,[reviewRaceLatest]);
+    await reviewRaceContext.close();pass('review file races import only the latest selection and preserve its matching source');
+
+    assert.ok(supabaseOrigin, 'the library request identifies the configured Supabase origin');
+    const owner = '00000000-0000-0000-0000-000000000021';
+    const user = { id: owner, aud: 'authenticated', role: 'authenticated', email: 'project-test@example.test', app_metadata: { provider: 'email' }, user_metadata: {} };
+    const expires = Math.floor(Date.now() / 1000) + 3600;
+    const jwt = [Buffer.from(JSON.stringify({ alg: 'HS256', typ: 'JWT' })).toString('base64url'), Buffer.from(JSON.stringify({ sub: owner, exp: expires, role: 'authenticated' })).toString('base64url'), 'test-signature'].join('.');
+    let projectRow = null;
+    async function projectDevice(options={}) {
+        const device = await browser.newContext();
+        const state = { offline: false, missingSchema: false, progressRows: [], progressWrites: 0, noteRow: null, noteReadFails: false, noteSaveFails: false, noteWrites: 0, ...options };
+        const authKey = `sb-${new URL(supabaseOrigin).hostname.split('.')[0]}-auth-token`;
+        await device.addInitScript(({ key, session }) => {
+            // Exercise the same flow on browsers without newer signal helpers.
+            Object.defineProperty(AbortSignal, 'any', { value: undefined, configurable: true });
+            Object.defineProperty(AbortSignal, 'timeout', { value: undefined, configurable: true });
+            localStorage.setItem(key, JSON.stringify(session));
+        }, { key: authKey, session: { access_token: jwt, refresh_token: 'test-refresh', expires_at: expires, expires_in: 3600, token_type: 'bearer', user } });
+        await device.route('**/*', async route => {
+            const request = route.request(), url = new URL(request.url());
+            if (url.origin === origin) return route.continue();
+            if (url.origin !== supabaseOrigin || state.offline) return route.abort();
+            const headers = { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': '*', 'Access-Control-Allow-Methods': '*' };
+            if (request.method() === 'OPTIONS') return route.fulfill({ status: 204, headers });
+            if (url.pathname.endsWith('/auth/v1/user')) return route.fulfill({ status: 200, headers, body: JSON.stringify(user) });
+            if(state.missingSchema&&(url.pathname.endsWith('/rest/v1/project_drafts')||url.pathname.endsWith('/rest/v1/rpc/save_project_draft')))return route.fulfill({status:404,headers,body:JSON.stringify({code:'PGRST205',message:'project_drafts is not in the schema cache'})});
+            if(url.pathname.endsWith('/rest/v1/learning_notes')) {
+                if((request.method()==='GET'&&state.noteReadFails)||(request.method()==='POST'&&state.noteSaveFails))return route.fulfill({status:403,headers,body:JSON.stringify({code:'42501',message:'not allowed'})});
+                if(request.method()==='POST'){
+                    const args=request.postDataJSON();assert.equal(args.user_id,owner);
+                    state.noteRow={note:args.note,bookmarked:args.bookmarked};state.noteWrites++;
+                    return route.fulfill({status:201,headers,body:'null'});
+                }
+                return route.fulfill({status:200,headers,body:JSON.stringify(state.noteRow)});
+            }
+            if(url.pathname.endsWith('/rest/v1/progress')) {
+                const exercise=url.searchParams.get('exercise_id')?.replace(/^eq\./,'');
+                const data=exercise?state.progressRows.find(row=>row.exercise_id===exercise)??null:state.progressRows;
+                return route.fulfill({status:200,headers,body:JSON.stringify(data)});
+            }
+            if(url.pathname.endsWith('/rest/v1/rpc/save_learning_progress')) {
+                const args=request.postDataJSON(),old=state.progressRows.find(row=>row.exercise_id===args.p_exercise_id);
+                assert.equal(args.p_owner,owner);
+                if(args.p_revision!==(old?.revision??0))return route.fulfill({status:409,headers,body:JSON.stringify({message:'PROGRESS_CONFLICT',code:'P0001'})});
+                const row={user_id:owner,phase:args.p_phase,exercise_id:args.p_exercise_id,status:args.p_status,revision:args.p_revision+1,
+                    due_at:args.p_due_at===null?null:new Date(args.p_due_at).toISOString(),hint_level:Math.max(old?.hint_level??0,args.p_hint_level),error_tags:args.p_error_tags};
+                state.progressRows=state.progressRows.filter(value=>value.exercise_id!==row.exercise_id).concat(row);state.progressWrites++;
+                return route.fulfill({status:200,headers,body:JSON.stringify(row)});
+            }
+            if (url.pathname.endsWith('/rest/v1/project_drafts')) return route.fulfill({ status: 200, headers, body: JSON.stringify(projectRow) });
+            if (url.pathname.endsWith('/rest/v1/rpc/save_project_draft')) {
+                const args = request.postDataJSON();
+                assert.equal(args.p_owner, owner);
+                if (args.p_revision !== (projectRow?.revision ?? 0)) return route.fulfill({ status: 409, headers, body: JSON.stringify({ message: 'PROJECT_CONFLICT', code: 'P0001' }) });
+                projectRow = { content: args.p_content, revision: args.p_revision + 1, user_id: owner };
+                return route.fulfill({ status: 200, headers, body: JSON.stringify(projectRow) });
+            }
+            return route.fulfill({ status: 200, headers, body: '[]' });
+        });
+        const tab = await device.newPage();
+        tab.on('pageerror', error => { errors.push(error.message); console.error('Project browser error:', error.message); });
+        await tab.goto(origin + base + '/projects/mine');
+        await expect(tab.getByRole('textbox', { name: 'Tên dự án', exact: true })).toBeEnabled();
+        return { context: device, tab, state };
+    }
+    const noteDevice=await projectDevice({noteRow:{note:'Existing private note',bookmarked:true},noteReadFails:true});
+    await noteDevice.tab.goto(origin+base+'/docs/00_setup#P0.1');
+    const notePanel=noteDevice.tab.locator('details.learning-card').filter({has:noteDevice.tab.locator('summary').getByText('Đánh dấu & ghi chú cá nhân',{exact:true})});
+    await notePanel.locator('summary').click();
+    const noteEditor=notePanel.getByRole('textbox',{name:'Ghi chú',exact:true}),noteBookmark=notePanel.getByRole('checkbox',{name:'Đánh dấu tài liệu',exact:true});
+    await expect(notePanel.getByRole('button',{name:'Tải lại ghi chú',exact:true})).toBeVisible();
+    await expect(noteEditor).toBeDisabled();
+    noteDevice.state.noteReadFails=false;
+    await notePanel.getByRole('button',{name:'Tải lại ghi chú',exact:true}).click();
+    await expect(noteEditor).toHaveValue('Existing private note');await expect(noteEditor).toBeEnabled();await expect(noteBookmark).toBeChecked();
+    pass('private notes remain read-only after load failure and retry without losing the server note');
+    await noteEditor.fill('Retained note after failed save');await noteBookmark.uncheck();noteDevice.state.noteSaveFails=true;
+    await notePanel.getByRole('button',{name:'Lưu ghi chú',exact:true}).click();
+    await expect(notePanel.getByRole('status')).toHaveText('Lưu thất bại; nội dung đang nhập vẫn ở đây.');
+    await expect(noteEditor).toBeEnabled();await expect(noteEditor).toHaveValue('Retained note after failed save');await expect(noteBookmark).not.toBeChecked();
+    assert.deepEqual(noteDevice.state.noteRow,{note:'Existing private note',bookmarked:true});
+    noteDevice.state.noteSaveFails=false;await notePanel.getByRole('button',{name:'Lưu ghi chú',exact:true}).click();
+    await expect(notePanel.getByRole('status')).toHaveText('Đã lưu ghi chú và dấu trang.');assert.equal(noteDevice.state.noteWrites,1);
+    await noteDevice.tab.reload();await notePanel.locator('summary').click();
+    await expect(noteEditor).toHaveValue('Retained note after failed save');await expect(noteBookmark).not.toBeChecked();
+    await noteDevice.context.close();pass('failed note saves unlock the retained draft and retry persists text and bookmark after reload');
+
+    const deviceA = await projectDevice();
+    const projectStatus = tab => tab.locator('.project-cloud-sync [role="status"]');
+    await deviceA.tab.getByRole('textbox', { name: 'Tên dự án', exact: true }).fill('My synced project');
+    await expect(projectStatus(deviceA.tab)).toHaveText('Đã đồng bộ dự án với máy chủ.', { timeout: 15000 });
+    assert.equal(projectRow.content.name, 'My synced project');
+    const deviceB = await projectDevice();
+    await expect(deviceB.tab.getByRole('textbox', { name: 'Tên dự án', exact: true })).toHaveValue('My synced project');
+    await expect(projectStatus(deviceB.tab)).toHaveText('Đã đồng bộ dự án với máy chủ.', { timeout: 15000 });
+    pass('project drafts upload and restore on a separate browser device using account-scoped revisions');
+    deviceA.state.offline = true;
+    await deviceA.tab.getByRole('textbox', { name: 'Tên dự án', exact: true }).fill('Offline device edit');
+    await expect(projectStatus(deviceA.tab)).toContainText('Chưa xác nhận đồng bộ', { timeout: 20000 });
+    await deviceA.tab.reload();
+    await expect(deviceA.tab.getByRole('textbox', { name: 'Tên dự án', exact: true })).toHaveValue('Offline device edit');
+    await deviceB.tab.getByRole('textbox', { name: 'Tên dự án', exact: true }).fill('New server edit');
+    await expect(projectStatus(deviceB.tab)).toHaveText('Đã đồng bộ dự án với máy chủ.', { timeout: 15000 });
+    deviceA.state.offline = false;
+    await deviceA.tab.getByRole('button', { name: 'Đồng bộ lại dự án', exact: true }).click();
+    await expect(deviceA.tab.getByRole('heading', { name: 'Chọn bản dự án muốn giữ' })).toBeVisible();
+    const conflictDownload = deviceA.tab.waitForEvent('download');
+    await deviceA.tab.getByRole('button', { name: 'Tải bản thiết bị', exact: true }).click();
+    const conflictFile = await conflictDownload;
+    assert.equal(JSON.parse(readFileSync(await conflictFile.path(), 'utf8')).name, 'Offline device edit');
+    await deviceA.tab.getByRole('button', { name: 'Dùng bản máy chủ trên thiết bị này', exact: true }).click();
+    await expect(deviceA.tab.getByRole('textbox', { name: 'Tên dự án', exact: true })).toHaveValue('New server edit');
+    await expect(projectStatus(deviceA.tab)).toHaveText('Đã đồng bộ dự án với máy chủ.', { timeout: 15000 });
+    const archived = await deviceA.tab.evaluate(key => JSON.parse(localStorage.getItem(key)), `roadmap-v2:project-conflict:user:${owner}`);
+    assert.equal(archived.local.name, 'Offline device edit');assert.equal(archived.remote.name, 'New server edit');
+    // Long imported names are valid draft data; the conflict panel must fit mobile.
+    deviceA.state.offline = true;
+    await deviceA.tab.getByRole('textbox', { name: 'Tên dự án', exact: true }).fill('A'.repeat(5000));
+    await expect.poll(() => deviceA.tab.evaluate(key => JSON.parse(localStorage.getItem(key)).name.length, `roadmap-v2:project:user:${owner}`)).toBe(5000);
+    projectRow = { ...projectRow, revision: projectRow.revision + 1, content: { ...projectRow.content, name: 'B'.repeat(5000) } };
+    await expect(projectStatus(deviceA.tab)).toContainText('Chưa xác nhận đồng bộ', { timeout: 20000 });
+    deviceA.state.offline = false;
+    await deviceA.tab.getByRole('button', { name: 'Đồng bộ lại dự án', exact: true }).click();
+    await expect(deviceA.tab.getByRole('heading', { name: 'Chọn bản dự án muốn giữ' })).toBeVisible();
+    await deviceA.tab.setViewportSize({ width: 390, height: 1000 });
+    assert.equal(await deviceA.tab.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true, 'long project names overflow the mobile conflict panel');
+    const longNameDownload = deviceA.tab.waitForEvent('download');
+    await deviceA.tab.getByRole('button', { name: 'Tải bản thiết bị', exact: true }).click();
+    assert.equal(JSON.parse(readFileSync(await (await longNameDownload).path(), 'utf8')).name.length, 5000);
+    pass('long project names fit the mobile conflict panel without truncating downloaded drafts');
+
+    await deviceA.tab.goto(origin + base + '/projects');
+    await deviceA.tab.evaluate(async name => {
+        await new Promise(resolve => { void navigator.locks.request(name, { mode: 'exclusive' }, () => {
+            resolve(); return new Promise(release => { window.releaseProjectReviewLock = release; });
+        }); });
+    }, `project-cloud:${owner}`);
+    const waitingTab = await deviceA.context.newPage();
+    waitingTab.on('pageerror', error => errors.push(error.message));
+    try {
+        await waitingTab.goto(origin + base + '/projects/mine');
+        await expect.poll(() => deviceA.tab.evaluate(async name => (await navigator.locks.query()).pending.filter(lock => lock.name === name).length, `project-cloud:${owner}`)).toBe(1);
+        await waitingTab.getByRole('button', { name: 'Đăng xuất', exact: true }).click();
+        await expect(waitingTab.getByText('Khách lưu dự án trên thiết bị.', { exact: false })).toBeVisible();
+        await expect.poll(() => deviceA.tab.evaluate(async name => (await navigator.locks.query()).pending.filter(lock => lock.name === name).length, `project-cloud:${owner}`)).toBe(0);
+    } finally {
+        await deviceA.tab.evaluate(() => window.releaseProjectReviewLock());
+        await waitingTab.close();
+    }
+    pass('signing out unmounts project sync and cancels pending cloud lock requests');
+    await deviceA.context.close();await deviceB.context.close();
+    pass('offline project edits survive reload, require a conflict choice and preserve both copies before applying the server draft');
+
+    const cancelDevice=await projectDevice(),cancelProgress=await cancelDevice.context.newPage();
+    cancelProgress.on('pageerror',error=>errors.push(error.message));
+    await cancelProgress.goto(origin+base+'/docs/00_setup');await expect(cancelProgress.locator('#status-P0\\.1')).toBeEnabled();
+    const accountProgressKey=`roadmap-v3:user:${owner}`,beforeCancel=await cancelProgress.evaluate(key=>localStorage.getItem(key),accountProgressKey);
+    await cancelDevice.tab.evaluate(async name=>{
+        await new Promise(resolve=>{void navigator.locks.request(name,{mode:'exclusive'},()=>{resolve();return new Promise(release=>{window.releaseProgressAccountLock=release;});});});
+    },`progress:${accountProgressKey}`);
+    try{
+        await cancelProgress.locator('#status-P0\\.1').selectOption('in_progress');
+        await expect.poll(()=>cancelDevice.tab.evaluate(async name=>(await navigator.locks.query()).pending.filter(lock=>lock.name===name).length,`progress:${accountProgressKey}`)).toBe(1);
+        await cancelProgress.getByRole('button',{name:'Đăng xuất',exact:true}).click();
+        await expect(cancelProgress.getByRole('button',{name:'Đăng nhập',exact:true})).toBeVisible();
+        await expect.poll(()=>cancelDevice.tab.evaluate(async name=>(await navigator.locks.query()).pending.filter(lock=>lock.name===name).length,`progress:${accountProgressKey}`)).toBe(0);
+        assert.equal(await cancelProgress.evaluate(key=>localStorage.getItem(key),accountProgressKey),beforeCancel);
+    }finally{await cancelDevice.tab.evaluate(()=>window.releaseProgressAccountLock());await cancelDevice.context.close();}
+    pass('signing out cancels a native queued progress write without changing the old account backup');
+
+    const beforeMigration=await projectDevice({missingSchema:true});
+    await beforeMigration.tab.getByRole('textbox',{name:'Tên dự án',exact:true}).fill('Saved before migration');
+    await expect(projectStatus(beforeMigration.tab)).toContainText('Chưa xác nhận đồng bộ',{timeout:15000});
+    await beforeMigration.tab.reload();await expect(beforeMigration.tab.getByRole('textbox',{name:'Tên dự án',exact:true})).toHaveValue('Saved before migration');
+    await beforeMigration.tab.getByRole('button',{name:/Bằng chứng & đề cương/}).click();
+    const localDownload=beforeMigration.tab.waitForEvent('download');await beforeMigration.tab.getByRole('button',{name:'Tải bản lưu JSON',exact:true}).click();
+    assert.equal(JSON.parse(readFileSync(await(await localDownload).path(),'utf8')).name,'Saved before migration');
+    await beforeMigration.context.close();pass('missing project migration keeps local editing, reload persistence and JSON export available');
+
+    for(const keepLocal of [true,false]) {
+        const serverProgress={user_id:owner,phase:'00_setup',exercise_id:'P0.1',status:'in_progress',revision:3,due_at:'2026-10-17T17:00:00+00:00',hint_level:keepLocal?3:1,error_tags:[]};
+        const hintDevice=await projectDevice({progressRows:[serverProgress]});
+        const progressKey=`roadmap-v3:user:${owner}`;
+        await hintDevice.tab.evaluate(({key,row})=>localStorage.setItem(key,JSON.stringify({'P0.1':row})),{key:progressKey,row:{...serverProgress,status:'needs_review',revision:2,hint_level:keepLocal?1:3,pending:true,conflict:true}});
+        await hintDevice.tab.goto(origin+base+'/docs/00_setup');
+        await expect(hintDevice.tab.locator('#status-P0\\.1')).toBeEnabled();
+        await hintDevice.tab.getByRole('button',{name:keepLocal?'Giữ bản thiết bị':'Dùng bản máy chủ',exact:true}).click();
+        await expect(hintDevice.tab.locator('.tracker-panel [role="status"]')).toHaveText('Đã đồng bộ với máy chủ.');
+        const persisted=await hintDevice.tab.evaluate(key=>JSON.parse(localStorage.getItem(key))['P0.1'],progressKey);
+        assert.equal(persisted.hint_level,3);assert.equal(persisted.pending,false);assert.equal(persisted.status,keepLocal?'needs_review':'in_progress');
+        assert.equal(hintDevice.state.progressRows[0].hint_level,3);assert.equal(hintDevice.state.progressWrites,1);
+        await hintDevice.tab.reload();
+        await expect(hintDevice.tab.locator('#status-P0\\.1')).toHaveValue(keepLocal?'needs_review':'in_progress');
+        assert.equal(await hintDevice.tab.evaluate(key=>JSON.parse(localStorage.getItem(key))['P0.1'].hint_level,progressKey),3);
+        await hintDevice.context.close();pass(`progress conflict choice (${keepLocal?'local':'remote'}) preserves hint maxima with real SDK and UTC acknowledgements`);
+    }
 
     const unsupported = await context.newPage();
     await unsupported.addInitScript(() => Object.defineProperty(window, 'speechSynthesis', { value: undefined, configurable: true }));

@@ -51,3 +51,10 @@ test('an older remote snapshot cannot discard a newer acknowledged local revisio
   assert.equal(merged['P0.1'].pending,true);assert.equal(merged['P0.1'].conflict,true);
  }
 });
+
+test('pending progress merges preserve the highest hint already used on either device',()=>{
+ for(const revision of [1,2]){
+  const merged=mergeRemote({x:{...emptyEntry(),revision:1,status:'needs_review',hint_level:1,pending:true}},{x:{...emptyEntry(),revision,hint_level:3}});
+  assert.equal(merged.x.status,'needs_review');assert.equal(merged.x.hint_level,3);assert.equal(merged.x.pending,true);
+ }
+});

@@ -5,7 +5,7 @@ export type SaveStatus = "idle" | "saving" | "saved" | "error";
 export function usePhaseProgress(phase:string) {
  const state=useLearning();
  const checked=Object.fromEntries(catalogue.exercises.filter(e=>e.phase===phase).map(e=>[e.id,state.entries[e.id]?.status==='self_completed']));
- return {checked,loading:state.loading,saveStatus:'idle' as SaveStatus,toggle:async(id:string)=>{updateEntry(id,{status:checked[id]?'not_started':'self_completed'});}};
+ return {checked,loading:state.loading,saveStatus:(state.saving?'saving':'idle') as SaveStatus,toggle:async(id:string)=>{await updateEntry(id,{status:checked[id]?'not_started':'self_completed'});}};
 }
 export function useAllProgress() {
  const state=useLearning();const byPhase:Record<string,number>={};

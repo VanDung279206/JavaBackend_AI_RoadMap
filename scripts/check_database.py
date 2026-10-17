@@ -5,8 +5,9 @@ ROOT=Path(__file__).resolve().parents[1]
 def required_sql_files():
  return ['database/tests/bootstrap.sql',*['database/migrations/'+p for p in ['V1__website_schema.sql','V2__public_leaderboard_and_auth_backfill.sql','V3__community_resources.sql']],
    'database/tests/legacy_before_v4.sql','database/migrations/V4__learning_evidence.sql',
-   'database/catalogue_seed.sql','database/migrations/V5__catalogue_constraints.sql','database/migrations/V6__resource_search.sql',
-   'database/tests/legacy_after_v6.sql','database/tests/rls.sql',
+   'database/catalogue_seed.sql','database/migrations/V5__catalogue_constraints.sql','database/migrations/V6__resource_search.sql','database/migrations/V7__project_drafts.sql','database/tests/legacy_project_before_v8.sql',
+   'database/migrations/V8__project_draft_unicode.sql','database/tests/legacy_project_after_v8.sql',
+   'database/tests/legacy_after_v6.sql','database/tests/rls.sql','database/tests/project_drafts.sql',
    'practice/sql/advanced/fixture.sql','practice/sql/advanced/solution.sql','practice/sql/advanced/tests.sql']
 def main():
  name='roadmap-rls-'+uuid.uuid4().hex
@@ -42,7 +43,7 @@ def main():
    IF (SELECT count(*) FROM roadmap_analytics.events)<>100000 THEN RAISE EXCEPTION 'restore events lost'; END IF;
    IF NOT EXISTS(SELECT 1 FROM public.progress_unmapped_v3 WHERE exercise_id='old-exercise' AND done) THEN RAISE EXCEPTION 'restore archive lost'; END IF;
   END $$;"""
-  for content in [assertions,(ROOT/'database/tests/rls.sql').read_text(encoding='utf8'),(ROOT/'practice/sql/advanced/tests.sql').read_text(encoding='utf8')]:
+  for content in [assertions,(ROOT/'database/tests/legacy_project_after_v8.sql').read_text(encoding='utf8'),(ROOT/'database/tests/rls.sql').read_text(encoding='utf8'),(ROOT/'database/tests/project_drafts.sql').read_text(encoding='utf8'),(ROOT/'practice/sql/advanced/tests.sql').read_text(encoding='utf8')]:
    restored=sql(content,'restore_check')
    if restored.returncode:print('FAIL restored database',restored.stderr);return 1
   print('PASS backup/restore: custom dump, restored seed/archive, RLS and SQL assertions on new database')

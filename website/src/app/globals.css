@@ -4055,3 +4055,5 @@ a.phase-card:hover .phase-card-content {
  .mobile-nav-panel .nav-link { padding:.6rem .55rem; border-radius:5px; }
 }
 @media(max-width:600px) { .english-stats { grid-template-columns:repeat(2,minmax(0,1fr)); } .english-toolbar { align-items:stretch; flex-direction:column; } .english-tabs button { flex-basis:120px; } }
+
+.project-cloud-sync p { overflow-wrap: anywhere; }

@@ -55,7 +55,7 @@ cp .env.example .env.local
 # Điền NEXT_PUBLIC_SUPABASE_URL và NEXT_PUBLIC_SUPABASE_ANON_KEY
 ```
 
-Áp dụng V4 → `database/catalogue_seed.sql` → V5 → V6 sau V1–V3. Thêm URL `https://<host>/JavaBackend_AI_RoadMap/auth/reset` vào Supabase Auth Redirect URLs. Frontend chỉ dùng anon key; không đưa service-role key vào web. Database test chạy riêng bằng `python3 scripts/check_database.py` và Docker.
+Áp dụng V4 → `database/catalogue_seed.sql` → V5 → V6 → V7 → V8 sau V1–V3. Thêm URL `https://<host>/JavaBackend_AI_RoadMap/auth/reset` vào Supabase Auth Redirect URLs. Frontend chỉ dùng anon key; không đưa service-role key vào web. Database test chạy riêng bằng `python3 scripts/check_database.py` và Docker.
 
 Trước build chạy `npm test` và `npm run lint`. `prebuild` sinh catalogue; CI chạy `node scripts/build_catalogue.mjs --check` từ root để phát hiện nội dung lệch. Chỉnh nguồn Markdown/catalogue, không chỉnh trực tiếp `src/generated/catalogue.json`.
 
@@ -104,3 +104,7 @@ Push lên nhánh `main` → GitHub Actions tự động build và deploy.
 Cần thêm 2 GitHub Secrets:
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+
+## Đồng bộ dự án
+
+Khu `/projects/mine` lưu bản trên thiết bị trước và đồng bộ theo tài khoản sau khi áp dụng migration V7 → V8. Có chế độ offline và chọn bản khi xung đột; bài học/tiếng Anh chưa đồng bộ trong bước này. Xem [thiết kế, triển khai và kiểm chứng](../docs/PROJECT_SYNC.md).

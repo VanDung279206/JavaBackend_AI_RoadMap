@@ -86,3 +86,21 @@ test('valid large project inputs always produce a persistable editable outline',
     assert.throws(() => parseProject({ ...draft, data: 'x'.repeat(PROJECT_FIELD_LIMIT + 1) }));
     assert.throws(() => parseProject({ ...draft, outline: 'x'.repeat(PROJECT_OUTLINE_LIMIT + 1) }));
 });
+
+
+test('project text rejects NUL and unpaired surrogates that PostgreSQL JSONB cannot store', () => {
+    for (const field of [...projectFields, 'outline', 'previousOutline']) {
+        for (const invalid of ['a\u0000b', '\uD800', '\uDC00', 'text\uD800end']) {
+            assert.throws(() => parseProject({ ...emptyProject(), [field]: invalid }), field);
+        }
+    }
+});
+test('project limits use UTF-16 units, preserving valid astral characters at the boundary', () => {
+    const emoji = String.fromCodePoint(0x1f600);
+    const valid = emoji.repeat(PROJECT_FIELD_LIMIT / 2);
+    assert.equal(parseProject({ ...emptyProject(), name: valid }).name, valid);
+    assert.throws(() => parseProject({ ...emptyProject(), name: valid + emoji }));
+    const outline = emoji.repeat(PROJECT_OUTLINE_LIMIT / 2);
+    assert.equal(parseProject({ ...emptyProject(), outline }).outline, outline);
+    assert.throws(() => parseProject({ ...emptyProject(), outline: outline + emoji }));
+});

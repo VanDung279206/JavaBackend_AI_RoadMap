@@ -26,6 +26,16 @@ DO $$ BEGIN
  BEGIN INSERT INTO public.submissions(user_id,phase,exercise_id,source,intent,verdict) VALUES(auth.uid(),'01_Java','P1.1','fake','submit','PASS');RAISE EXCEPTION 'fake grade accepted';
  EXCEPTION WHEN insufficient_privilege THEN NULL; END;
 END $$;
+-- The client accepts the RPC's persisted maximum hint, not the lower input.
+DO $$ DECLARE saved public.progress; BEGIN
+ saved:=public.save_learning_progress('01_Java','P1.1','needs_review',1,
+  p_due_at=>'2026-10-18T00:00:00+07:00',p_hint_level=>3,p_error_tags=>ARRAY['validation'],p_owner=>auth.uid());
+ IF saved.user_id IS DISTINCT FROM auth.uid() OR saved.phase<>'01_Java' OR saved.exercise_id<>'P1.1' OR saved.revision<>2 OR saved.hint_level<>3 THEN RAISE EXCEPTION 'invalid progress acknowledgement identity'; END IF;
+ saved:=public.save_learning_progress('01_Java','P1.1','in_progress',2,
+  p_due_at=>'2026-10-18T00:00:00+07:00',p_hint_level=>1,p_error_tags=>ARRAY['validation'],p_owner=>auth.uid());
+ IF saved.hint_level<>3 OR saved.revision<>3 OR saved.status<>'in_progress'
+  OR saved.due_at IS DISTINCT FROM '2026-10-17T17:00:00Z'::timestamptz OR saved.error_tags IS DISTINCT FROM ARRAY['validation'] THEN RAISE EXCEPTION 'progress acknowledgement lost hint maximum or payload'; END IF;
+END $$;
 SELECT public.submit_learning_attempt('01_Java','P1.1','class Learner {}','submit',p_owner=>auth.uid());
 DO $$ BEGIN
  BEGIN UPDATE public.submissions SET verdict='PASS',test_version='forged',finished_at=now() WHERE user_id=auth.uid();RAISE EXCEPTION 'browser grade update accepted';
