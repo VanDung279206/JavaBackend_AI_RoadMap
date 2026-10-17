@@ -476,6 +476,37 @@ try {
     assert.deepEqual(originalImports.sort(),[firstProgressSource,secondProgressSource].sort());
     await progressContext.close();pass('imports in the same clock tick preserve both original JSON sources');
 
+    const reviewRaceContext=await browser.newContext();
+    await reviewRaceContext.route('**/*',route=>new URL(route.request().url()).origin===origin?route.continue():route.abort());
+    const reviewRaceTab=await reviewRaceContext.newPage();
+    reviewRaceTab.on('pageerror',error=>errors.push(error.message));
+    await reviewRaceTab.goto(origin+base+'/today');
+    await reviewRaceTab.getByText('Nhập lịch ôn từ CLI',{exact:true}).click();
+    await reviewRaceTab.getByLabel('File lịch ôn').setInputFiles({name:'initial-review.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify({'P0.3':progressReviewRow}))});
+    await expect(reviewRaceTab.getByRole('button',{name:'Nhập 1 bài (giữ bài đã có)',exact:true})).toBeEnabled();
+    await reviewRaceTab.evaluate(()=>{
+        const original=File.prototype.text;
+        File.prototype.text=function(){
+            if(this.name!=='slow-review.json')return original.call(this);
+            return new Promise(resolve=>{window.releaseReviewRead=()=>resolve(original.call(this));});
+        };
+    });
+    await reviewRaceTab.getByLabel('File lịch ôn').setInputFiles({name:'slow-review.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify({'P0.1':progressReviewRow}))});
+    await expect(reviewRaceTab.getByText('Đang đọc file lịch ôn…',{exact:true})).toBeVisible();
+    await expect(reviewRaceTab.getByRole('button',{name:'Nhập 1 bài (giữ bài đã có)',exact:true})).toHaveCount(0);
+    const reviewRaceLatest=JSON.stringify({'P0.2':progressReviewRow});
+    await reviewRaceTab.getByLabel('File lịch ôn').setInputFiles({name:'latest-review.json',mimeType:'application/json',buffer:Buffer.from(reviewRaceLatest)});
+    await expect(reviewRaceTab.getByText('File đã chọn: latest-review.json',{exact:true})).toBeVisible();
+    await reviewRaceTab.evaluate(()=>window.releaseReviewRead());
+    await reviewRaceTab.getByRole('button',{name:'Nhập 1 bài (giữ bài đã có)',exact:true}).click();
+    await expect(reviewRaceTab.getByText('Đã nhập lịch ôn vào đúng phạm vi đã chọn.',{exact:true})).toBeVisible();
+    const reviewRaceSaved=await reviewRaceTab.evaluate(()=>({
+        ids:Object.keys(JSON.parse(localStorage.getItem('roadmap-v3:guest'))),
+        originals:Object.keys(localStorage).filter(key=>key.startsWith('roadmap-v3:guest:review-import:')).map(key=>localStorage.getItem(key))
+    }));
+    assert.deepEqual(reviewRaceSaved.ids,['P0.2']);assert.deepEqual(reviewRaceSaved.originals,[reviewRaceLatest]);
+    await reviewRaceContext.close();pass('review file races import only the latest selection and preserve its matching source');
+
     assert.ok(supabaseOrigin, 'the library request identifies the configured Supabase origin');
     const owner = '00000000-0000-0000-0000-000000000021';
     const user = { id: owner, aud: 'authenticated', role: 'authenticated', email: 'project-test@example.test', app_metadata: { provider: 'email' }, user_metadata: {} };
@@ -484,7 +515,7 @@ try {
     let projectRow = null;
     async function projectDevice(options={}) {
         const device = await browser.newContext();
-        const state = { offline: false, missingSchema: false, progressRows: [], progressWrites: 0, ...options };
+        const state = { offline: false, missingSchema: false, progressRows: [], progressWrites: 0, noteRow: null, noteReadFails: false, noteSaveFails: false, noteWrites: 0, ...options };
         const authKey = `sb-${new URL(supabaseOrigin).hostname.split('.')[0]}-auth-token`;
         await device.addInitScript(({ key, session }) => {
             // Exercise the same flow on browsers without newer signal helpers.
@@ -500,6 +531,15 @@ try {
             if (request.method() === 'OPTIONS') return route.fulfill({ status: 204, headers });
             if (url.pathname.endsWith('/auth/v1/user')) return route.fulfill({ status: 200, headers, body: JSON.stringify(user) });
             if(state.missingSchema&&(url.pathname.endsWith('/rest/v1/project_drafts')||url.pathname.endsWith('/rest/v1/rpc/save_project_draft')))return route.fulfill({status:404,headers,body:JSON.stringify({code:'PGRST205',message:'project_drafts is not in the schema cache'})});
+            if(url.pathname.endsWith('/rest/v1/learning_notes')) {
+                if((request.method()==='GET'&&state.noteReadFails)||(request.method()==='POST'&&state.noteSaveFails))return route.fulfill({status:403,headers,body:JSON.stringify({code:'42501',message:'not allowed'})});
+                if(request.method()==='POST'){
+                    const args=request.postDataJSON();assert.equal(args.user_id,owner);
+                    state.noteRow={note:args.note,bookmarked:args.bookmarked};state.noteWrites++;
+                    return route.fulfill({status:201,headers,body:'null'});
+                }
+                return route.fulfill({status:200,headers,body:JSON.stringify(state.noteRow)});
+            }
             if(url.pathname.endsWith('/rest/v1/progress')) {
                 const exercise=url.searchParams.get('exercise_id')?.replace(/^eq\./,'');
                 const data=exercise?state.progressRows.find(row=>row.exercise_id===exercise)??null:state.progressRows;
@@ -530,6 +570,28 @@ try {
         await expect(tab.getByRole('textbox', { name: 'Tên dự án', exact: true })).toBeEnabled();
         return { context: device, tab, state };
     }
+    const noteDevice=await projectDevice({noteRow:{note:'Existing private note',bookmarked:true},noteReadFails:true});
+    await noteDevice.tab.goto(origin+base+'/docs/00_setup#P0.1');
+    const notePanel=noteDevice.tab.locator('details.learning-card').filter({has:noteDevice.tab.locator('summary').getByText('Đánh dấu & ghi chú cá nhân',{exact:true})});
+    await notePanel.locator('summary').click();
+    const noteEditor=notePanel.getByRole('textbox',{name:'Ghi chú',exact:true}),noteBookmark=notePanel.getByRole('checkbox',{name:'Đánh dấu tài liệu',exact:true});
+    await expect(notePanel.getByRole('button',{name:'Tải lại ghi chú',exact:true})).toBeVisible();
+    await expect(noteEditor).toBeDisabled();
+    noteDevice.state.noteReadFails=false;
+    await notePanel.getByRole('button',{name:'Tải lại ghi chú',exact:true}).click();
+    await expect(noteEditor).toHaveValue('Existing private note');await expect(noteEditor).toBeEnabled();await expect(noteBookmark).toBeChecked();
+    pass('private notes remain read-only after load failure and retry without losing the server note');
+    await noteEditor.fill('Retained note after failed save');await noteBookmark.uncheck();noteDevice.state.noteSaveFails=true;
+    await notePanel.getByRole('button',{name:'Lưu ghi chú',exact:true}).click();
+    await expect(notePanel.getByRole('status')).toHaveText('Lưu thất bại; nội dung đang nhập vẫn ở đây.');
+    await expect(noteEditor).toBeEnabled();await expect(noteEditor).toHaveValue('Retained note after failed save');await expect(noteBookmark).not.toBeChecked();
+    assert.deepEqual(noteDevice.state.noteRow,{note:'Existing private note',bookmarked:true});
+    noteDevice.state.noteSaveFails=false;await notePanel.getByRole('button',{name:'Lưu ghi chú',exact:true}).click();
+    await expect(notePanel.getByRole('status')).toHaveText('Đã lưu ghi chú và dấu trang.');assert.equal(noteDevice.state.noteWrites,1);
+    await noteDevice.tab.reload();await notePanel.locator('summary').click();
+    await expect(noteEditor).toHaveValue('Retained note after failed save');await expect(noteBookmark).not.toBeChecked();
+    await noteDevice.context.close();pass('failed note saves unlock the retained draft and retry persists text and bookmark after reload');
+
     const deviceA = await projectDevice();
     const projectStatus = tab => tab.locator('.project-cloud-sync [role="status"]');
     await deviceA.tab.getByRole('textbox', { name: 'Tên dự án', exact: true }).fill('My synced project');

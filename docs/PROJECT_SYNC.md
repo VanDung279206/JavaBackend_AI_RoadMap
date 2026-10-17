@@ -47,3 +47,12 @@ Giao diện nhập lịch ôn đợi kết quả ghi thực, hiển thị đang 
 Review bổ sung: mức gợi ý đã dùng là giá trị không giảm. Khi tải bản đang chờ hoặc chọn một bên xung đột, giữ mức cao nhất từ hai bên; nếu chọn bản máy chủ nhưng thiết bị đã dùng gợi ý cao hơn, gửi lại mức cao đó. ACK phải có đúng owner/bài/chặng, revision và payload đã gửi; chấp nhận mức gợi ý cao hơn do RPC GREATEST trả về. Thời điểm ôn so sánh theo instant để nhận được timestamp UTC do PostgreSQL chuẩn hóa. Chỉ gỡ cờ chờ khi nội dung hiện tại thực sự khớp ACK; phần sửa mới vẫn giữ nguyên.
 
 Bản gốc nhập từ CLI được lưu dưới key timestamp kèm hậu tố khi trùng. Kiểm tra key và ghi diễn ra trong cùng khóa owner, giữ riêng cả hai file dù hai lần nhập có cùng Date.now. Regression dùng clock cố định, RPC trả mức hint cao hơn, ACK sai owner/payload và cả hai lựa chọn xung đột; assertion PostgreSQL kiểm hợp đồng hint không giảm và timestamp tương đương.
+
+
+## Review nhập file và ghi chú cá nhân ngày 17/10/2026
+
+Chọn file lịch ôn mới lập tức hủy bản xem trước cũ. Mỗi lần đọc có số thứ tự; phản hồi hoặc lỗi đọc của file cũ không thay bản mới. Nội dung parsed và JSON gốc thuộc cùng một bản xem trước, kèm tên file hiển thị để kiểm tra. Chỉ lần chọn mới nhất được nhập; chọn lại cùng file vẫn hoạt động. Chặn nhấp lặp ngay trước khi React render lại. Nhập thất bại giữ bản xem trước để thử lại, không để Promise bị từ chối ngoài kiểm soát.
+
+Ghi chú cá nhân dùng deadline 15 giây bao toàn bộ SDK, hủy khi đổi tài khoản/tài liệu hoặc gỡ component. Tải lỗi hoặc response sai cấu trúc giữ ô nhập ở trạng thái chỉ đọc và có nút tải lại; không cho ghi đè ghi chú chưa tải được. Lưu lỗi mở lại ô nhập, giữ nguyên văn bản và dấu trang để thử lại. Chặn gửi lặp; chỉ báo lưu thành công khi SDK xác nhận.
+
+11 kiểm thử component dùng code production tái hiện đọc file đảo thứ tự, lỗi đọc cũ, nhấp lặp, Promise bị từ chối, response ghi chú sai và hủy request. Ba luồng trình duyệt bổ sung kiểm nhập đúng file/source sau đọc chậm, tải lại ghi chú sau lỗi và lưu lại bản đang viết rồi reload. API được giả lập, không gọi tài khoản thật; hạn chờ và cleanup đã có kiểm thử helper riêng.
