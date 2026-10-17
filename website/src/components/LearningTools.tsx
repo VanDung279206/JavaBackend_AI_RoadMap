@@ -22,10 +22,10 @@ function Tools({exerciseId}:{exerciseId:string}) {
   catch {setMessage('Không lưu được lần nộp. Mã vẫn nằm trong ô nhập; thử lại sau.');}
   finally{setSaving(false);}
  }
- function recordError(){
+ async function recordError(){
   if(state.loading||state.owner===undefined){setMessage("Đang tải tài khoản/tiến độ; chưa lưu nhật ký.");return;}
   if(!prediction.trim()||!cause.trim()){setMessage('Ghi dự đoán và nguyên nhân trước khi lưu nhật ký.');return;}
-  try{const key=`error-clinic:${state.owner||'guest'}`;const old=JSON.parse(localStorage.getItem(key)||'[]');old.push({exerciseId,prediction,cause,tag,hint,date:new Date().toISOString()});localStorage.setItem(key,JSON.stringify(old));const scheduled=updateEntry(exerciseId,{status:'needs_review',error_tags:[tag],hint_level:hint,due_at:new Date(Date.now()+86400000).toISOString()});setMessage(scheduled?'Đã lưu nhật ký và lịch ôn trên thiết bị, trong phạm vi tài khoản này.':'Đã lưu nhật ký; chưa lưu được lịch ôn. Xem thông báo tiến độ.');}catch{setMessage('Không lưu được nhật ký lỗi.');}
+  try{const key=`error-clinic:${state.owner||'guest'}`;const old=JSON.parse(localStorage.getItem(key)||'[]');old.push({exerciseId,prediction,cause,tag,hint,date:new Date().toISOString()});localStorage.setItem(key,JSON.stringify(old));const scheduled=await updateEntry(exerciseId,{status:'needs_review',error_tags:[tag],hint_level:hint,due_at:new Date(Date.now()+86400000).toISOString()});setMessage(scheduled?'Đã lưu nhật ký và lịch ôn trên thiết bị, trong phạm vi tài khoản này.':'Đã lưu nhật ký; chưa lưu được lịch ôn. Xem thông báo tiến độ.');}catch{setMessage('Không lưu được nhật ký lỗi.');}
  }
  return <div className="learning-tools">
  {catalogue.lessons.some(lesson=>lesson.exercise_ids.includes(exerciseId))&&<section className="learning-card"><h3>Bài học nền và ôn theo lỗi</h3><div className="learning-actions">{catalogue.lessons.filter(lesson=>lesson.exercise_ids.includes(exerciseId)).map(lesson=><Link key={lesson.id} href={`/learn/${lesson.phase}#${lesson.id}`}>{lesson.title}</Link>)}</div></section>}

@@ -430,15 +430,52 @@ try {
     await materialsContext.close();
     pass('community library blocks unsafe source URLs while preserving valid HTTPS links');
 
+    const progressContext=await browser.newContext();
+    await progressContext.route('**/*',route=>new URL(route.request().url()).origin===origin?route.continue():route.abort());
+    const progressA=await progressContext.newPage(),progressB=await progressContext.newPage();
+    for(const tab of [progressA,progressB]){tab.on('pageerror',error=>errors.push(error.message));await tab.goto(origin+base+'/docs/00_setup');await expect(tab.locator('#status-P0\\.1')).toBeEnabled();}
+    const holdProgress=async()=>progressA.evaluate(async()=>{
+        await new Promise(resolve=>{void navigator.locks.request('progress:roadmap-v3:guest',{mode:'exclusive'},()=>{
+            resolve();return new Promise(release=>{window.releaseProgressLock=release;});
+        });});
+    });
+    await holdProgress();
+    try{
+        await Promise.all([progressA.locator('#status-P0\\.1').selectOption('needs_review'),progressB.locator('#status-P0\\.2').selectOption('in_progress')]);
+        for(const tab of [progressA,progressB])await expect(tab.getByText('Đang lưu tiến độ trên thiết bị…',{exact:true})).toBeVisible();
+        await expect.poll(()=>progressA.evaluate(async()=>(await navigator.locks.query()).pending.filter(lock=>lock.name==='progress:roadmap-v3:guest').length)).toBe(2);
+    }finally{await progressA.evaluate(()=>window.releaseProgressLock());}
+    await expect.poll(()=>progressA.evaluate(()=>{
+        const saved=JSON.parse(localStorage.getItem('roadmap-v3:guest')??'{}');return [saved['P0.1']?.status,saved['P0.2']?.status];
+    })).toEqual(['needs_review','in_progress']);
+    await progressB.reload();await expect(progressB.locator('#status-P0\\.1')).toHaveValue('needs_review');await expect(progressB.locator('#status-P0\\.2')).toHaveValue('in_progress');
+    pass('native progress locks serialize simultaneous tab edits and preserve both after reload');
+    await progressB.goto(origin+base+'/today');
+    await progressB.getByText('Nhập lịch ôn từ CLI',{exact:true}).click();
+    const progressReviewRow={result:'pass',due:'2026-10-18',hint:0,active_tags:[]};
+    await progressB.getByLabel('File lịch ôn').setInputFiles({name:'review-state.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify({'P0.1':progressReviewRow,'P0.3':progressReviewRow}))});
+    await holdProgress();
+    try{
+        await progressB.getByRole('button',{name:'Nhập 2 bài (giữ bài đã có)',exact:true}).click();
+        await expect(progressB.getByText('Đang nhập lịch ôn…',{exact:true})).toBeVisible();
+        await expect(progressB.getByRole('button',{name:'Nhập 2 bài (giữ bài đã có)',exact:true})).toBeDisabled();
+        assert.equal(await progressB.evaluate(()=>JSON.parse(localStorage.getItem('roadmap-v3:guest'))['P0.3']),undefined);
+        await expect(progressB.getByText('Đã nhập lịch ôn vào đúng phạm vi đã chọn.',{exact:true})).toHaveCount(0);
+    }finally{await progressA.evaluate(()=>window.releaseProgressLock());}
+    await expect(progressB.getByText('Đã nhập lịch ôn vào đúng phạm vi đã chọn.',{exact:true})).toBeVisible();
+    const importedProgress=await progressB.evaluate(()=>JSON.parse(localStorage.getItem('roadmap-v3:guest')));
+    assert.equal(importedProgress['P0.1'].status,'needs_review');assert.equal(importedProgress['P0.3'].status,'self_completed');
+    await progressContext.close();pass('CLI progress import waits for durable storage and preserves existing exercises');
+
     assert.ok(supabaseOrigin, 'the library request identifies the configured Supabase origin');
     const owner = '00000000-0000-0000-0000-000000000021';
     const user = { id: owner, aud: 'authenticated', role: 'authenticated', email: 'project-test@example.test', app_metadata: { provider: 'email' }, user_metadata: {} };
     const expires = Math.floor(Date.now() / 1000) + 3600;
     const jwt = [Buffer.from(JSON.stringify({ alg: 'HS256', typ: 'JWT' })).toString('base64url'), Buffer.from(JSON.stringify({ sub: owner, exp: expires, role: 'authenticated' })).toString('base64url'), 'test-signature'].join('.');
     let projectRow = null;
-    async function projectDevice() {
+    async function projectDevice(options={}) {
         const device = await browser.newContext();
-        const state = { offline: false };
+        const state = { offline: false, missingSchema: false, ...options };
         const authKey = `sb-${new URL(supabaseOrigin).hostname.split('.')[0]}-auth-token`;
         await device.addInitScript(({ key, session }) => {
             // Exercise the same flow on browsers without newer signal helpers.
@@ -453,6 +490,7 @@ try {
             const headers = { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': '*', 'Access-Control-Allow-Methods': '*' };
             if (request.method() === 'OPTIONS') return route.fulfill({ status: 204, headers });
             if (url.pathname.endsWith('/auth/v1/user')) return route.fulfill({ status: 200, headers, body: JSON.stringify(user) });
+            if(state.missingSchema&&(url.pathname.endsWith('/rest/v1/project_drafts')||url.pathname.endsWith('/rest/v1/rpc/save_project_draft')))return route.fulfill({status:404,headers,body:JSON.stringify({code:'PGRST205',message:'project_drafts is not in the schema cache'})});
             if (url.pathname.endsWith('/rest/v1/project_drafts')) return route.fulfill({ status: 200, headers, body: JSON.stringify(projectRow) });
             if (url.pathname.endsWith('/rest/v1/rpc/save_project_draft')) {
                 const args = request.postDataJSON();
@@ -534,6 +572,32 @@ try {
     pass('signing out unmounts project sync and cancels pending cloud lock requests');
     await deviceA.context.close();await deviceB.context.close();
     pass('offline project edits survive reload, require a conflict choice and preserve both copies before applying the server draft');
+
+    const cancelDevice=await projectDevice(),cancelProgress=await cancelDevice.context.newPage();
+    cancelProgress.on('pageerror',error=>errors.push(error.message));
+    await cancelProgress.goto(origin+base+'/docs/00_setup');await expect(cancelProgress.locator('#status-P0\\.1')).toBeEnabled();
+    const accountProgressKey=`roadmap-v3:user:${owner}`,beforeCancel=await cancelProgress.evaluate(key=>localStorage.getItem(key),accountProgressKey);
+    await cancelDevice.tab.evaluate(async name=>{
+        await new Promise(resolve=>{void navigator.locks.request(name,{mode:'exclusive'},()=>{resolve();return new Promise(release=>{window.releaseProgressAccountLock=release;});});});
+    },`progress:${accountProgressKey}`);
+    try{
+        await cancelProgress.locator('#status-P0\\.1').selectOption('in_progress');
+        await expect.poll(()=>cancelDevice.tab.evaluate(async name=>(await navigator.locks.query()).pending.filter(lock=>lock.name===name).length,`progress:${accountProgressKey}`)).toBe(1);
+        await cancelProgress.getByRole('button',{name:'Đăng xuất',exact:true}).click();
+        await expect(cancelProgress.getByRole('button',{name:'Đăng nhập',exact:true})).toBeVisible();
+        await expect.poll(()=>cancelDevice.tab.evaluate(async name=>(await navigator.locks.query()).pending.filter(lock=>lock.name===name).length,`progress:${accountProgressKey}`)).toBe(0);
+        assert.equal(await cancelProgress.evaluate(key=>localStorage.getItem(key),accountProgressKey),beforeCancel);
+    }finally{await cancelDevice.tab.evaluate(()=>window.releaseProgressAccountLock());await cancelDevice.context.close();}
+    pass('signing out cancels a native queued progress write without changing the old account backup');
+
+    const beforeMigration=await projectDevice({missingSchema:true});
+    await beforeMigration.tab.getByRole('textbox',{name:'Tên dự án',exact:true}).fill('Saved before migration');
+    await expect(projectStatus(beforeMigration.tab)).toContainText('Chưa xác nhận đồng bộ',{timeout:15000});
+    await beforeMigration.tab.reload();await expect(beforeMigration.tab.getByRole('textbox',{name:'Tên dự án',exact:true})).toHaveValue('Saved before migration');
+    await beforeMigration.tab.getByRole('button',{name:/Bằng chứng & đề cương/}).click();
+    const localDownload=beforeMigration.tab.waitForEvent('download');await beforeMigration.tab.getByRole('button',{name:'Tải bản lưu JSON',exact:true}).click();
+    assert.equal(JSON.parse(readFileSync(await(await localDownload).path(),'utf8')).name,'Saved before migration');
+    await beforeMigration.context.close();pass('missing project migration keeps local editing, reload persistence and JSON export available');
 
     const unsupported = await context.newPage();
     await unsupported.addInitScript(() => Object.defineProperty(window, 'speechSynthesis', { value: undefined, configurable: true }));
