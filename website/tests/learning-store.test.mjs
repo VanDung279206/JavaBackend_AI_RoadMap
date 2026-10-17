@@ -49,7 +49,7 @@ function harness(remoteIds=[], options={}){
   }
  };
  runInNewContext(compiled,{
-  module,exports:module.exports,queueMicrotask,AbortController,
+  module,exports:module.exports,queueMicrotask,AbortController,Date:options.date??Date,
   navigator:{locks:options.noLocks?undefined:locks},
   localStorage:{getItem:key=>storage.get(key)??null,setItem:(key,value)=>storage.set(key,value)},
   window:{addEventListener(name,fn){handlers.set(name,fn);}},
@@ -72,7 +72,7 @@ function harness(remoteIds=[], options={}){
  store.useLearning();
  return {store,calls,observations,storage,locks,state:()=>getSnapshot(),
   event(name,event){handlers.get(name)?.(event);},
-  answer(index,error=null){const call=calls[index];call.resolve({data:{revision:call.args.p_revision+1},error});},
+  answer(index,error=null,patch={}){const call=calls[index],a=call.args;call.resolve({data:{user_id:a.p_owner,exercise_id:a.p_exercise_id,phase:a.p_phase,status:a.p_status,revision:a.p_revision+1,due_at:a.p_due_at,hint_level:a.p_hint_level,error_tags:a.p_error_tags,...patch},error});},
   account(owner){authChange('SIGNED_IN',{user:{id:owner}});}
  };
 }
@@ -337,4 +337,57 @@ test('a successful ACK clears an obsolete conflict flag when its payload has not
  const key=core.storageKey('account-a'),entries=JSON.parse(h.storage.get(key));entries['P0.1'].conflict=true;h.storage.set(key,JSON.stringify(entries));
  h.answer(0);await until(()=>!h.state().entries['P0.1'].pending);
  assert.equal(h.state().entries['P0.1'].conflict,false);assert.equal(h.calls.length,1);
+});
+
+test('keeping the local conflict choice preserves the higher hint already used on the server',async()=>{
+ const h=harness([],{single:async()=>({data:{...core.emptyEntry(),revision:3,hint_level:3},error:null})});await ready(h);
+ await h.store.updateEntry('P0.1',{status:'needs_review',hint_level:1});h.answer(0,{message:'PROGRESS_CONFLICT'});await until(()=>h.state().entries['P0.1'].conflict);
+ await h.store.resolveConflict('P0.1',true);await until(()=>h.calls.length===2);
+ assert.equal(h.calls[1].args.p_hint_level,3);assert.equal(h.calls[1].args.p_status,'needs_review');
+ h.answer(1);await until(()=>!h.state().entries['P0.1'].pending);assert.equal(h.state().entries['P0.1'].hint_level,3);
+});
+
+test('choosing the remote conflict copy keeps locally used hints and syncs their maximum',async()=>{
+ const h=harness([],{single:async()=>({data:{...core.emptyEntry(),status:'in_progress',revision:3,hint_level:1},error:null})});await ready(h);
+ await h.store.updateEntry('P0.1',{status:'needs_review',hint_level:3});h.answer(0,{message:'PROGRESS_CONFLICT'});await until(()=>h.state().entries['P0.1'].conflict);
+ await h.store.resolveConflict('P0.1',false);await until(()=>h.calls.length===2);
+ assert.equal(h.calls[1].args.p_hint_level,3);assert.equal(h.calls[1].args.p_status,'in_progress');
+ h.answer(1);await until(()=>!h.state().entries['P0.1'].pending);assert.equal(h.state().entries['P0.1'].hint_level,3);
+});
+
+test('a server-normalized higher hint is persisted before reporting a successful ACK',async()=>{
+ const h=harness();await ready(h);await h.store.updateEntry('P0.1',{status:'in_progress',hint_level:1});
+ h.answer(0,null,{hint_level:3});await until(()=>!h.state().entries['P0.1'].pending);
+ assert.equal(h.state().entries['P0.1'].hint_level,3);assert.equal(JSON.parse(h.storage.get(core.storageKey('account-a')))['P0.1'].hint_level,3);assert.equal(h.calls.length,1);
+});
+
+test('server-normalized hints are retained while a newer status is still pending',async()=>{
+ const h=harness();await ready(h);await h.store.updateEntry('P0.1',{status:'in_progress',hint_level:1});
+ await h.store.updateEntry('P0.1',{status:'needs_review'});h.answer(0,null,{hint_level:3});await until(()=>h.calls.length===2);
+ assert.equal(h.calls[1].args.p_hint_level,3);assert.equal(h.calls[1].args.p_status,'needs_review');h.answer(1);await until(()=>!h.state().entries['P0.1'].pending);
+});
+
+test('a valid revision with the wrong owner, exercise or saved payload is never acknowledged',async()=>{
+ for(const patch of [{user_id:'account-b'},{exercise_id:'P0.2'},{phase:'01_Java'},{status:'self_completed'},{due_at:null},{hint_level:0},{error_tags:[]},{status:undefined}]){
+  const h=harness();await ready(h);await h.store.updateEntry('P0.1',{status:'in_progress',due_at:'2026-10-18T00:00:00+07:00',hint_level:1,error_tags:['validation']});
+  const key=core.storageKey('account-a'),raw=h.storage.get(key);h.answer(0,null,patch);await tick();await tick();
+  assert.equal(h.storage.get(key),raw,JSON.stringify(patch));assert.equal(h.state().entries['P0.1'].pending,true);assert.equal(h.calls.length,1);
+ }
+});
+
+test('equivalent PostgreSQL UTC timestamps are accepted without a duplicate update',async()=>{
+ const h=harness();await ready(h);await h.store.updateEntry('P0.1',{status:'needs_review',due_at:'2026-10-18T00:00:00+07:00'});
+ h.answer(0,null,{due_at:'2026-10-17T17:00:00+00:00'});await until(()=>!h.state().entries['P0.1'].pending);assert.equal(h.calls.length,1);
+});
+
+test('two imports under the same clock tick keep distinct original file backups',async()=>{
+ const clock=class extends Date{static now(){return 123456;}};
+ const h=harness([],{date:clock});await ready(h);const release=await hold(h.locks,'learning-sync:account-a');
+ try{
+  assert.equal(await h.store.importReviewProgress({'P0.1':{...core.emptyEntry(),status:'in_progress'}},'account-a','first original'),true);
+  assert.equal(await h.store.importReviewProgress({'P0.2':{...core.emptyEntry(),status:'needs_review'}},'account-a','second original'),true);
+  const backups=[...h.storage].filter(([key])=>key.startsWith(core.storageKey('account-a')+':review-import:'));
+  assert.equal(backups.length,2);assert.deepEqual(backups.map(([,raw])=>raw).sort(),['first original','second original']);
+ }finally{await release();}
+ await until(()=>h.calls.length===1);h.answer(0);await until(()=>h.calls.length===2);h.answer(1);await until(()=>!h.state().entries['P0.2'].pending);
 });

@@ -19,13 +19,18 @@ export function parseStoredEntries(input:unknown,ids:string[]):Entries {
  }
  return entries;
 }
+// PostgreSQL serializes timestamptz in UTC; compare instants, not spellings.
+export function sameProgressContent(left:Entry,right:Entry):boolean {
+ const instant=(value:string|null)=>value===null?null:Date.parse(value);
+ return left.status===right.status&&instant(left.due_at)===instant(right.due_at)&&left.hint_level===right.hint_level&&JSON.stringify(left.error_tags)===JSON.stringify(right.error_tags);
+}
 export function mergeRemote(local: Entries, remote: Entries): Entries {
  const result = {...remote};
  for (const [id,e] of Object.entries(local)) {
   // A request can return an older snapshot than another tab has already saved.
   // Preserve the newer local revision for explicit conflict resolution.
-  if (e.revision > (remote[id]?.revision ?? 0)) result[id] = {...e,pending:true,conflict:true};
-  else if (e.pending) result[id] = {...e,conflict:e.revision !== (remote[id]?.revision ?? 0)};
+  if (e.revision > (remote[id]?.revision ?? 0)) result[id] = {...e,hint_level:Math.max(e.hint_level,remote[id]?.hint_level??0),pending:true,conflict:true};
+  else if (e.pending) result[id] = {...e,hint_level:Math.max(e.hint_level,remote[id]?.hint_level??0),conflict:e.revision !== (remote[id]?.revision ?? 0)};
  }
  return result;
 }

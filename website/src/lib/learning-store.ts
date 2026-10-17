@@ -3,7 +3,7 @@ import {useEffect,useSyncExternalStore} from 'react';
 import catalogue from '@/generated/catalogue.json';
 import {supabase} from './supabase';
 import {projectRequest as requestWithDeadline} from './project-request';
-import {emptyEntry,importGuest,mergeRemote,parseStoredEntries,storageKey,type Entries,type Entry} from './progress-core';
+import {emptyEntry,importGuest,mergeRemote,parseStoredEntries,sameProgressContent,storageKey,type Entries,type Entry} from './progress-core';
 
 type Snapshot = {owner:string|null|undefined; entries:Entries; verified:string[]; loading:boolean; saving:boolean; message:string};
 const initial:Snapshot={owner:undefined,entries:{},verified:[],loading:true,saving:false,message:''};
@@ -47,6 +47,17 @@ function syncMessage(entries:Entries) {
  const waiting=Object.values(entries).filter(e=>e.pending);
  if(waiting.some(e=>e.conflict))return 'Có xung đột. Chọn bản máy chủ hoặc giữ bản trên thiết bị.';
  return waiting.length?'Đã lưu trên thiết bị; đang chờ đồng bộ.':'Đã đồng bộ với máy chủ.';
+}
+type ProgressReply={data:unknown;error:{message:string}|null};
+function checkedProgressAck(data:unknown,owner:string,id:string,phase:string,sent:Entry):Entry {
+ const value=Array.isArray(data)?data.length===1?data[0]:null:data;
+ if(!value||typeof value!=='object')throw Error('Invalid progress acknowledgement');
+ const row=value as Record<string,unknown>;
+ const acknowledged=parseStoredEntries({[id]:row},[id])[id];
+ // The RPC may raise hint_level to its persisted maximum. Other fields,
+ // including account/exercise and the due instant, must match the sent write.
+ if(acknowledged.revision!==sent.revision+1||row.user_id!==owner||row.exercise_id!==id||row.phase!==phase||acknowledged.hint_level<sent.hint_level||!sameProgressContent(acknowledged,{...sent,hint_level:acknowledged.hint_level}))throw Error('Invalid progress acknowledgement');
+ return acknowledged;
 }
 type Mutation={entries:Entries;message?:string;verified?:string[];loading?:boolean;persist?:boolean};
 // Every progress write uses this short lock, including load/ACK/import paths.
@@ -116,7 +127,7 @@ export async function sync() {
     const item=Object.entries(queue).find(([,entry])=>entry.pending&&!entry.conflict);
     if(!item){completed=true;publish({message:syncMessage(queue)});return;}
     const [id,entry]=item,e=valid.get(id)!;
-    const {data,error}=await requestWithDeadline(signal,abort=>supabase.rpc('save_learning_progress',{p_owner:owner,p_phase:e.phase,p_exercise_id:id,p_status:entry.status,p_revision:entry.revision,p_due_at:entry.due_at,p_hint_level:entry.hint_level,p_error_tags:entry.error_tags}).abortSignal(abort));
+    const {data,error}=await requestWithDeadline<ProgressReply>(signal,abort=>supabase.rpc('save_learning_progress',{p_owner:owner,p_phase:e.phase,p_exercise_id:id,p_status:entry.status,p_revision:entry.revision,p_due_at:entry.due_at,p_hint_level:entry.hint_level,p_error_tags:entry.error_tags}).abortSignal(abort));
     if(version!==epoch)return;
     if(error) {
      await mutate(owner,version,entries=>{
@@ -129,13 +140,13 @@ export async function sync() {
      });
      return;
     }
-    const row=Array.isArray(data)?data[0]:data;
-    if(!row||!Number.isSafeInteger(row.revision)||row.revision!==entry.revision+1)throw Error('Invalid progress acknowledgement');
+    const acknowledged=checkedProgressAck(data,owner,id,e.phase,entry);
     const saved=await mutate(owner,version,entries=>{
      const current=entries[id];
      if(!current||current.revision!==entry.revision)return {entries,persist:false};
-     const unchanged=current.status===entry.status&&current.due_at===entry.due_at&&current.hint_level===entry.hint_level&&JSON.stringify(current.error_tags)===JSON.stringify(entry.error_tags);
-     const next={...current,revision:row.revision,pending:!unchanged,conflict:unchanged?false:current.conflict};
+     const effective={...current,hint_level:Math.max(current.hint_level,acknowledged.hint_level)};
+     const unchanged=sameProgressContent(effective,acknowledged);
+     const next={...effective,revision:acknowledged.revision,pending:!unchanged,conflict:unchanged?false:current.conflict};
      return {entries:{...entries,[id]:next}};
     });
     if(!saved)return;
@@ -169,7 +180,12 @@ export async function importReviewProgress(entries:Entries,expectedOwner:string|
  if(snapshot.owner!==expectedOwner||snapshot.loading)return false;
  const saved=await mutate(expectedOwner,version,latest=>{
   const merged=importGuest(latest,parseStoredEntries(entries,ids));
-  localStorage.setItem(storageKey(expectedOwner)+':review-import:'+Date.now(),original);
+  const prefix=storageKey(expectedOwner)+':review-import:'+Date.now();
+  let backupKey=prefix,suffix=0;
+  // This owner lock also serializes the collision check across tabs. A clock
+  // tick is not a unique ID; never replace a previously imported source file.
+  while(localStorage.getItem(backupKey)!==null)backupKey=prefix+':'+(++suffix);
+  localStorage.setItem(backupKey,original);
   return {entries:merged,message:'Đã nhập lịch ôn; giữ bài đã có. Pass từ CLI chỉ là tự khai báo.'};
  });
  if(saved)void sync();return saved;
@@ -187,7 +203,9 @@ export async function resolveConflict(id:string,keepLocal:boolean) {
    if(!entries[id]||JSON.stringify(entries[id])!==baseline) {
     publish({entries,message:'Bài đã thay đổi trong khi tải bản máy chủ. Xem lại dữ liệu rồi chọn lại để tránh ghi đè.'});return null;
    }
-   const next=keepLocal?{...entries[id],revision:remote.revision,pending:true,conflict:false}:remote;
+   const hint_level=Math.max(entries[id].hint_level,remote.hint_level);
+   const next=keepLocal?{...entries[id],hint_level,revision:remote.revision,pending:true,conflict:false}
+    :{...remote,hint_level,pending:hint_level>remote.hint_level,conflict:false};
    return {entries:{...entries,[id]:next},message:'Đã chọn bản dữ liệu.'};
   });
   if(saved)void sync();

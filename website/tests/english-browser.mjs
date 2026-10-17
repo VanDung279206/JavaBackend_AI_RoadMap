@@ -453,7 +453,9 @@ try {
     await progressB.goto(origin+base+'/today');
     await progressB.getByText('Nhập lịch ôn từ CLI',{exact:true}).click();
     const progressReviewRow={result:'pass',due:'2026-10-18',hint:0,active_tags:[]};
-    await progressB.getByLabel('File lịch ôn').setInputFiles({name:'review-state.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify({'P0.1':progressReviewRow,'P0.3':progressReviewRow}))});
+    await progressB.evaluate(()=>{Date.now=()=>123456;});
+    const firstProgressSource=JSON.stringify({'P0.1':progressReviewRow,'P0.3':progressReviewRow});
+    await progressB.getByLabel('File lịch ôn').setInputFiles({name:'review-state.json',mimeType:'application/json',buffer:Buffer.from(firstProgressSource)});
     await holdProgress();
     try{
         await progressB.getByRole('button',{name:'Nhập 2 bài (giữ bài đã có)',exact:true}).click();
@@ -465,7 +467,14 @@ try {
     await expect(progressB.getByText('Đã nhập lịch ôn vào đúng phạm vi đã chọn.',{exact:true})).toBeVisible();
     const importedProgress=await progressB.evaluate(()=>JSON.parse(localStorage.getItem('roadmap-v3:guest')));
     assert.equal(importedProgress['P0.1'].status,'needs_review');assert.equal(importedProgress['P0.3'].status,'self_completed');
-    await progressContext.close();pass('CLI progress import waits for durable storage and preserves existing exercises');
+    pass('CLI progress import waits for durable storage and preserves existing exercises');
+    const secondProgressSource=JSON.stringify({'P0.4':progressReviewRow});
+    await progressB.getByLabel('File lịch ôn').setInputFiles({name:'review-second.json',mimeType:'application/json',buffer:Buffer.from(secondProgressSource)});
+    await progressB.getByRole('button',{name:'Nhập 1 bài (giữ bài đã có)',exact:true}).click();
+    await expect(progressB.getByText('Đã nhập lịch ôn vào đúng phạm vi đã chọn.',{exact:true})).toBeVisible();
+    const originalImports=await progressB.evaluate(()=>Object.keys(localStorage).filter(key=>key.startsWith('roadmap-v3:guest:review-import:')).map(key=>localStorage.getItem(key)));
+    assert.deepEqual(originalImports.sort(),[firstProgressSource,secondProgressSource].sort());
+    await progressContext.close();pass('imports in the same clock tick preserve both original JSON sources');
 
     assert.ok(supabaseOrigin, 'the library request identifies the configured Supabase origin');
     const owner = '00000000-0000-0000-0000-000000000021';
@@ -475,7 +484,7 @@ try {
     let projectRow = null;
     async function projectDevice(options={}) {
         const device = await browser.newContext();
-        const state = { offline: false, missingSchema: false, ...options };
+        const state = { offline: false, missingSchema: false, progressRows: [], progressWrites: 0, ...options };
         const authKey = `sb-${new URL(supabaseOrigin).hostname.split('.')[0]}-auth-token`;
         await device.addInitScript(({ key, session }) => {
             // Exercise the same flow on browsers without newer signal helpers.
@@ -491,6 +500,20 @@ try {
             if (request.method() === 'OPTIONS') return route.fulfill({ status: 204, headers });
             if (url.pathname.endsWith('/auth/v1/user')) return route.fulfill({ status: 200, headers, body: JSON.stringify(user) });
             if(state.missingSchema&&(url.pathname.endsWith('/rest/v1/project_drafts')||url.pathname.endsWith('/rest/v1/rpc/save_project_draft')))return route.fulfill({status:404,headers,body:JSON.stringify({code:'PGRST205',message:'project_drafts is not in the schema cache'})});
+            if(url.pathname.endsWith('/rest/v1/progress')) {
+                const exercise=url.searchParams.get('exercise_id')?.replace(/^eq\./,'');
+                const data=exercise?state.progressRows.find(row=>row.exercise_id===exercise)??null:state.progressRows;
+                return route.fulfill({status:200,headers,body:JSON.stringify(data)});
+            }
+            if(url.pathname.endsWith('/rest/v1/rpc/save_learning_progress')) {
+                const args=request.postDataJSON(),old=state.progressRows.find(row=>row.exercise_id===args.p_exercise_id);
+                assert.equal(args.p_owner,owner);
+                if(args.p_revision!==(old?.revision??0))return route.fulfill({status:409,headers,body:JSON.stringify({message:'PROGRESS_CONFLICT',code:'P0001'})});
+                const row={user_id:owner,phase:args.p_phase,exercise_id:args.p_exercise_id,status:args.p_status,revision:args.p_revision+1,
+                    due_at:args.p_due_at===null?null:new Date(args.p_due_at).toISOString(),hint_level:Math.max(old?.hint_level??0,args.p_hint_level),error_tags:args.p_error_tags};
+                state.progressRows=state.progressRows.filter(value=>value.exercise_id!==row.exercise_id).concat(row);state.progressWrites++;
+                return route.fulfill({status:200,headers,body:JSON.stringify(row)});
+            }
             if (url.pathname.endsWith('/rest/v1/project_drafts')) return route.fulfill({ status: 200, headers, body: JSON.stringify(projectRow) });
             if (url.pathname.endsWith('/rest/v1/rpc/save_project_draft')) {
                 const args = request.postDataJSON();
@@ -598,6 +621,24 @@ try {
     const localDownload=beforeMigration.tab.waitForEvent('download');await beforeMigration.tab.getByRole('button',{name:'Tải bản lưu JSON',exact:true}).click();
     assert.equal(JSON.parse(readFileSync(await(await localDownload).path(),'utf8')).name,'Saved before migration');
     await beforeMigration.context.close();pass('missing project migration keeps local editing, reload persistence and JSON export available');
+
+    for(const keepLocal of [true,false]) {
+        const serverProgress={user_id:owner,phase:'00_setup',exercise_id:'P0.1',status:'in_progress',revision:3,due_at:'2026-10-17T17:00:00+00:00',hint_level:keepLocal?3:1,error_tags:[]};
+        const hintDevice=await projectDevice({progressRows:[serverProgress]});
+        const progressKey=`roadmap-v3:user:${owner}`;
+        await hintDevice.tab.evaluate(({key,row})=>localStorage.setItem(key,JSON.stringify({'P0.1':row})),{key:progressKey,row:{...serverProgress,status:'needs_review',revision:2,hint_level:keepLocal?1:3,pending:true,conflict:true}});
+        await hintDevice.tab.goto(origin+base+'/docs/00_setup');
+        await expect(hintDevice.tab.locator('#status-P0\\.1')).toBeEnabled();
+        await hintDevice.tab.getByRole('button',{name:keepLocal?'Giữ bản thiết bị':'Dùng bản máy chủ',exact:true}).click();
+        await expect(hintDevice.tab.locator('.tracker-panel [role="status"]')).toHaveText('Đã đồng bộ với máy chủ.');
+        const persisted=await hintDevice.tab.evaluate(key=>JSON.parse(localStorage.getItem(key))['P0.1'],progressKey);
+        assert.equal(persisted.hint_level,3);assert.equal(persisted.pending,false);assert.equal(persisted.status,keepLocal?'needs_review':'in_progress');
+        assert.equal(hintDevice.state.progressRows[0].hint_level,3);assert.equal(hintDevice.state.progressWrites,1);
+        await hintDevice.tab.reload();
+        await expect(hintDevice.tab.locator('#status-P0\\.1')).toHaveValue(keepLocal?'needs_review':'in_progress');
+        assert.equal(await hintDevice.tab.evaluate(key=>JSON.parse(localStorage.getItem(key))['P0.1'].hint_level,progressKey),3);
+        await hintDevice.context.close();pass(`progress conflict choice (${keepLocal?'local':'remote'}) preserves hint maxima with real SDK and UTC acknowledgements`);
+    }
 
     const unsupported = await context.newPage();
     await unsupported.addInitScript(() => Object.defineProperty(window, 'speechSynthesis', { value: undefined, configurable: true }));
